@@ -1,0 +1,7 @@
+{
+  "packages": [
+    "packages/@isomorphic-typescript/*",
+    "packages/@skoville/*"
+  ],
+  "version": "0.0.0"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "webpack-hot-module-replacement",
+  "version": "0.0.0",
+  "description": "Monorepo for Skoville webpack project",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skoville/webpack-hot-module-replacement.git"
+  },
+  "author": "Alexander Leung",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/skoville/webpack-hot-module-replacement/issues"
+  },
+  "homepage": "https://github.com/skoville/webpack-hot-module-replacement#readme",
+  "devDependencies": {
+    "lerna": "^3.14.1"
+  }
+}
