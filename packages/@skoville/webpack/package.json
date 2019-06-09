@@ -1,0 +1,26 @@
+{
+  "name": "@skoville/webpack",
+  "version": "0.0.0",
+  "description": "Skoville Webpack core",
+  "scripts": {
+    "prebuild": "generate-main-file ./source package.ts SkovilleWebpack",
+    "build": "tsc -b"
+  },
+  "files": ["distribution"],
+  "main": "./distribution/package.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skoville/webpack-hot-module-replacement.git"
+  },
+  "author": "Alexander Leung",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^3.5.1",
+    "@isomorphic-typescript/npm-package-main-source-file-generator": "0.0.0"
+  },
+  "dependencies": {
+    "@types/webpack-env": "^1.13.9",
+    "@isomorphic-typescript/modularly-architected-library-foundation": "0.0.0",
+    "ansicolor": "^1.1.84"
+  }
+}

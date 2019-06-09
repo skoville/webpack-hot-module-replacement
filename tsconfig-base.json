@@ -1,0 +1,47 @@
+{
+    "compilerOptions": {
+        "module": "commonjs", /* need to use this if targetting es6. Not needed when targetting es5 */
+        "target": "es6",
+        
+        /* Type Definitions */
+        "lib": ["esnext"],
+        "types": [],
+
+        /* Code Quality */
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strict": true, // noImplicitAny noImplicitThis alwaysStrict strictBindCallApply strictFunctionTypes strictPropertyInitialization strictNullChecks
+
+        /** Output */
+        "declaration": true,
+        "sourceMap": true,
+        "stripInternal": true
+
+        /** Look into the following:
+            allowSyntheticDefaultImports
+            "diagnostics"
+            downlevelIteration
+            emitDecoratorMetadata
+            esModuleInterop
+            experimentalDecorators
+            extendedDiagnostics <-- doesn't seem to be in the tsconfig.json schema
+            importHelpers
+            isolatedModules
+            listEmittedFiles
+            listFiles
+            module: ESNext
+            moduleResolution
+            noEmitOnError
+            noErrorTruncation
+            pretty
+            removeComments
+            resolveJsonModule
+            sourceMap
+            sourceRoot
+            stripInternal // Could be a good way to hide internal details.
+            traceResolution
+        */
+    },
+}

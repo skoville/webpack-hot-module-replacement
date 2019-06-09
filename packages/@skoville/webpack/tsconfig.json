@@ -1,0 +1,9 @@
+{
+    "extends": "../../../tsconfig-base.json",
+    "compilerOptions": {
+        "types": ["webpack-env"],
+        "baseUrl": "./source",
+        "outDir": "./distribution"
+    },
+    "include": ["./source"]
+}
