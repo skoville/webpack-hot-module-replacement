@@ -1,0 +1,22 @@
+{
+  "name": "@isomorphic-typescript/ts-monorepo",
+  "version": "0.0.0",
+  "description": "Tool for maintaining and initializing typescript monorepos",
+  "bin": {
+    "ts-monorepo": "./distribution/ts-monorepo.js"
+  },
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "author": "Alexander Leung",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^12.0.7",
+    "typescript": "^3.5.1"
+  },
+  "dependencies": {
+    "ansicolor": "^1.1.87",
+    "chokidar": "^3.0.1",
+    "validate-npm-package-name": "^3.0.0"
+  }
+}

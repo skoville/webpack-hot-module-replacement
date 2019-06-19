@@ -4,5 +4,8 @@
         "outDir": "./distribution",
         "rootDir": "./source",
         "types": ["node"]
-    }
+    },
+    "references": [
+        { "path": "../webpack" }
+    ]
 }

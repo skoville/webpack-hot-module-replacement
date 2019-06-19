@@ -1,0 +1,25 @@
+{
+  "name": "@skoville/webpack-node-abstract-client",
+  "version": "0.0.0",
+  "description": "Skoville Webpack core abstract node client for custom implementation",
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "files": [
+    "distribution"
+  ],
+  "main": "./distribution/package.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skoville/webpack-hot-module-replacement.git"
+  },
+  "author": "Alexander Leung",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^3.5.1"
+  },
+  "dependencies": {
+    "@skoville/webpack": "0.0.0",
+    "@types/node": "^12.0.8"
+  }
+}

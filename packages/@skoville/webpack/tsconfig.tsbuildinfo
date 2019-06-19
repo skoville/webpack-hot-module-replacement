@@ -1,0 +1,554 @@
+{
+  "program": {
+    "fileInfos": {
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es5.d.ts": {
+        "version": "1f753cee573dea40df8a9dc873fef5566957b19ad513874f6643d8dfb14842d0",
+        "signature": "1f753cee573dea40df8a9dc873fef5566957b19ad513874f6643d8dfb14842d0"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.d.ts": {
+        "version": "7994d44005046d1413ea31d046577cdda33b8b2470f30281fd9c8b3c99fe2d96",
+        "signature": "7994d44005046d1413ea31d046577cdda33b8b2470f30281fd9c8b3c99fe2d96"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2016.d.ts": {
+        "version": "5f217838d25704474d9ef93774f04164889169ca31475fe423a9de6758f058d1",
+        "signature": "5f217838d25704474d9ef93774f04164889169ca31475fe423a9de6758f058d1"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2017.d.ts": {
+        "version": "459097c7bdd88fc5731367e56591e4f465f2c9de81a35427a7bd473165c34743",
+        "signature": "459097c7bdd88fc5731367e56591e4f465f2c9de81a35427a7bd473165c34743"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2018.d.ts": {
+        "version": "2edd3ddf436ef8e12df876dcae4ecd6a8748577944c477bf4b20d5596e0c9843",
+        "signature": "2edd3ddf436ef8e12df876dcae4ecd6a8748577944c477bf4b20d5596e0c9843"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2019.d.ts": {
+        "version": "0fc0f68d3f4d94aa65fab955592e4a9f2066e6f8ee2f66fcc45adf4037fc167b",
+        "signature": "0fc0f68d3f4d94aa65fab955592e4a9f2066e6f8ee2f66fcc45adf4037fc167b"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.esnext.d.ts": {
+        "version": "1c05c805f62c1c06a60b7812cd8de2dff7a5bda2218ce5edda5d9d298b1c48e1",
+        "signature": "1c05c805f62c1c06a60b7812cd8de2dff7a5bda2218ce5edda5d9d298b1c48e1"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.core.d.ts": {
+        "version": "2a0390a665763bcc90f0670e43c587928d8fefe2a94a11209c1e22cba7b09f52",
+        "signature": "2a0390a665763bcc90f0670e43c587928d8fefe2a94a11209c1e22cba7b09f52"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.collection.d.ts": {
+        "version": "dd94d8ef48c562389eb58af8df3a3a34d11367f7c818192aa5f16470d469e3f0",
+        "signature": "dd94d8ef48c562389eb58af8df3a3a34d11367f7c818192aa5f16470d469e3f0"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.generator.d.ts": {
+        "version": "828413486bdcaa342558e8e4570b1b287b776cb61b4b70b0214bd10c5d9a94c3",
+        "signature": "828413486bdcaa342558e8e4570b1b287b776cb61b4b70b0214bd10c5d9a94c3"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.iterable.d.ts": {
+        "version": "6c9f73334f8bf47aea685ca5b46a8f7e992a223e96fbceb030f26a4d2324ba21",
+        "signature": "6c9f73334f8bf47aea685ca5b46a8f7e992a223e96fbceb030f26a4d2324ba21"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.promise.d.ts": {
+        "version": "e6b8ff2798f8ebd7a1c7afd8671f2cb67ee1901c422f5964d74b0b34c6574ea2",
+        "signature": "e6b8ff2798f8ebd7a1c7afd8671f2cb67ee1901c422f5964d74b0b34c6574ea2"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.proxy.d.ts": {
+        "version": "5e72f949a89717db444e3bd9433468890068bb21a5638d8ab15a1359e05e54fe",
+        "signature": "5e72f949a89717db444e3bd9433468890068bb21a5638d8ab15a1359e05e54fe"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.reflect.d.ts": {
+        "version": "f5b242136ae9bfb1cc99a5971cccc44e99947ae6b5ef6fd8aa54b5ade553b976",
+        "signature": "f5b242136ae9bfb1cc99a5971cccc44e99947ae6b5ef6fd8aa54b5ade553b976"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.symbol.d.ts": {
+        "version": "9ae2860252d6b5f16e2026d8a2c2069db7b2a3295e98b6031d01337b96437230",
+        "signature": "9ae2860252d6b5f16e2026d8a2c2069db7b2a3295e98b6031d01337b96437230"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": {
+        "version": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303",
+        "signature": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2016.array.include.d.ts": {
+        "version": "3f96f1e570aedbd97bf818c246727151e873125d0512e4ae904330286c721bc0",
+        "signature": "3f96f1e570aedbd97bf818c246727151e873125d0512e4ae904330286c721bc0"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2017.object.d.ts": {
+        "version": "ff8ad203e83338289b0f5defc1a5b5c253fb7d251b464db497383f915a0df3f4",
+        "signature": "ff8ad203e83338289b0f5defc1a5b5c253fb7d251b464db497383f915a0df3f4"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts": {
+        "version": "b8667586a618c5cf64523d4e500ae39e781428abfb28f3de441fc66b56144b6f",
+        "signature": "b8667586a618c5cf64523d4e500ae39e781428abfb28f3de441fc66b56144b6f"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2017.string.d.ts": {
+        "version": "21df2e0059f14dcb4c3a0e125859f6b6ff01332ee24b0065a741d121250bc71c",
+        "signature": "21df2e0059f14dcb4c3a0e125859f6b6ff01332ee24b0065a741d121250bc71c"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2017.intl.d.ts": {
+        "version": "c1759cb171c7619af0d2234f2f8fb2a871ee88e956e2ed91bb61778e41f272c6",
+        "signature": "c1759cb171c7619af0d2234f2f8fb2a871ee88e956e2ed91bb61778e41f272c6"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts": {
+        "version": "28569d59e07d4378cb3d54979c4c60f9f06305c9bb6999ffe6cab758957adc46",
+        "signature": "28569d59e07d4378cb3d54979c4c60f9f06305c9bb6999ffe6cab758957adc46"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts": {
+        "version": "42102aaeb1bfec213be1e9777466a6d551eeba8567fed18c0cdbca8c35e3c6e4",
+        "signature": "42102aaeb1bfec213be1e9777466a6d551eeba8567fed18c0cdbca8c35e3c6e4"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2018.intl.d.ts": {
+        "version": "1b820b57379c726f94af50cd60053674af53ff9d079c1563cc70071e8b757dd0",
+        "signature": "1b820b57379c726f94af50cd60053674af53ff9d079c1563cc70071e8b757dd0"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2018.promise.d.ts": {
+        "version": "efe049114bad1035b0aa9a4a0359f50ab776e3897c411521e51d3013079cbd62",
+        "signature": "efe049114bad1035b0aa9a4a0359f50ab776e3897c411521e51d3013079cbd62"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2018.regexp.d.ts": {
+        "version": "e7780d04cd4120ee554c665829db2bbdd6b947cbaa3c150b7d9ea74df3beb2e8",
+        "signature": "e7780d04cd4120ee554c665829db2bbdd6b947cbaa3c150b7d9ea74df3beb2e8"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2019.array.d.ts": {
+        "version": "fc7c02b980e7dda0ed14d57ee71705c09efc51ec6286a10b971a25a3bb29262b",
+        "signature": "fc7c02b980e7dda0ed14d57ee71705c09efc51ec6286a10b971a25a3bb29262b"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2019.object.d.ts": {
+        "version": "989b95205f1189943fab0ce12a39c80570edf8f200aca60e0fdc500afc4d5859",
+        "signature": "989b95205f1189943fab0ce12a39c80570edf8f200aca60e0fdc500afc4d5859"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2019.string.d.ts": {
+        "version": "669427ac10ef9f52b6a7a502a66670eaabba675e0a660eb971041bd73c9894e3",
+        "signature": "669427ac10ef9f52b6a7a502a66670eaabba675e0a660eb971041bd73c9894e3"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2019.symbol.d.ts": {
+        "version": "7a842c21e0fe143eb3ad4d689a1470bab5ed9bc7fd7223fe8b56cbae27038d62",
+        "signature": "7a842c21e0fe143eb3ad4d689a1470bab5ed9bc7fd7223fe8b56cbae27038d62"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.esnext.intl.d.ts": {
+        "version": "f6e0c89daaf72eac38dfb1d5ef0972183f7f26a68da15bfe5bcb7cfccf0c7db8",
+        "signature": "f6e0c89daaf72eac38dfb1d5ef0972183f7f26a68da15bfe5bcb7cfccf0c7db8"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.esnext.bigint.d.ts": {
+        "version": "63b66918290d794f73832a6d0325be5026236674fe8c0cb0b68d162000d7bbe8",
+        "signature": "63b66918290d794f73832a6d0325be5026236674fe8c0cb0b68d162000d7bbe8"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/plugin-client-configuration-options.ts": {
+        "version": "c4957d81e375e9b4eb87b94f89693d3c4cac9f6814f16d613b17b9cb55c89312",
+        "signature": "4097f2d28047a733edc7d3446e7697aa086211cd071a3693da0034cb7f0aa15d"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/injected-client-constants.ts": {
+        "version": "1a1cd6640fba315b46b5f9924198f7f437c54fa18c38470996f4ded4d0c269f2",
+        "signature": "98acb23c3e7c846736bc3becd2157d8fddaa1e64bd603957cab93458cde626a3"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/command.d.ts": {
+        "version": "4fa281f4b221c5fa5c8b4d723db2c7685039b48e76cdf01be0e948afbaaecf13",
+        "signature": "4fa281f4b221c5fa5c8b4d723db2c7685039b48e76cdf01be0e948afbaaecf13"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/abstract-module.d.ts": {
+        "version": "6919bf6751b9a41f40ef440e1cbf31225fb1c5809b02156239aeb334ca17fe28",
+        "signature": "6919bf6751b9a41f40ef440e1cbf31225fb1c5809b02156239aeb334ca17fe28"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/pubsub.d.ts": {
+        "version": "d93b12b677370e7483a74c16d1f963143d0eea3f5cba9f1f72d127197873baa5",
+        "signature": "d93b12b677370e7483a74c16d1f963143d0eea3f5cba9f1f72d127197873baa5"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/self-resolving-construct.d.ts": {
+        "version": "1a87c99bbeea8f95756028c1b3ed9f05b96aa4c1ac0259658f4c86e56e56f714",
+        "signature": "1a87c99bbeea8f95756028c1b3ed9f05b96aa4c1ac0259658f4c86e56e56f714"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/package.d.ts": {
+        "version": "8cb5cfcd437c029f1765d62850e0b8c4bc6573f03eea71d8ebd049313955b227",
+        "signature": "8cb5cfcd437c029f1765d62850e0b8c4bc6573f03eea71d8ebd049313955b227"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/abstract-file-stream.ts": {
+        "version": "6161119b74898aaadd5016c52bc48fae0e8c2eb40dcc8c3d69789116ee0cab00",
+        "signature": "e4b2e8cd1b4f9844c6344f00ace7e7fcf609ec44f22b62751bd666a16dc013c3"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/node_modules/ansicolor/ansicolor.d.ts": {
+        "version": "bda4c1f332dc82a6dac444f8fb000c34700cec885e8cc2c7805867b0ab2efe0f",
+        "signature": "bda4c1f332dc82a6dac444f8fb000c34700cec885e8cc2c7805867b0ab2efe0f"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/log.ts": {
+        "version": "de9a3ce722b1f1af19aea9ac90918ce1068cace13907bc19216e5059a5856bed",
+        "signature": "695b4993e93e2a02cbfeeb748243da431648c11d46201f3853b90c49fbedc8c3"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/server-client-notification-model.ts": {
+        "version": "dc150477c1e4a5cedc4d4fad1ecc841f4f4d96ef4721fff0e5bff341d273e60d",
+        "signature": "7bc0c42a97603d6db84e6c1896aa80157b44e6da62412e998e3e9571cd4f2192"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/tool-name.ts": {
+        "version": "869b425b171dbc5018180cb8b23204e15e9f1c39d2aceaa50b59a255937cff64",
+        "signature": "93b474e5f0e4ded88518bf0857afa9b058609a611f940377cf3b088539c11e5d"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts": {
+        "version": "7e4fb0d10eb26f84b4dc1beb07d801d8a2702698fea4dd0fa44b704d5394e804",
+        "signature": "f741c59254109f2ef1f8448298026fe40761ff42dfaea09f624f990edcfffdd1"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-module-with-embedded-logging.ts": {
+        "version": "05889690512db8ed4e4fa6c60ec292dae2a6e20214e729a41d063e7653b16ec7",
+        "signature": "33c1ef828b77ade7ffa2363a9f70f5f53786f3304f82866d4b0fa9216e0ad5f5"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts": {
+        "version": "ca38978a2b5a83f40eb16ee9a9d3f804aefb24759bd31eb3daa816be04bb39ef",
+        "signature": "51ca8424c27a09b00517a92f5ecebb11c0671793caa1445c2f4816ac597bd818"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module.ts": {
+        "version": "386a8a129453ae70d0535abe50d76ba879d4c389b8b759f2c2d5662946b1aa56",
+        "signature": "78bbfcbb709527663a318feacb88e81eec3fc0de392f93f1b15623c2160e1f02"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-application-restarter-module.ts": {
+        "version": "866fa06afceb371d1ab7dbf7aba5e0c96d12956f874272945084ef3d6db9d1a7",
+        "signature": "98071f1cad3101d225505a0e0c88ca7517a0cdad98cf8287089148a3a71b188d"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-remote-accessor-module.ts": {
+        "version": "28855b0c47c5166dcd5c7ad13b696d1240d694cefec4b95bc0a20cef56cae699",
+        "signature": "e25349a20d0091f640d6c4ea3883b08703e1695e913a5e4f651eac81c822bb8b"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/webpack-runtime-module.ts": {
+        "version": "0a6bb6d39b0a9a46fdbf09b1f57d125ebb41cfe7089e448c21feb41c42ff79df",
+        "signature": "7f6d2891696732205908f122d0263ab225e55d250dc35354c08ed13b9dedefa1"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-logger-module.ts": {
+        "version": "aba436e8fba22d2aa9b2fd5d4b47c2c0c98c263f705cc40f221abd65adbafc35",
+        "signature": "cb3508bd78531e955185be551da17e6622e6aaf0423b186ddafcd2e9404431b8"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module-registry.ts": {
+        "version": "c03a619ba96ad803406563b0b58c5e0d27c13683134c2d0123aa851a9f2d2c10",
+        "signature": "aa7afbb1129488e3ff16f7830e4d1e4b07d55bb7bf9985805098bb8f62cd733d"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/command-types.ts": {
+        "version": "93979883073fa29773437b3404b4c5708cde0a51745862ead147dd3330f8f619",
+        "signature": "323e061019eae9c2f5316aa79cffd2e87d996e48f8d6b79b22c99e4a0bd4965e"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module.ts": {
+        "version": "7955142865dc9616d2e49df87aacde69a2e8e0369f5ac5b4eba8b22e92639806",
+        "signature": "18e891a765ac1cdae744f7424023fdb3abedda36a04aea97876749b9dce83038"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-compiler-manager-module.ts": {
+        "version": "a638a71280022cc4e262d53f6f835a4bb1a5ada3b80baf00376d60051d23b886",
+        "signature": "baf7d196cc9842f8fd7b1838fbbd4111e45e5060927f7090e8f3a89312cf7cf1"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-server-remote-endpoint-exposer-module.ts": {
+        "version": "a79de736f00ff0f9b2b0a432605614024140f5ea937b7f67af573c24b159e491",
+        "signature": "a8fbf64a751681fdbc7bc44331c10661529bdf0705255d970cda06acaf1b3582"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module-registry.ts": {
+        "version": "51c83fe6d305b0f93295aac9fdddfe46410c441c398c24f27d94564e47d68007",
+        "signature": "0e05d7ea1a3e2ddc222228cdd0a7a90fb92c2a536b5cafea3a704c71b37ec44a"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/package.ts": {
+        "version": "f8c3c7e85c72176d7647126ae34711430a94ded2359fc799fec6b947435e28df",
+        "signature": "ec5531f2b890938d413d10920ffa06c1ab2afc79094055c238dad47b3bf373ab"
+      },
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/node_modules/@types/webpack-env/index.d.ts": {
+        "version": "3900cfe2c4e64affddbe6054a846835b6ac65eeceaaca56bdf8e0631f268edff",
+        "signature": "3900cfe2c4e64affddbe6054a846835b6ac65eeceaaca56bdf8e0631f268edff"
+      }
+    },
+    "options": {
+      "module": 1,
+      "target": 2,
+      "lib": [
+        "lib.esnext.d.ts"
+      ],
+      "types": [
+        "webpack-env"
+      ],
+      "forceConsistentCasingInFileNames": true,
+      "noImplicitReturns": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "strict": true,
+      "stripInternal": true,
+      "composite": true,
+      "declaration": true,
+      "declarationMap": true,
+      "sourceMap": true,
+      "outDir": "C:/msys64/home/alexl/OpenSource/Skoville/webpack-hot-module-replacement/packages/@skoville/webpack/distribution",
+      "rootDir": "C:/msys64/home/alexl/OpenSource/Skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source",
+      "watch": true,
+      "configFilePath": "C:/msys64/home/alexl/OpenSource/Skoville/webpack-hot-module-replacement/packages/@skoville/webpack/tsconfig.json"
+    },
+    "referencedMap": {
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/injected-client-constants.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/plugin-client-configuration-options.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/abstract-module.d.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/command.d.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/package.d.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/abstract-module.d.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/command.d.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/pubsub.d.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/self-resolving-construct.d.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/abstract-file-stream.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/package.d.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/log.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/node_modules/ansicolor/ansicolor.d.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/log.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-module-with-embedded-logging.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/package.d.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/log.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/server-client-notification-model.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-module-with-embedded-logging.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-application-restarter-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-remote-accessor-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/injected-client-constants.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/webpack-runtime-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/server-client-notification-model.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/log.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/tool-name.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/injected-client-constants.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-logger-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-module-with-embedded-logging.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/log.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/package.d.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module-registry.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-remote-accessor-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-application-restarter-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/webpack-runtime-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/package.d.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-logger-module.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/command-types.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/server-client-notification-model.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/abstract-file-stream.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-module-with-embedded-logging.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/command-types.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-compiler-manager-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/abstract-file-stream.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/server-client-notification-model.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-server-remote-endpoint-exposer-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/command-types.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module-registry.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/package.d.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-logger-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-server-remote-endpoint-exposer-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-compiler-manager-module.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/package.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/injected-client-constants.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/plugin-client-configuration-options.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/abstract-file-stream.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/log.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/server-client-notification-model.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/tool-name.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-application-restarter-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module-registry.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-remote-accessor-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/webpack-runtime-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-compiler-manager-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module-registry.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-server-remote-endpoint-exposer-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-logger-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-module-with-embedded-logging.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts"
+      ]
+    },
+    "exportedModulesMap": {
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/package.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/injected-client-constants.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-application-restarter-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module-registry.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-remote-accessor-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/webpack-runtime-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/plugin-client-configuration-options.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/abstract-file-stream.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-compiler-manager-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module-registry.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-server-remote-endpoint-exposer-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/log.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-logger-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-module-with-embedded-logging.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/server-client-notification-model.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/tool-name.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/injected-client-constants.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/plugin-client-configuration-options.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/webpack-runtime-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/server-client-notification-model.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module-registry.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-remote-accessor-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-application-restarter-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-logger-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/package.d.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-remote-accessor-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/package.d.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/abstract-module.d.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/command.d.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/pubsub.d.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/self-resolving-construct.d.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module-registry.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-compiler-manager-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-logger-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-server-remote-endpoint-exposer-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/package.d.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-logger-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/package.d.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/log.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-module-with-embedded-logging.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-module-with-embedded-logging.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/package.d.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/log.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-module-with-embedded-logging.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-server-remote-endpoint-exposer-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-compiler-manager-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/abstract-file-stream.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/server-client-notification-model.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-module-with-embedded-logging.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-application-restarter-module.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/command-types.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/server-client-notification-model.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/abstract-file-stream.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/abstract-module.d.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/command.d.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/log.ts"
+      ],
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts": [
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts",
+        "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/server-client-notification-model.ts"
+      ]
+    },
+    "semanticDiagnosticsPerFile": [
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es5.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2016.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2017.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2018.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2019.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.esnext.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.core.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.collection.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.generator.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.promise.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.reflect.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.symbol.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2017.object.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2017.string.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2017.intl.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2018.intl.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2018.promise.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2018.regexp.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2019.array.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2019.object.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2019.string.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.es2019.symbol.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.esnext.intl.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/node_modules/typescript/lib/lib.esnext.bigint.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/plugin-client-configuration-options.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/injected-client-constants.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/command.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/abstract-module.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/pubsub.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/self-resolving-construct.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@isomorphic-typescript/modularly-architected-library-foundation/distribution/package.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/abstract-file-stream.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/node_modules/ansicolor/ansicolor.d.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/log.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/server-client-notification-model.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/tool-name.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/command-types.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-module-with-embedded-logging.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/command-types.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-application-restarter-module.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-remote-accessor-module.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/webpack-runtime-module.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/shared/module/abstract-logger-module.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/client/module/abstract-module-registry.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/command-types.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-compiler-manager-module.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-server-remote-endpoint-exposer-module.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/server/module/abstract-module-registry.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/source/package.ts",
+      "c:/msys64/home/alexl/opensource/skoville/webpack-hot-module-replacement/packages/@skoville/webpack/node_modules/@types/webpack-env/index.d.ts"
+    ]
+  },
+  "version": "3.5.1"
+}

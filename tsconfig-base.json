@@ -13,11 +13,13 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "strict": true, // noImplicitAny noImplicitThis alwaysStrict strictBindCallApply strictFunctionTypes strictPropertyInitialization strictNullChecks
+        "stripInternal": true,
 
-        /** Output */
+        /* Project References */
+        "composite": true,
         "declaration": true,
+        "declarationMap": true,
         "sourceMap": true,
-        "stripInternal": true
 
         /** Look into the following:
             allowSyntheticDefaultImports

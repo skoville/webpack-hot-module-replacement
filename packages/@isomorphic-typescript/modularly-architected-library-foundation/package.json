@@ -5,9 +5,7 @@
   "scripts": {
     "build": "tsc -b"
   },
-  "files": [
-    "distribution"
-  ],
+  "files": ["distribution"],
   "main": "./distribution/package.js",
   "repository": {
     "type": "git",

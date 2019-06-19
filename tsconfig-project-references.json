@@ -1,0 +1,17 @@
+{
+    // This tsconfig.json file references all leaf-node packages.
+    // See http://www.typescriptlang.org/docs/handbook/project-references.html#overall-structure
+    // https://github.com/RyanCavanaugh/learn-a
+    "files": [],
+    "references": [
+        { "path": "packages/@isomorphic-typescript/modularly-architected-library-foundation" },
+        { "path": "packages/@skoville/webpack" },
+        { "path": "packages/@skoville/webpack-node-abstract-client" },
+        { "path": "packages/@skoville/webpack-node-abstract-server" },
+        { "path": "packages/@skoville/webpack-node-default-client" },
+        { "path": "packages/@skoville/webpack-node-default-server" },
+        { "path": "packages/@skoville/webpack-universal-socket-io-abstract-client" },
+        { "path": "packages/@skoville/webpack-web-abstract-client" },
+        { "path": "packages/@skoville/webpack-web-default-client" },
+    ]
+}

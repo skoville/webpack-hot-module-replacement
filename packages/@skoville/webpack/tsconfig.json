@@ -1,9 +1,11 @@
 {
     "extends": "../../../tsconfig-base.json",
     "compilerOptions": {
-        "types": ["webpack-env"],
-        "baseUrl": "./source",
-        "outDir": "./distribution"
+        "outDir": "./distribution",
+        "rootDir": "./source",
+        "types": ["webpack-env"]
     },
-    "include": ["./source"]
+    "references": [
+        { "path": "../../@isomorphic-typescript/modularly-architected-library-foundation" }
+    ]
 }
