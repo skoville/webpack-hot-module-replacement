@@ -1,0 +1,24 @@
+{
+    "packageRoot": "packages",
+    "baseConfigs": {
+        "tsconfig.json": {
+
+        },
+        "package.json": {
+            "author": "Alexander Leung",
+            "license": "MIT"
+        }
+    },
+    "packages": {
+        "@test/sucker": {
+            "configs": {
+                "package.json": {
+                },
+                "tsconfig.json": {
+                    
+                }
+            }
+        }
+    },
+    "version": "0.0.0"
+}

@@ -1,10 +1,12 @@
 {
   "scripts": {
+    "config": "ts-monorepo ts-monorepo.json",
     "build": "tsc -b --watch --verbose ./tsconfig-project-references.json"
   },
   "devDependencies": {
     "lerna": "^3.14.1",
-    "typescript": "^3.5.1"
+    "typescript": "^3.5.1",
+    "@isomorphic-typescript/ts-monorepo": "file:./packages/@isomorphic-typescript/ts-monorepo"
   },
   "dependencies": {}
 }
