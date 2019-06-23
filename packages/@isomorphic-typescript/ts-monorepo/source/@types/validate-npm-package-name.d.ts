@@ -1,11 +1,13 @@
 declare module 'validate-npm-package-name' {
+    namespace validate {
+        export const scopedPackagePattern: RegExp;
+    }
     interface result {
         validForNewPackages: boolean;
         validForOldPackages: boolean;
         warnings?: string[];
         errors?: string[];
     }
-    function validateFunction(name: string): result;
-    const validate: typeof validateFunction & { scopedPackagePattern: RegExp };
+    function validate(name: string): result;
     export = validate;
 }

@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "config": "ts-monorepo ts-monorepo.json",
+    "config": "ts-monorepo",
     "build": "tsc -b --watch --verbose ./tsconfig-project-references.json"
   },
   "devDependencies": {

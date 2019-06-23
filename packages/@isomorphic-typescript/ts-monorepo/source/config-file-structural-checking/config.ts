@@ -4,11 +4,11 @@ export interface PackageJSON {
     peerDependencies?: string[];
 }
 
-interface TSConfigJSON {
+export interface TSConfigJSON {
 
 }
 
-interface ProjectDescriptor {
+export interface ProjectDescriptor {
     configs: {
         "package.json": PackageJSON;
         "tsconfig.json": TSConfigJSON;

@@ -6,7 +6,7 @@
     "ts-monorepo": "./distribution/ts-monorepo.js"
   },
   "scripts": {
-    "build": "tsc -b --watch"
+    "build": "tsc -b --watch --verbose"
   },
   "author": "Alexander Leung",
   "license": "MIT",

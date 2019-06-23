@@ -10,9 +10,10 @@
         }
     },
     "packages": {
-        "@test/sucker": {
+        "@test-scope/test-package": {
             "configs": {
                 "package.json": {
+                    "devDependencies": ["ansicolor"]
                 },
                 "tsconfig.json": {
                     
