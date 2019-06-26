@@ -83,8 +83,8 @@ in which case they will live as a direct child of a folder which is named after 
 1. The project forces single versioning via Lerna.
 1. Certain tsconfig compilerOptions will be enabled without your choice. They are: "composite", "declaration", "declarationMap", "sourceMap". The reasoning behind this is [here](https://github.com/RyanCavanaugh/learn-a#tsconfigsettingsjson). 
 
-The nice thing about this tool is that now all of your configs are generated from this one monoconfig file, and so tsconfig.json and package.json of subprojects can go in
-the root level gitignore.
+The nice thing about this tool is that now all of your configs are generated from this one monoconfig file, and so tsconfig.json and package.json as individual files of subprojects can go in
+the root level gitignore since they are now all managed automatically.
 
 Another nice thing is that now new package setup is very quick, just add entry to config and the tool which watches the config file for saves will do the rest. Essentially declarative programming of the config file.
 

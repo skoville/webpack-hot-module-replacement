@@ -1,5 +1,9 @@
 import * as ansicolor from 'ansicolor';
 import * as path from 'path';
+import * as child_process from 'child_process';
+import * as util from 'util';
+
+const execAsync = util.promisify(child_process.exec);
 
 // Utils
 import { fsAsync } from '../util/fs-async';
@@ -13,6 +17,7 @@ import { PackageDependencyTracker } from './package-dependency-tracker';
 import { syncPackageJSON } from './sync-package.json';
 import { syncTSConfigJSON } from './sync-tsconfig.json';
 import { syncLernaJSON } from './sync-lerna.json';
+import { syncTSConfigLeavesJSON } from './sync-tsconfig-leaves.json';
 
 export async function syncPackages(configFileRelativePath: string, configAbsolutePath: string) {
     const configFilePresence = await validateFilePresence(
@@ -98,9 +103,12 @@ export async function syncPackages(configFileRelativePath: string, configAbsolut
 
     // Lerna
     await syncLernaJSON(lernaJSONPackagePaths, configFileJSON);
-    log.info(`Running '${ansicolor.white("npx lerna bootstrap --hoist")}'`);
-    // TODO: exec "npx lerna bootstrap --hoist"
+    const lernaInstallAndLinkCommand = "npx lerna bootstrap"; // TODO: add hoist?
+    log.info(`Running '${ansicolor.white(lernaInstallAndLinkCommand)}'`);
+    const {stdout, stderr} = await execAsync(lernaInstallAndLinkCommand);
+    console.log(stdout);
+    console.log(stderr);
 
-    // restart build process? perhaps this should be done from the outside?
-    // tsc -b leaf1, leaf2, leaf3, etc.. --verbose --watch
+    // tsc
+    await syncTSConfigLeavesJSON(leafPackages, configFileJSON);
 }

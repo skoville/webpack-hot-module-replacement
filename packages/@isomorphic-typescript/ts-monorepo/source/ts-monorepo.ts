@@ -7,12 +7,14 @@ import { log } from './util/log';
 import { restartProgram } from './util/restart-program';
 import { validateFilePresence } from './util/validate-presence-in-file-system';
 import { syncPackages } from './sync-logic/sync-packages';
+import { TSBuild } from './ts-build';
 
 async function main() {
     console.log("");
 
     const configFileRelativePath = "ts-monorepo.json";
     const configAbsolutePath = path.resolve(configFileRelativePath);
+    const tsBuild = new TSBuild();
 
     function acknowledgeWatingForChanges() {
         log.info(ansicolor.green("Waiting for changes..."));
@@ -23,18 +25,24 @@ async function main() {
         false, false, 
         undefined, 
         configFileRelativePath);
-    if (!initialConfigFilePresence.exists) acknowledgeWatingForChanges();
+    if (!initialConfigFilePresence.exists || initialConfigFilePresence.wrong) acknowledgeWatingForChanges();
 
     var currentAction = Promise.resolve();
     function runUpdate(message?: string) {
         currentAction = currentAction.then(() => {
+            if (tsBuild.isRunning()) {
+                tsBuild.stop();
+            }
             if (message) log.info(message);
             return syncPackages(configFileRelativePath, configAbsolutePath)
                 .catch((e) => {
                     log.error(e.message);
                     console.log(e);
                 })
-                .finally(acknowledgeWatingForChanges);
+                .finally(() => {
+                    acknowledgeWatingForChanges();
+                    tsBuild.start();
+                });
         });
     }
 
