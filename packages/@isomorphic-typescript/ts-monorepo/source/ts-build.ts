@@ -1,7 +1,8 @@
 import * as child_process from 'child_process';
 import { log } from './util/log';
+import ansicolor = require('ansicolor');
 export class TSBuild {
-    private static TSC_BUILD_COMMAND = "tsc -b --project ./tsconfig-leaves.json --watch --verbose".split(" ");
+    private static TSC_BUILD_COMMAND = "tsc -b --watch --verbose --preserveWatchOutput ./tsconfig-leaves.json";
 
     private buildProcess: child_process.ChildProcessWithoutNullStreams | undefined;
 
@@ -16,8 +17,9 @@ export class TSBuild {
             log.error("Trying to start the tsc watching build when process already running.");
             return;
         }
-        log.info("Starting tsc watching build");
-        this.buildProcess = child_process.spawn("npx", TSBuild.TSC_BUILD_COMMAND);
+        log.info(`Running '${ansicolor.white(TSBuild.TSC_BUILD_COMMAND)}'`);
+        const command = require('os').platform() === 'win32' ? "npx.cmd" : "npx";
+        this.buildProcess = child_process.spawn(command, TSBuild.TSC_BUILD_COMMAND.split(" "));
         this.buildProcess.stdout.on("data", data => {
             console.log(data.toString());
         });
@@ -25,7 +27,7 @@ export class TSBuild {
             console.log(data.toString());
         });
         this.buildProcess.on("exit", () => {
-            log.info("The tsc watching build has stopped.");
+            log.info(`The '${ansicolor.white(TSBuild.TSC_BUILD_COMMAND)}' command has stopped.`);
         });
     }
 
@@ -35,5 +37,6 @@ export class TSBuild {
             return;
         }
         this.buildProcess.kill();
+        this.buildProcess = undefined;
     }
 }

@@ -2,22 +2,52 @@
     "packageRoot": "packages",
     "baseConfigs": {
         "tsconfig.json": {
-
+            "compilerOptions": {
+                "module": "commonjs",
+                "target": "es6",
+                "lib": ["esnext"],
+                "types": [],
+                "forceConsistentCasingInFileNames": true,
+                "noImplicitReturns": true,
+                "noUnusedLocals": true,
+                "noUnusedParameters": true,
+                "strict": true,
+                "stripInternal": true,
+                "outDir": "./distribution",
+                "rootDir": "./source"
+            }
         },
         "package.json": {
             "author": "Alexander Leung",
-            "license": "MIT"
+            "license": "MIT",
+            "files": ["distribution"],
+            "main": "./distribution/package.js",
+            "repository": {
+                "type": "git",
+                "url": "git+https://github.com/skoville/webpack-hot-module-replacement.git"
+            }
         }
     },
     "packages": {
-        "@test-scope/test-package": {
+        "@isomorphic-typescript/modularly-architected-library-foundation": {
             "configs": {
                 "package.json": {
-                    "devDependencies": ["ansicolor"]
+                    "description": "Provides the foundation to build a library or application with a modular architecture. Easily swappable implementations with a clear interface."
                 },
-                "tsconfig.json": {
-                    
-                }
+                "tsconfig.json": {}
+            }
+        },
+        "@skoville/webpack": {
+            "configs": {
+                "package.json": {
+                    "description": "Skoville webpack core.",
+                    "dependencies": [
+                        "@types/webpack-env",
+                        "@isomorphic-typescript/modularly-architected-library-foundation",
+                        "ansicolor"
+                    ]
+                },
+                "tsconfig.json": {}
             }
         }
     },
