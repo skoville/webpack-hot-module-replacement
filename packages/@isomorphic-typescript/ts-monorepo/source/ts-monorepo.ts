@@ -30,9 +30,7 @@ async function main() {
     var currentAction = Promise.resolve();
     function runUpdate(message?: string) {
         currentAction = currentAction.then(() => {
-            if (tsBuild.isRunning()) {
-                tsBuild.stop();
-            }
+            if (tsBuild.isRunning()) tsBuild.stop();
             if (message) log.info(message);
             return syncPackages(configFileRelativePath, configAbsolutePath)
                 .catch((e) => {
@@ -68,6 +66,7 @@ async function main() {
             log.warn("The config file has been removed.. Please add it again to resume watching.");
         })
         .on("error", error => {
+            if (tsBuild.isRunning()) tsBuild.stop();
             restartProgram(() => {
                 log.error("Chokidar Error '" + error.name + "': " + error.message + (error.stack ? "\n" + ansicolor.default(error.stack) : ""));
             });
@@ -75,6 +74,7 @@ async function main() {
 
     chokidar.watch(__dirname)
         .on("change", () => {
+            if (tsBuild.isRunning()) tsBuild.stop();
             restartProgram(() => {
                 log.info("Detected change in program itself.");
             });

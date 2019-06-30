@@ -49,6 +49,18 @@
                 },
                 "tsconfig.json": {}
             }
+        },
+        "@skoville/webpack-hmr-core-shared": {
+            "configs": {
+                "package.json": {
+                    "description": "Skoville webpack core.",
+                    "dependencies": [
+                        "@isomorphic-typescript/modularly-architected-library-foundation",
+                        "ansicolor"
+                    ]
+                },
+                "tsconfig.json": {}
+            }
         }
     },
     "version": "0.0.0"

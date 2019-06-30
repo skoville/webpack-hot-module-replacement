@@ -104,10 +104,23 @@ export async function syncPackages(configFileRelativePath: string, configAbsolut
     // Lerna
     await syncLernaJSON(lernaJSONPackagePaths, configFileJSON);
     const lernaInstallAndLinkCommand = "npx lerna bootstrap"; // TODO: add hoist?
-    log.info(`Running '${ansicolor.white(lernaInstallAndLinkCommand)}'`);
+    log.info(`Running '${ansicolor.white(lernaInstallAndLinkCommand.split(" ").slice(1).join(" "))}'`);
     const {stdout, stderr} = await execAsync(lernaInstallAndLinkCommand);
-    console.log(stdout);
-    console.log(stderr);
+
+    if(stdout) {
+        stdout.split("\n")
+            .filter(line => line.length > 0)
+            .forEach(line => {
+                log.info(line);
+            });
+    }
+    if(stderr) {
+        stderr.split("\n")
+            .filter(line => line.length > 0)
+            .forEach(line => {
+                log.info(line);
+            });
+    }
 
     // tsc
     await syncTSConfigLeavesJSON(leafPackages, configFileJSON);
