@@ -13,15 +13,13 @@
                 "noUnusedParameters": true,
                 "strict": true,
                 "stripInternal": true,
-                "outDir": "./distribution",
-                "rootDir": "./source"
+                "rootDir": "./source",
+                "outDir": "./distribution"
             }
         },
         "package.json": {
             "author": "Alexander Leung",
             "license": "MIT",
-            "files": ["distribution"],
-            "main": "./distribution/package.js",
             "repository": {
                 "type": "git",
                 "url": "git+https://github.com/skoville/webpack-hot-module-replacement.git"
@@ -30,14 +28,18 @@
     },
     "packages": {
         "@isomorphic-typescript/modularly-architected-library-foundation": {
+            "publishDistributionFolder": false,
             "configs": {
                 "package.json": {
+                    "files": ["distribution"],
+                    "main": "./distribution/package.js",
                     "description": "Provides the foundation to build a library or application with a modular architecture. Easily swappable implementations with a clear interface."
                 },
                 "tsconfig.json": {}
             }
         },
         "@skoville/webpack": {
+            "publishDistributionFolder": true,
             "configs": {
                 "package.json": {
                     "description": "Skoville webpack core.",
@@ -51,9 +53,12 @@
             }
         },
         "@skoville/webpack-hmr-core-shared": {
+            "publishDistributionFolder": false,
             "configs": {
                 "package.json": {
                     "description": "Skoville webpack core.",
+                    "files": ["distribution"],
+                    "main": "./distribution/package.js",
                     "dependencies": [
                         "@isomorphic-typescript/modularly-architected-library-foundation",
                         "ansicolor"
