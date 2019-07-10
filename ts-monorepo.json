@@ -49,7 +49,11 @@
                         "ansicolor"
                     ]
                 },
-                "tsconfig.json": {}
+                "tsconfig.json": {
+                    "compilerOptions": {
+                        "types": ["webpack-env"]
+                    }
+                }
             }
         },
         "@skoville/webpack-hmr-core-shared": {

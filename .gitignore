@@ -1,8 +1,9 @@
 package-lock.json
-node_modules/
+node_modules
 distribution/
 tsconfig.tsbuildinfo
 package.json
 tsconfig.json
 lerna.json
+lerna-debug.log
 tsconfig-leaves.json

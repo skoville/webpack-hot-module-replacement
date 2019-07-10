@@ -5,6 +5,6 @@
     "url": "https://github.com/skoville/webpack-hot-module-replacement.git"
   },
   "devDependencies": {
-    "@isomorphic-typescript/ts-monorepo": "file:../../ts-monorepo"
+    "@isomorphic-typescript/ts-monorepo": "^0.1.5"
   }
 }
