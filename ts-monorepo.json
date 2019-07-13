@@ -38,11 +38,11 @@
                 "tsconfig.json": {}
             }
         },
-        "@skoville/webpack": {
+        "@skoville/webpack-hmr-core": {
             "publishDistributionFolder": true,
             "configs": {
                 "package.json": {
-                    "description": "Skoville webpack core.",
+                    "description": "Skoville hmr webpack core!",
                     "dependencies": [
                         "@types/webpack-env",
                         "@isomorphic-typescript/modularly-architected-library-foundation",
@@ -56,18 +56,62 @@
                 }
             }
         },
-        "@skoville/webpack-hmr-core-shared": {
+        "@skoville/webpack-hmr-node-abstract-server": {
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json": {},
+                "tsconfig.json": {}
+            }
+        },
+        "@skoville/webpack-hmr-node-default-server": {
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json": {},
+                "tsconfig.json": {}
+            }
+        },
+        "@skoville/webpack-hmr-universal-socketio-client-remote-accessor-module": {
             "publishDistributionFolder": false,
             "configs": {
                 "package.json": {
-                    "description": "Skoville webpack core.",
                     "files": ["distribution"],
-                    "main": "./distribution/package.js",
+                    "main": "./distribution/socket-io-client-remote-accessor-module.js",
                     "dependencies": [
-                        "@isomorphic-typescript/modularly-architected-library-foundation",
-                        "ansicolor"
+                        "@skoville/webpack-hmr-core",
+                        "socket.io-client"
+                    ],
+                    "devDependencies": [
+                        "@types/socket.io-client"
                     ]
                 },
+                "tsconfig.json": {}
+            }
+        },
+        "@skoville/webpack-hmr-node-abstract-client": {
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json": {},
+                "tsconfig.json": {}
+            }
+        },
+        "@skoville/webpack-hmr-node-default-client": {
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json": {},
+                "tsconfig.json": {}
+            }
+        },
+        "@skoville/webpack-hmr-web-abstract-client": {
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json": {},
+                "tsconfig.json": {}
+            }
+        },
+        "@skoville/webpack-hmr-web-defualt-client": {
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json": {},
                 "tsconfig.json": {}
             }
         }
