@@ -59,15 +59,37 @@
         "@skoville/webpack-hmr-node-abstract-server": {
             "publishDistributionFolder": false,
             "configs": {
-                "package.json": {},
-                "tsconfig.json": {}
+                "package.json": {
+                    "dependencies":[
+                        "@skoville/webpack-hmr-core"
+                    ],
+                    "devDependencies": [
+                        "@types/node"
+                    ]
+                },
+                "tsconfig.json": {
+                    "compilerOptions": {
+                        "types":["node"]
+                    }
+                }
             }
         },
         "@skoville/webpack-hmr-node-default-server": {
             "publishDistributionFolder": false,
             "configs": {
-                "package.json": {},
-                "tsconfig.json": {}
+                "package.json": {
+                    "dependencies":[
+                        "@skoville/webpack-hmr-node-abstract-server"
+                    ],
+                    "devDependencies": [
+                        "@types/node"
+                    ]
+                },
+                "tsconfig.json": {
+                    "compilerOptions": {
+                        "types":["node"]
+                    }
+                }
             }
         },
         "@skoville/webpack-hmr-universal-socketio-client-remote-accessor-module": {
@@ -90,28 +112,60 @@
         "@skoville/webpack-hmr-node-abstract-client": {
             "publishDistributionFolder": false,
             "configs": {
-                "package.json": {},
-                "tsconfig.json": {}
+                "package.json": {
+                    "dependencies": [
+                        "@skoville/webpack-hmr-core"
+                    ],
+                    "devDependencies": [
+                        "@types/node"
+                    ]
+                },
+                "tsconfig.json": {
+                    "compilerOptions": {
+                        "types":["node"]
+                    }
+                }
             }
         },
         "@skoville/webpack-hmr-node-default-client": {
             "publishDistributionFolder": false,
             "configs": {
-                "package.json": {},
-                "tsconfig.json": {}
+                "package.json": {
+                    "dependencies":[
+                        "@skoville/webpack-hmr-node-abstract-client",
+                        "@skoville/webpack-hmr-universal-socketio-client-remote-accessor-module"
+                    ],
+                    "devDependencies": [
+                        "@types/node"
+                    ]
+                },
+                "tsconfig.json": {
+                    "compilerOptions": {
+                        "types":["node"]
+                    }
+                }
             }
         },
         "@skoville/webpack-hmr-web-abstract-client": {
             "publishDistributionFolder": false,
             "configs": {
-                "package.json": {},
+                "package.json": {
+                    "dependencies": [
+                        "@skoville/webpack-hmr-core"
+                    ]
+                },
                 "tsconfig.json": {}
             }
         },
-        "@skoville/webpack-hmr-web-defualt-client": {
+        "@skoville/webpack-hmr-web-default-client": {
             "publishDistributionFolder": false,
             "configs": {
-                "package.json": {},
+                "package.json": {
+                    "dependencies":[
+                        "@skoville/webpack-hmr-web-abstract-client",
+                        "@skoville/webpack-hmr-universal-socketio-client-remote-accessor-module"
+                    ]
+                },
                 "tsconfig.json": {}
             }
         }

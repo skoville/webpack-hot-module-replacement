@@ -1,4 +1,4 @@
-import { Log } from '@skoville/webpack/distribution/shared/log';
+import { Log } from '@skoville/webpack-hmr-core/shared/log';
 import { SkovilleWebpack } from "@skoville/webpack";
 
 // AbstractClientLoggerModule
