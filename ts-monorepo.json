@@ -78,15 +78,20 @@
             "configs": {
                 "package.json": {
                     "dependencies":[
-                        "@skoville/webpack-hmr-core"
+                        "@skoville/webpack-hmr-core",
+                        "uuid",
+                        "webpack"
                     ],
                     "devDependencies": [
-                        "@types/node"
+                        "@types/node",
+                        "@types/uuid",
+                        "@types/webpack-env",
+                        "@types/webpack"
                     ]
                 },
                 "tsconfig.json": {
                     "compilerOptions": {
-                        "types":["node"]
+                        "types":["node", "webpack-env"]
                     }
                 }
             }
@@ -205,11 +210,18 @@
             "publishDistributionFolder": false,
             "configs": {
                 "package.json": {
+                    "files":["distribution"],
+                    "main":"./distribution/package.js",
                     "dependencies": [
-                        "@skoville/webpack-hmr-core"
+                        "@skoville/webpack-hmr-core",
+                        "ansicolor"
                     ]
                 },
-                "tsconfig.json": {}
+                "tsconfig.json": {
+                    "compilerOptions":{
+                        "lib": ["dom"]
+                    }
+                }
             }
         },
         "@skoville/webpack-hmr-web-default-client": {
