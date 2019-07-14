@@ -38,6 +38,23 @@
                 "tsconfig.json": {}
             }
         },
+        "@isomorphic-typescript/fs-async-nodejs": {
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json":{
+                    "files": ["distribution"],
+                    "main": "./distribution/package.js",
+                    "dependencies": [
+                        "@types/node"
+                    ]
+                },
+                "tsconfig.json":{
+                    "compilerOptions": {
+                        "types": ["node"]
+                    }
+                }
+            }
+        },
         "@skoville/webpack-hmr-core": {
             "publishDistributionFolder": true,
             "configs": {
@@ -109,11 +126,49 @@
                 "tsconfig.json": {}
             }
         },
+        "@skoville/webpack-hmr-node-client-cli": {
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json":{
+                    "files":["distribution"],
+                    "bin": {
+                        "skoville-webpack-node-run": "./distribution/cli.js"
+                    },
+                    "dependencies": [
+                        "@isomorphic-typescript/fs-async-nodejs",
+                        "@skoville/webpack-hmr-core",
+                        "@skoville/webpack-hmr-node-client-application-restarter-module-data-transfer-object",
+                        "yargs"
+                    ],
+                    "devDependencies": [
+                        "@types/yargs"
+                    ]
+                },
+                "tsconfig.json":{
+                    "compilerOptions": {
+                        "types": ["node"]
+                    }
+                }
+            }
+        },
+        "@skoville/webpack-hmr-node-client-application-restarter-module-data-transfer-object": {
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json": {
+                    "files":["distribution"],
+                    "main":"./distribution/package.js"
+                },
+                "tsconfig.json": {}
+            }
+        },
         "@skoville/webpack-hmr-node-abstract-client": {
             "publishDistributionFolder": false,
             "configs": {
                 "package.json": {
+                    "files":["distribution"],
+                    "main": "./distribution/module-registry.js",
                     "dependencies": [
+                        "@skoville/webpack-hmr-node-client-application-restarter-module-data-transfer-object",
                         "@skoville/webpack-hmr-core"
                     ],
                     "devDependencies": [
