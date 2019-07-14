@@ -2,14 +2,15 @@ import * as express from 'express';
 import * as mime from 'mime';
 import * as http from 'http';
 import * as socketio from 'socket.io';
-import { SOCKET_MESSAGE_EVENT_NAME, CompilerNotification } from '@universal/shared/server-client-notification-model';
-import { AbstractServerBoundaryModule } from '@universal/server/module/abstract/server-boundary-module';
-import { CompilerNotificationPayload, ServerCommand } from '@universal/server/command-types';
-import { NodeFileStream } from '@node/shared/file-stream';
-//import { COMPILER_ID } from '@universal/shared/injected-client-configuration';
-import ansicolor = require('ansicolor');
+import * as ansicolor from 'ansicolor';
+import { CompilerNotification } from '@skoville/webpack-hmr-core/shared/server-client-notification-model';
+import { TOOL_NAME } from '@skoville/webpack-hmr-core/shared/tool-name';
+import { AbstractServerRemoteEndpointExposerModule } from '@skoville/webpack-hmr-core/server/module/abstract-server-remote-endpoint-exposer-module';
+import { CompilerNotificationPayload, ServerCommand } from '@skoville/webpack-hmr-core/server/module/command-types';
+import { NodeFileStream } from '../../webpack-hmr-node-abstract-server/source/file-stream';
+import { COMPILER_ID } from '@skoville/webpack-hmr-core/client/injected-client-constants';
 
-export class DefaultNodeServerBoundaryModule extends AbstractServerBoundaryModule {
+export class DefaultNodeServerBoundaryModule extends AbstractServerRemoteEndpointExposerModule {
     private readonly httpServer: http.Server;
     private readonly ioServer: socketio.Server;
     private readonly compilerIdToSocketSetMap: Map<string, Set<socketio.Socket>>;
@@ -120,6 +121,6 @@ export class DefaultNodeServerBoundaryModule extends AbstractServerBoundaryModul
     private sendNotification(socket: socketio.Socket, notification: CompilerNotification.Body) {
         // TODO: I wrote the below comment a while ago regarding the same line but in a different context. See if it is still needed.
         // Will want to end up using the socket.io emitted boolean to tell what clients are up to date and which are behind.
-        this.ioServer.to(socket.id).emit(SOCKET_MESSAGE_EVENT_NAME, JSON.stringify(notification));
+        this.ioServer.to(socket.id).emit(TOOL_NAME, JSON.stringify(notification));
     }
 }

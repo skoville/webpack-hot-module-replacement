@@ -2,12 +2,12 @@ import * as webpack from 'webpack';
 import MemoryFileSystem = require('memory-fs');
 import * as path from 'path';
 import * as fs from 'fs';
-import {CompilerNotification} from '@universal/shared/server-client-notification-model';
-import { TOOL_NAME } from '@universal/shared/tool-name';
-import { AbstractFileStream } from '@universal/server/abstract-file-stream';
-import { NodeFileStream } from '@node/shared/file-stream';
-import { Log } from '@universal/shared/log';
-import { PubSub, Subscriber } from '@universal/shared/pubsub';
+import {CompilerNotification} from '@skoville/webpack-hmr-core/shared/server-client-notification-model';
+import { TOOL_NAME } from '@skoville/webpack-hmr-core/shared/tool-name';
+import { AbstractFileStream } from '@skoville/webpack-hmr-core/server/abstract-file-stream';
+import { NodeFileStream } from './file-stream';
+import { Log } from '@skoville/webpack-hmr-core/shared/log';
+import { PubSub, Subscriber } from '@isomorphic-typescript/modularly-architected-library-foundation';
 import * as ansicolor from 'ansicolor';
 
 type FileSystem = typeof fs | MemoryFileSystem;

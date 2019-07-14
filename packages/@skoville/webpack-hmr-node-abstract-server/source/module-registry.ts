@@ -46,9 +46,7 @@ export class NodeServerModuleRegistry extends AbstractServerModuleRegistry {
 
             new webpack.DefinePlugin({
                 [nameof(CLIENT_CONFIGURATION_OPTIONS)]: JSON.stringify(options.client),
-                [nameof(COMPILER_ID)]: `'${compilerId}'`,
-                [nameof(WEBPACK_HASH)]: nameof(__webpack_hash__),
-                [nameof(WEBPACK_HOT_MODULE)]: nameof.full(module.hot)
+                [nameof(COMPILER_ID)]: `'${compilerId}'`
             }).apply(compiler);
 
             options.server.compilerManager.register(compiler, compilerId);

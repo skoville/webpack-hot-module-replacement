@@ -6,7 +6,7 @@
                 "module": "commonjs",
                 "target": "es6",
                 "lib": ["esnext"],
-                "types": [],
+                "types": ["ts-nameof"],
                 "forceConsistentCasingInFileNames": true,
                 "noImplicitReturns": true,
                 "noUnusedLocals": true,
@@ -23,7 +23,10 @@
             "repository": {
                 "type": "git",
                 "url": "git+https://github.com/skoville/webpack-hot-module-replacement.git"
-            }
+            },
+            "devDependencies":[
+                "ts-nameof"
+            ]
         }
     },
     "packages": {
@@ -77,8 +80,12 @@
             "publishDistributionFolder": false,
             "configs": {
                 "package.json": {
+                    "files": ["distribution"],
+                    "main": "./distribution/package.js",
                     "dependencies":[
                         "@skoville/webpack-hmr-core",
+                        "@isomorphic-typescript/modularly-architected-library-foundation",
+                        "memory-fs",
                         "uuid",
                         "webpack"
                     ],
@@ -86,7 +93,8 @@
                         "@types/node",
                         "@types/uuid",
                         "@types/webpack-env",
-                        "@types/webpack"
+                        "@types/webpack",
+                        "@types/memory-fs"
                     ]
                 },
                 "tsconfig.json": {
@@ -101,10 +109,18 @@
             "configs": {
                 "package.json": {
                     "dependencies":[
-                        "@skoville/webpack-hmr-node-abstract-server"
+                        "ansicolor",
+                        "@skoville/webpack-hmr-core",
+                        "@skoville/webpack-hmr-node-abstract-server",
+                        "express",
+                        "mime",
+                        "socket.io"
                     ],
                     "devDependencies": [
-                        "@types/node"
+                        "@types/node",
+                        "@types/mime",
+                        "@types/express",
+                        "@types/socket.io"
                     ]
                 },
                 "tsconfig.json": {
@@ -119,7 +135,7 @@
             "configs": {
                 "package.json": {
                     "files": ["distribution"],
-                    "main": "./distribution/socket-io-client-remote-accessor-module.js",
+                    "main": "./distribution/package.js",
                     "dependencies": [
                         "@skoville/webpack-hmr-core",
                         "socket.io-client"
@@ -171,7 +187,7 @@
             "configs": {
                 "package.json": {
                     "files":["distribution"],
-                    "main": "./distribution/module-registry.js",
+                    "main": "./distribution/package.js",
                     "dependencies": [
                         "@skoville/webpack-hmr-node-client-application-restarter-module-data-transfer-object",
                         "@skoville/webpack-hmr-core"
