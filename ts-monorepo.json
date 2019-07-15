@@ -87,7 +87,8 @@
                         "@isomorphic-typescript/modularly-architected-library-foundation",
                         "memory-fs",
                         "uuid",
-                        "webpack"
+                        "webpack",
+                        "ansicolor"
                     ],
                     "devDependencies": [
                         "@types/node",
@@ -162,7 +163,8 @@
                         "yargs"
                     ],
                     "devDependencies": [
-                        "@types/yargs"
+                        "@types/yargs",
+                        "@types/node"
                     ]
                 },
                 "tsconfig.json":{

@@ -1,5 +1,5 @@
 import { CompilerManager } from './compiler-manager';
-import webpack = require('webpack');
+import * as webpack from 'webpack';
 import { AbstractCompilerManagerModule } from '@skoville/webpack-hmr-core/server/module/abstract-compiler-manager-module';
 import { ReadFileRequest, ServerCommand } from '@skoville/webpack-hmr-core/server/module/command-types';
 import { AbstractFileStream } from '@skoville/webpack-hmr-core/server/abstract-file-stream';
