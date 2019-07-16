@@ -6,7 +6,7 @@ import * as path from 'path';
 import * as url from 'url';
 
 import { BundleRunnerToClientMessage, BundleRunnerToClientMessageType, ClientToBundleRunnerMessage, ClientToBundleRunnerMessageType } 
-    from '@skoville/webpack-hmr-node-client-application-restarter-module-data-transfer-object';
+    from '@skoville/webpack-hmr-node-client-cli-data-transfer-object';
 import { TOOL_NAME } from '@skoville/webpack-hmr-core/shared/tool-name';
 import { log } from './logger';
 import { fsAsync } from '@isomorphic-typescript/fs-async-nodejs';
