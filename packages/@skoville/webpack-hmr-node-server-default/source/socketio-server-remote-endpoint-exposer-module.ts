@@ -5,7 +5,7 @@ import * as socketio from 'socket.io';
 import * as ansicolor from 'ansicolor';
 import { CompilerNotification } from '@skoville/webpack-hmr-core/shared/server-client-notification-model';
 import { TOOL_NAME } from '@skoville/webpack-hmr-core/shared/tool-name';
-import { AbstractServerRemoteEndpointExposerModule } from '@skoville/webpack-hmr-core/server/module/abstract-server-remote-endpoint-exposer-module';
+import { AbstractServerRemoteEndpointExposerModule } from '@skoville/webpack-hmr-node-server-abstract';
 import { CompilerNotificationPayload, ServerCommand } from '@skoville/webpack-hmr-core/server/module/command-types';
 import { NodeFileStream } from '@skoville/webpack-hmr-node-server-abstract/source/file-stream';
 import { COMPILER_ID } from '@skoville/webpack-hmr-core/client/injected-client-constants';

@@ -166,13 +166,13 @@
                         "memory-fs",
                         "uuid",
                         "webpack",
-                        "ansicolor"
+                        "ansicolor",
+                        "@types/webpack"
                     ],
                     "devDependencies": [
                         "@types/node",
                         "@types/uuid",
                         "@types/webpack-env",
-                        "@types/webpack",
                         "@types/memory-fs"
                     ]
                 },
@@ -187,13 +187,16 @@
             "publishDistributionFolder": false,
             "configs": {
                 "package.json": {
+                    "files":["distribution"],
+                    "main":"./distribution/package.js",
                     "dependencies":[
                         "ansicolor",
                         "@skoville/webpack-hmr-core",
                         "@skoville/webpack-hmr-node-server-abstract",
                         "express",
                         "mime",
-                        "socket.io"
+                        "socket.io",
+                        "@types/webpack"
                     ],
                     "devDependencies": [
                         "@types/node",
@@ -231,6 +234,8 @@
             "publishDistributionFolder": false,
             "configs": {
                 "package.json": {
+                    "files":["distribution"],
+                    "main":"./distribution/entry.js",
                     "dependencies":[
                         "@skoville/webpack-hmr-web-client-abstract",
                         "@skoville/webpack-hmr-universal-client-socketio-remote-accessor-module"
@@ -254,6 +259,13 @@
                     ]
                 },
                 "tsconfig.json": {}
+            }
+        },
+        "@skoville/webpack-hmr-universal-shared-data-transfer-interface": {
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json":{},
+                "tsconfig.json":{}
             }
         }
     },
