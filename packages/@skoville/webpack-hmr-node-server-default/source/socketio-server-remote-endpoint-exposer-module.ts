@@ -24,7 +24,7 @@ export class DefaultNodeServerBoundaryModule extends AbstractServerRemoteEndpoin
         this.ioServer = socketio(this.httpServer);
         this.setUpWebSocketHandling(this.ioServer);
         this.httpServer.listen(port, () => {
-            console.log("working");
+            console.log("the http server has started");
             this.log.info(`Listening on port ${port}.`);
         });
     }

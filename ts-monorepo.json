@@ -275,10 +275,12 @@
                     "dependencies":[
                         "@skoville/webpack-hmr-node-server-default",
                         "chokidar",
-                        "ansicolor"
+                        "ansicolor",
+                        "webpack"
                     ],
                     "devDependencies": [
-                        "@types/node"
+                        "@types/node",
+                        "@types/webpack"
                     ],
                     "scripts": {
                         "start": "node ./distribution/main.js"

@@ -9,8 +9,8 @@ try {
     require('./isomorphic-bundle-test');
 } catch(e) {
     console.log(e);
+    console.log("\n" + ansicolor.yellow("Waiting for code change..."));
 }
-console.log("\n" + ansicolor.yellow("Waiting for code change..."));
 
 chokidar.watch(__filename)
     .on("change", () => {

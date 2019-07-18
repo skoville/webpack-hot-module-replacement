@@ -1,4 +1,5 @@
 import { DefaultNodeServer, SkovilleWebpackPlugin } from '@skoville/webpack-hmr-node-server-default';
+import * as webpack from 'webpack';
 
 const skovillePlugin = new SkovilleWebpackPlugin({
     client: {
@@ -9,4 +10,17 @@ const skovillePlugin = new SkovilleWebpackPlugin({
     server: new DefaultNodeServer(true, 8080)
 });
 
-skovillePlugin;
+const configs: webpack.Configuration[] = [
+    {
+        plugins: [
+            skovillePlugin,
+            new webpack.HotModuleReplacementPlugin()
+        ]
+    },
+];
+
+webpack(configs).watch({}, async (error: Error, stats: webpack.Stats) => {
+    error;
+    stats;
+    console.log("run output");
+});
