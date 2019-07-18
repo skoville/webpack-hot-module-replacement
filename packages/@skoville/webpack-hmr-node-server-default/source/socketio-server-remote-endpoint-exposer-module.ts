@@ -7,7 +7,7 @@ import { CompilerNotification } from '@skoville/webpack-hmr-core/shared/server-c
 import { TOOL_NAME } from '@skoville/webpack-hmr-core/shared/tool-name';
 import { AbstractServerRemoteEndpointExposerModule } from '@skoville/webpack-hmr-node-server-abstract';
 import { CompilerNotificationPayload, ServerCommand } from '@skoville/webpack-hmr-core/server/module/command-types';
-import { NodeFileStream } from '@skoville/webpack-hmr-node-server-abstract/source/file-stream';
+import { NodeFileStream } from '@skoville/webpack-hmr-node-server-abstract';
 import { COMPILER_ID } from '@skoville/webpack-hmr-core/client/injected-client-constants';
 
 export class DefaultNodeServerBoundaryModule extends AbstractServerRemoteEndpointExposerModule {

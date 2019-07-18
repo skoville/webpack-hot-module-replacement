@@ -267,6 +267,29 @@
                 "package.json":{},
                 "tsconfig.json":{}
             }
+        },
+        "@skoville-integration-testing/default-test": {
+            "publishDistributionFolder": false,
+            "configs":{
+                "package.json":{
+                    "dependencies":[
+                        "@skoville/webpack-hmr-node-server-default",
+                        "chokidar",
+                        "ansicolor"
+                    ],
+                    "devDependencies": [
+                        "@types/node"
+                    ],
+                    "scripts": {
+                        "start": "node ./distribution/main.js"
+                    }
+                },
+                "tsconfig.json":{
+                    "compilerOptions": {
+                        "types":["node"]
+                    }
+                }
+            }
         }
     },
     "version": "0.0.0"
