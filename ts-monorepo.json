@@ -1,20 +1,61 @@
 {
     "packageRoot": "packages",
+    "ttypescript": true,
     "baseConfigs": {
         "tsconfig.json": {
             "compilerOptions": {
-                "module": "commonjs",
+                "module": "commonjs", /* need to use this if targetting es6. Not needed when targetting es5 */
                 "target": "es6",
+
+                /* Type Definitions */
                 "lib": ["esnext"],
                 "types": ["ts-nameof"],
+
+                /* Code Quality */
                 "forceConsistentCasingInFileNames": true,
                 "noImplicitReturns": true,
                 "noUnusedLocals": true,
                 "noUnusedParameters": true,
-                "strict": true,
+                "strict": true, // noImplicitAny noImplicitThis alwaysStrict strictBindCallApply strictFunctionTypes strictPropertyInitialization strictNullChecks
                 "stripInternal": true,
+
+                /* Compiler input output locations */
                 "rootDir": "./source",
-                "outDir": "./distribution"
+                "outDir": "./distribution",
+
+                /* https://github.com/cevek/ttypescript */
+                "plugins": [
+                    //*/
+                    {
+                        "transform": "ts-nameof",
+                        "type": "raw"
+                    }
+                    //*/
+                ]
+                /** Look into the following:
+                    allowSyntheticDefaultImports
+                    "diagnostics"
+                    downlevelIteration
+                    emitDecoratorMetadata
+                    esModuleInterop
+                    experimentalDecorators
+                    extendedDiagnostics <-- doesn't seem to be in the tsconfig.json schema
+                    importHelpers
+                    isolatedModules
+                    listEmittedFiles
+                    listFiles
+                    module: ESNext
+                    moduleResolution
+                    noEmitOnError
+                    noErrorTruncation
+                    pretty
+                    removeComments
+                    resolveJsonModule
+                    sourceMap
+                    sourceRoot
+                    stripInternal // Could be a good way to hide internal details.
+                    traceResolution
+                */
             }
         },
         "package.json": {
@@ -165,7 +206,6 @@
                         "@isomorphic-typescript/modularly-architected-library-foundation",
                         "memory-fs",
                         "uuid",
-                        "webpack",
                         "ansicolor",
                         "@types/webpack"
                     ],
@@ -174,6 +214,9 @@
                         "@types/uuid",
                         "@types/webpack-env",
                         "@types/memory-fs"
+                    ],
+                    "peerDependencies": [
+                        "webpack"
                     ]
                 },
                 "tsconfig.json": {
@@ -203,6 +246,9 @@
                         "@types/mime",
                         "@types/express",
                         "@types/socket.io"
+                    ],
+                    "peerDependencies":[
+                        "webpack"
                     ]
                 },
                 "tsconfig.json": {
@@ -280,10 +326,11 @@
                     ],
                     "devDependencies": [
                         "@types/node",
-                        "@types/webpack"
+                        "@types/webpack",
+                        "source-map-support"
                     ],
                     "scripts": {
-                        "start": "node ./distribution/main.js"
+                        "start": "node --preserve-symlinks -r source-map-support/register ./distribution/main.js"
                     }
                 },
                 "tsconfig.json":{

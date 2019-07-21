@@ -13,8 +13,8 @@ const skovillePlugin = new SkovilleWebpackPlugin({
 const configs: webpack.Configuration[] = [
     {
         plugins: [
-            skovillePlugin,
-            new webpack.HotModuleReplacementPlugin()
+            new webpack.HotModuleReplacementPlugin(),
+            skovillePlugin
         ]
     },
 ];

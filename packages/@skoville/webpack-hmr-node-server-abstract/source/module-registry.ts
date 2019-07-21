@@ -26,9 +26,11 @@ export class NodeServerModuleRegistry extends AbstractServerModuleRegistry {
     }
 
     public static readonly Plugin = class Plugin implements webpack.Plugin {
+
         public constructor(readonly options: PluginOptions) {}
 
         public apply(compiler: webpack.Compiler) {
+
             const options = this.options;
             if (options === undefined) {
                 throw new Error("Impossible state: options undefined");
@@ -43,6 +45,9 @@ export class NodeServerModuleRegistry extends AbstractServerModuleRegistry {
                     throw new Error(`The ${nameof.full(client.enableApplicationRestarting)} option was set to true, but the webpack config does not contain an instance of ${nameof.full(webpack.HotModuleReplacementPlugin)}`);
                 }
             }
+
+            var hella:any;
+            hella.die;
 
             new webpack.DefinePlugin({
                 [nameof(CLIENT_CONFIGURATION_OPTIONS)]: JSON.stringify(options.client),
