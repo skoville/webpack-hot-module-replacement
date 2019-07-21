@@ -1,6 +1,7 @@
 {
     "packageRoot": "packages",
     "ttypescript": true,
+    "cleanBeforeCompile": false,
     "baseConfigs": {
         "tsconfig.json": {
             "compilerOptions": {
