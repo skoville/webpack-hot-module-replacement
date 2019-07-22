@@ -46,9 +46,6 @@ export class NodeServerModuleRegistry extends AbstractServerModuleRegistry {
                 }
             }
 
-            var hella:any;
-            hella.die;
-
             new webpack.DefinePlugin({
                 [nameof(CLIENT_CONFIGURATION_OPTIONS)]: JSON.stringify(options.client),
                 [nameof(COMPILER_ID)]: `'${compilerId}'`

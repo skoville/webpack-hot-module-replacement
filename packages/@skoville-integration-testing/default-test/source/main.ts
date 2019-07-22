@@ -4,8 +4,6 @@ import * as ansicolor from 'ansicolor';
 
 console.log();
 console.log("------------------------------");
-console.log(process.execArgv);
-console.log(process.argv);
 console.log("PID = " + process.pid);
 
 try {

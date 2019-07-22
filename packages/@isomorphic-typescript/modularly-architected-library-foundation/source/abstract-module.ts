@@ -45,14 +45,22 @@ export abstract class AbstractModule<T extends CommandTypes<T>, HandledCommands 
 
             // We wouldn't need to use this any cast if there was a clean, type-safe way to map objects similarly to how we can map an array of one type to an array of another type.
             this.commands = {} as any;
-            for(const commandIdentifier in modulesContainingExecutors) {
+
+            // It would be great if TypeScript would be able to support the following code so I don't need to explicitly cast it to (keyof T)[]
+            const commandIdentifiers = [
+                ...Object.getOwnPropertySymbols(modulesContainingExecutors),
+                ...Object.getOwnPropertyNames(modulesContainingExecutors)
+            ] as (keyof T)[];
+
+            commandIdentifiers.map(commandIdentifier => {
                 const moduleContainingExecutors = modulesContainingExecutors[commandIdentifier];
                 this.commands[commandIdentifier] = new Command(moduleContainingExecutors.executors[commandIdentifier]);
                 // This is necessary because sometimes the same module handles the execution of more than one command,
                 // so by adding to a set we end up with an iterable of unique modules (no repeats). We don't want repeats because
                 // we don't want to double resolve the set of command executors within a module.
-                moduleSet.add(moduleContainingExecutors)
-            }
+                moduleSet.add(moduleContainingExecutors);
+            });
+
             // Now that the commands has been populated, we can pass this command mapping to the various modules for consumption.
             Array.from(moduleSet.values())
                 .forEach(uniqueModule => {
