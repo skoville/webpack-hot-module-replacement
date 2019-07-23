@@ -55,7 +55,10 @@
                     stripInternal // Could be a good way to hide internal details.
                     traceResolution
                 */
-            }
+            },
+            "include": [
+                "source/**/*"
+            ]
         },
         "package.json": {
             "author": "Alexander Leung",
@@ -325,12 +328,13 @@
                         "@skoville/webpack-hmr-node-server-default",
                         "chokidar",
                         "ansicolor",
-                        "webpack"
+                        "webpack",
+                        "@isomorphic-typescript/fs-async-nodejs",
+                        "source-map-support"
                     ],
                     "devDependencies": [
                         "@types/node",
-                        "@types/webpack",
-                        "source-map-support"
+                        "@types/webpack"
                     ],
                     "scripts": {
                         "start": "node --preserve-symlinks -r source-map-support/register ./distribution/main.js"
