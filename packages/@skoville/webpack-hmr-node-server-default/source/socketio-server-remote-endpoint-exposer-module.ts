@@ -5,10 +5,9 @@ import * as socketio from 'socket.io';
 import * as ansicolor from 'ansicolor';
 import { CompilerNotification } from '@skoville/webpack-hmr-core/shared/server-client-notification-model';
 import { TOOL_NAME } from '@skoville/webpack-hmr-core/shared/tool-name';
-import { AbstractServerRemoteEndpointExposerModule } from '@skoville/webpack-hmr-node-server-abstract';
-import { CompilerNotificationPayload, ServerCommand } from '@skoville/webpack-hmr-core/server/module/command-types';
+import { AbstractServerRemoteEndpointExposerModule, ServerCommand, CompilerNotificationPayload } from '@skoville/webpack-hmr-node-server-abstract';
 import { NodeFileStream } from '@skoville/webpack-hmr-node-server-abstract';
-import { COMPILER_ID } from '@skoville/webpack-hmr-core/client/injected-client-constants';
+import '@skoville/webpack-hmr-core/client/injected-client-constants/names';
 
 export class DefaultNodeServerBoundaryModule extends AbstractServerRemoteEndpointExposerModule {
     private readonly httpServer: http.Server;
@@ -59,6 +58,7 @@ export class DefaultNodeServerBoundaryModule extends AbstractServerRemoteEndpoin
                 */
 
                 // For now we have to do it this way.
+                this.log.info("path is " + req.path);
                 const fileStream = await this.excuteCommand(ServerCommand.ReadFile, {path});
                 await NodeFileStream.pipe(fileStream, res);
                 this.log.info(ansicolor.magenta("File successfully piped to requestor"));

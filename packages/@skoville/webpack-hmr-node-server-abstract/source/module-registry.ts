@@ -5,7 +5,7 @@ import { AbstractServerModuleRegistry } from '@skoville/webpack-hmr-core/server/
 import { AbstractServerRemoteEndpointExposerModule } from '@skoville/webpack-hmr-core/server/module/abstract-server-remote-endpoint-exposer-module';
 import { NodeCompilerManagerRegistryModule } from './compiler-manager-module';
 import { NodeServerLoggerModule } from './logger-module';
-import { CLIENT_CONFIGURATION_OPTIONS, COMPILER_ID } from '@skoville/webpack-hmr-core/client/injected-client-constants';
+import '@skoville/webpack-hmr-core/client/injected-client-constants/names';
 
 export interface PluginOptions {
     client: ClientConfigurationOptions;
@@ -45,6 +45,8 @@ export class NodeServerModuleRegistry extends AbstractServerModuleRegistry {
                     throw new Error(`The ${nameof.full(client.enableApplicationRestarting)} option was set to true, but the webpack config does not contain an instance of ${nameof.full(webpack.HotModuleReplacementPlugin)}`);
                 }
             }
+
+            console.log("nameof CLIENT_CONFIGURATION_OPTIONS = " + nameof(CLIENT_CONFIGURATION_OPTIONS));
 
             new webpack.DefinePlugin({
                 [nameof(CLIENT_CONFIGURATION_OPTIONS)]: JSON.stringify(options.client),

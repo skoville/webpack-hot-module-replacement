@@ -2,7 +2,7 @@ import { AbstractClientApplicationRestarterModule } from "@skoville/webpack-hmr-
 import { CompilerNotification } from "@skoville/webpack-hmr-core/shared/server-client-notification-model";
 import { ClientCommand } from "@skoville/webpack-hmr-core/client/module/command-types";
 import { BundleRunnerToClientMessageType, BundleRunnerToClientMessage, 
-    ClientToBundleRunnerMessage, ClientToBundleRunnerMessageType  } from "../../webpack-hmr-node-client-cli-data-transfer-object/source/package";
+    ClientToBundleRunnerMessage, ClientToBundleRunnerMessageType  } from "@skoville/webpack-hmr-node-client-cli-data-transfer-object";
 
 
 // TODO: some of the logic in here seems unrelated to restarting the application.

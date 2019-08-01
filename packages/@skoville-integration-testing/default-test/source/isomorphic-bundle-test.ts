@@ -3,12 +3,11 @@ import { DefaultNodeServer, SkovilleWebpackPlugin } from '@skoville/webpack-hmr-
 import * as webpack from 'webpack';
 import { fsAsync } from '@isomorphic-typescript/fs-async-nodejs';
 
-const projectPackageJSON = require('../package.json');
-projectPackageJSON;
+//const projectPackageJSON = require('../package.json');
 
 const skovillePlugin = new SkovilleWebpackPlugin({
     client: {
-        url: "https://localhost:8080",
+        url: "http://localhost:8080",
         enableApplicationRestarting: true,
         enableHotModuleReloading: true
     },
@@ -19,10 +18,15 @@ const PROJECT_PATH = path.resolve(__dirname, "../");
 const BUNDLE_SOURCE_PATH = path.resolve(PROJECT_PATH, "source-bundle");
 const BUNDLE_OUT_PATH = path.resolve(__dirname, "./bundles"); // This is relative to the dist folder after compilation.
 
+//const dependencies = new Set([...Object.keys(projectPackageJSON.dependencies), ...Object.keys(projectPackageJSON.devDependencies)]);
+
 const configs: webpack.Configuration[] = [
     {
         mode: 'development',
-        entry: path.resolve(BUNDLE_SOURCE_PATH, "./node/server.ts"),
+        entry: [
+            path.resolve(BUNDLE_SOURCE_PATH, "./node/server.ts"),
+            "@skoville/webpack-hmr-node-client-default/entry.js"
+        ],
         plugins: [
             new webpack.HotModuleReplacementPlugin(),
             skovillePlugin
@@ -39,14 +43,15 @@ const configs: webpack.Configuration[] = [
                     use: {
                         loader: 'ts-loader',
                         options: {
-                            //configFile: path.resolve(PROJECT_PATH, "./tsconfig.json")
+                            configFile: path.resolve(BUNDLE_SOURCE_PATH, "./tsconfig.json"),
+                            onlyCompileBundledFiles: true
                         }
                     }
                 }
             ]
         },
         resolve: {
-            extensions: ['.ts']
+            extensions: ['.ts', '.js']
         }
     },
     // TODO: add entry for web bundle.

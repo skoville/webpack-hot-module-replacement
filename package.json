@@ -1,6 +1,6 @@
 {
   "license": "MIT",
   "devDependencies": {
-    "@isomorphic-typescript/ts-monorepo": "^0.3.1"
+    "@isomorphic-typescript/ts-monorepo": "^0.3.2"
   }
 }

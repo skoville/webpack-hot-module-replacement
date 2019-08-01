@@ -181,11 +181,9 @@
             }
         },
         "@skoville/webpack-hmr-node-client-default": {
-            "publishDistributionFolder": false,
+            "publishDistributionFolder": true,
             "configs": {
                 "package.json": {
-                    "files":["distribution"],
-                    "main":"./distribution/entry.js",
                     "dependencies":[
                         "@skoville/webpack-hmr-node-client-abstract",
                         "@skoville/webpack-hmr-universal-client-socketio-remote-accessor-module"
@@ -326,23 +324,29 @@
                 "package.json":{
                     "dependencies":[
                         "@skoville/webpack-hmr-node-server-default",
+                        "@skoville/webpack-hmr-node-client-default",
                         "chokidar",
                         "ansicolor",
                         "webpack",
                         "@isomorphic-typescript/fs-async-nodejs",
-                        "source-map-support"
+                        "source-map-support",
+                        "ts-loader"
                     ],
                     "devDependencies": [
                         "@types/node",
-                        "@types/webpack"
+                        "@types/webpack",
+                        "@types/webpack-env"
                     ],
                     "scripts": {
                         "start": "node --preserve-symlinks -r source-map-support/register ./distribution/main.js"
+                    },
+                    "resolutions": {
+                        "@types/node": "^12.6.8"
                     }
                 },
                 "tsconfig.json":{
                     "compilerOptions": {
-                        "types":["node"]
+                        "types":["node", "webpack-env"]
                     }
                 }
             }

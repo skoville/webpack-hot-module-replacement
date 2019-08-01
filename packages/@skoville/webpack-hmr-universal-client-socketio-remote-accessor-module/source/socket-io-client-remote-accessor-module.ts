@@ -2,13 +2,16 @@ import { AbstractClientRemoteAccessorModule } from '@skoville/webpack-hmr-core/c
 import { ClientCommand } from '@skoville/webpack-hmr-core/client/module/command-types';
 import { TOOL_NAME } from '@skoville/webpack-hmr-core/shared/tool-name';
 import * as socketio from 'socket.io-client';
+import '@skoville/webpack-hmr-core/client/injected-client-constants/names';
 
 export class SocketIOClientRemoteAccessorModule extends AbstractClientRemoteAccessorModule {
     private socket: typeof socketio.Socket;
     
     public constructor() {
         super();
-        this.socket = socketio(`${this.url}?${/*nameof(COMPILER_ID)*/"COMPILER_ID"}=${this.compilerId}`);
+        this.log.trace("hello world -> " + nameof(COMPILER_ID));
+        this.log.trace(`url = ${this.url}`);
+        this.socket = socketio(`${this.url}?${nameof(COMPILER_ID)}=${this.compilerId}`);
         this.socket.on(TOOL_NAME, (messageString: string) => {
             this.log.info("received message");
             this.log.info(messageString);

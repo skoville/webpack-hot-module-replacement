@@ -18,20 +18,28 @@ export abstract class AbstractModule<T extends CommandTypes<T>, HandledCommands 
 
     protected constructor(private readonly executors: CommandExecutorImplementations<T, HandledCommands>) {}
 
+    private async loadCommand<CommandIdentifier extends IssuableCommands[number]>(commandId: CommandIdentifier) {
+        const loadedCommands = await this.commandsPromise.value();
+        if (!loadedCommands[commandId]) {
+            throw new Error(`Issue loading command: ${commandId}\nThe commands object is: ${loadedCommands}`);
+        }
+        return loadedCommands[commandId];
+    }
+
     protected async excuteCommand<CommandIdentifier extends IssuableCommands[number]>(commandId: CommandIdentifier,
         payload: CommandPayload<T, CommandIdentifier>) {
         // Is the below statement type-safe? Seems to be, but unsure because I can put any value into payload without trouble.
-        return (await this.commandsPromise.value())[commandId].execute(payload);
+        return (await this.loadCommand(commandId)).execute(payload);
     }
 
     protected async subscribePreExecutionMiddleware<CommandIdentifier extends keyof T>(commandIdentifier: CommandIdentifier,
         subsriber: CommandPreExecutionSubscriber<CommandPayload<T, CommandIdentifier>>) {
-        return (await this.commandsPromise.value())[commandIdentifier].subscribePreExecutionMiddleware(subsriber);
+        return (await this.loadCommand(commandIdentifier)).subscribePreExecutionMiddleware(subsriber);
     }
 
     protected async subscribePostExecutionMiddleware<CommandIdentifier extends keyof T>(commandIdentifier: CommandIdentifier,
         subscriber: CommandPostExecutionSubscriber<CommandPayload<T, CommandIdentifier>, CommandResult<T, CommandIdentifier>>) {
-        return (await this.commandsPromise.value())[commandIdentifier].subscribePostExecutionMiddleware(subscriber);
+        return (await this.loadCommand(commandIdentifier)).subscribePostExecutionMiddleware(subscriber);
     }
 
     public static readonly Registry = class Registry<T extends CommandTypes<T>> {

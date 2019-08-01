@@ -1,7 +1,7 @@
 import { CompilerNotification} from '../../shared/server-client-notification-model';
 import { Log } from '../../shared/log';
 import { TOOL_NAME } from '../../shared/tool-name';
-import { CLIENT_CONFIGURATION_OPTIONS } from '../injected-client-constants';
+import { clientConfigurationOptions } from '../injected-client-constants/values';
 
 import { ClientCommand } from './command-types';
 import { AbstractClientModule } from './abstract-module';
@@ -17,7 +17,7 @@ export class WebpackRuntimeModule extends AbstractClientModule<[typeof ClientCom
         super({
             [ClientCommand.HandleMessage]: message => this.handleMessage(message)
         }, "[SWP] ");
-        const { enableHotModuleReloading, enableApplicationRestarting } = CLIENT_CONFIGURATION_OPTIONS;
+        const { enableHotModuleReloading, enableApplicationRestarting } = clientConfigurationOptions;
         this.hotEnabled = enableHotModuleReloading;
         this.restartingEnabled = enableApplicationRestarting;
         if (this.hotEnabled !== (module.hot !== undefined)) { // module.hot being defined should also mean that this.hotEnabled is true. Otherwise there was a logical error.
