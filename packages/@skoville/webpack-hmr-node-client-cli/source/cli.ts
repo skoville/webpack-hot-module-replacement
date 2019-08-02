@@ -3,6 +3,8 @@ import * as yargs from 'yargs';
 import { NodeBundleRunner, DownloadingNodeBundleRunner } from './bundle-runner';
 import { log } from './logger';
 
+console.log(process.pid);
+
 export class CLI {
     public constructor() {
         this.buildYargs()
@@ -26,13 +28,13 @@ export class CLI {
                 describe: 'Run bundle stored at specified file path',
                 string: true,
                 conflicts: 'url',
-                coerce: coersionHandler
+                coerce: coersionHandler("url")
             })
             .option("url", {
                 describe: 'Run bundle hosted at specified url',
                 string: true,
                 conflicts: 'file',
-                coerce: coersionHandler
+                coerce: coersionHandler("file")
             })
             .example('$0 -f ./dist/server.js', '')
             .example('$0 --url=http://localhost:8080/server.js', '')

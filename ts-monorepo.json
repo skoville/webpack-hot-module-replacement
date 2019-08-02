@@ -335,7 +335,8 @@
                     "devDependencies": [
                         "@types/node",
                         "@types/webpack",
-                        "@types/webpack-env"
+                        "@types/webpack-env",
+                        "@skoville/webpack-hmr-node-client-cli"
                     ],
                     "scripts": {
                         "start": "node --preserve-symlinks -r source-map-support/register ./distribution/main.js"
