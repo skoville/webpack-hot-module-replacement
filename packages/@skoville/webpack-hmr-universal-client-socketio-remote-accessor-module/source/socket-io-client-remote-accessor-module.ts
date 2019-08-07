@@ -9,8 +9,7 @@ export class SocketIOClientRemoteAccessorModule extends AbstractClientRemoteAcce
     
     public constructor() {
         super();
-        this.log.trace("hello world -> " + nameof(COMPILER_ID));
-        this.log.trace(`url = ${this.url}`);
+        this.log.trace(`compilerId = ${this.compilerId}`);
         this.socket = socketio(`${this.url}?${nameof(COMPILER_ID)}=${this.compilerId}`);
         this.socket.on(TOOL_NAME, (messageString: string) => {
             this.log.info("received message");

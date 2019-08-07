@@ -16,6 +16,7 @@ export abstract class AbstractServerModuleRegistry extends AbstractModule.Regist
         super({
             [ServerCommand.CompilerNotification]: serverBoundary,
             [ServerCommand.GetLastCompilerUpdateNotification]: compilerManager,
+            [ServerCommand.CheckIfCompilerIsRegistered]: compilerManager,
             [ServerCommand.ReadFile]: compilerManager,
             [SharedCommand.Log]: logger
         });

@@ -20,10 +20,12 @@ export namespace ServerCommand {
     export const CompilerNotification = Symbol("compiler notification " + generateUUID());
     export const GetLastCompilerUpdateNotification = Symbol("get last compiler update notification " + generateUUID());
     export const ReadFile =  Symbol("read file " + generateUUID());
+    export const CheckIfCompilerIsRegistered = Symbol("check if compiler is registered " + generateUUID());
 
     export interface Types extends SharedCommand.Types {
         [CompilerNotification]: [CompilerNotificationPayload, void];
         [GetLastCompilerUpdateNotification]: [string, undefined | CompilerNotification.Body];
         [ReadFile]: [ReadFileRequest, AbstractFileStream];
+        [CheckIfCompilerIsRegistered]: [string, boolean];
     }
 }

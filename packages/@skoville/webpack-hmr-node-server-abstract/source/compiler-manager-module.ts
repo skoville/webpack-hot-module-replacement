@@ -58,4 +58,8 @@ export class NodeCompilerManagerRegistryModule extends AbstractCompilerManagerMo
         }
         return compilerManager.getLatestUpdateNotification();
     }
+
+    protected async checkIfCompilerIsRegistered(compilerId: string): Promise<boolean> {
+        return this.registry.has(compilerId);
+    }
 }

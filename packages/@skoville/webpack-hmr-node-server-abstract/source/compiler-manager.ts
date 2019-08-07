@@ -122,7 +122,7 @@ export class CompilerManager {
             this.log.info(message);
 
             // Consider doing the following after the nextTick, which is done in Webpack-Dev-Middleware
-            const toStringOptions = this.compiler.options.stats || "verbose";
+            const toStringOptions = this.compiler.options.stats || "minimal"; // "verbose"; // TODO: Use verbose but parse through the stats in order to get list of all dependencies then bring to dashboard.
             if (stats.hasErrors()) this.log.error(stats.toString(toStringOptions));
             else if (stats.hasWarnings()) this.log.warn(stats.toString(toStringOptions));
             else this.log.info(stats.toString(toStringOptions));

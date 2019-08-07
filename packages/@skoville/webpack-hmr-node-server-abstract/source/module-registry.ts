@@ -46,8 +46,6 @@ export class NodeServerModuleRegistry extends AbstractServerModuleRegistry {
                 }
             }
 
-            console.log("nameof CLIENT_CONFIGURATION_OPTIONS = " + nameof(CLIENT_CONFIGURATION_OPTIONS));
-
             new webpack.DefinePlugin({
                 [nameof(CLIENT_CONFIGURATION_OPTIONS)]: JSON.stringify(options.client),
                 [nameof(COMPILER_ID)]: `'${compilerId}'`

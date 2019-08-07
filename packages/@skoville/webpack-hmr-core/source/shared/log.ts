@@ -31,10 +31,10 @@ export namespace Log {
             this.level = level;
         }
 
-        private handle(level: Level, message: string) {
+        private async handle(level: Level, message: string) {
             if (level >= this.level) {
                 const contents = this.prefix + this.prefixLinesOfMultilineMessage(message);
-                this.requestHandler({level, contents});
+                await this.requestHandler({level, contents});
             }
         }
 
@@ -59,23 +59,23 @@ export namespace Log {
         }
 
         // The logging methods.
-        public trace(message: string) {
-            this.handle(Level.TRACE, ansicolor.cyan(message));
+        public async trace(message: string) {
+            await this.handle(Level.TRACE, ansicolor.cyan(message));
         }
-        public debug(message: string) {
-            this.handle(Level.DEBUG, ansicolor.magenta(message));
+        public async debug(message: string) {
+            await this.handle(Level.DEBUG, ansicolor.magenta(message));
         }
-        public info(message: string) {
-            this.handle(Level.INFO, message);
+        public async info(message: string) {
+            await this.handle(Level.INFO, message);
         }
-        public warn(message: string) {
-            this.handle(Level.WARN, ansicolor.yellow(message));
+        public async warn(message: string) {
+            await this.handle(Level.WARN, ansicolor.yellow(message));
         }
-        public error(message: string) {
-            this.handle(Level.ERROR, ansicolor.red(message));
+        public async error(message: string) {
+            await this.handle(Level.ERROR, ansicolor.red(message));
         }
-        public fatal(message: string) {
-            this.handle(Level.FATAL, ansicolor.bright.red(message));
+        public async fatal(message: string) {
+            await this.handle(Level.FATAL, ansicolor.bright.red(message));
         }
     }
 }

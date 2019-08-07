@@ -23,7 +23,6 @@ export class DefaultNodeServerBoundaryModule extends AbstractServerRemoteEndpoin
         this.ioServer = socketio(this.httpServer);
         this.setUpWebSocketHandling(this.ioServer);
         this.httpServer.listen(port, () => {
-            console.log("the http server has started");
             this.log.info(`Listening on port ${port}.`);
         });
     }
@@ -81,11 +80,17 @@ export class DefaultNodeServerBoundaryModule extends AbstractServerRemoteEndpoin
 
             associatedSocketSet.add(socket);
 
-            const lastCompilerUpdate = await this.excuteCommand(ServerCommand.GetLastCompilerUpdateNotification, compilerId);
-            if (lastCompilerUpdate !== undefined) {
-                this.sendNotification(socket, lastCompilerUpdate);
+            const isCompilerRegistered = await this.excuteCommand(ServerCommand.CheckIfCompilerIsRegistered, compilerId);
+            if (isCompilerRegistered) {
+                const lastCompilerUpdate = await this.excuteCommand(ServerCommand.GetLastCompilerUpdateNotification, compilerId);
+                if (lastCompilerUpdate !== undefined) {
+                    this.sendNotification(socket, lastCompilerUpdate);
+                }
+            } else {
+                this.sendNotification(socket, {type: CompilerNotification.Type.ForceRestart, data: { 
+                    reason: `compiler id '${compilerId}' is not registered with the current manager. Likely the skoville server was restarted.`
+                }});
             }
-
             socket.on("disconnect", () => {
                 associatedSocketSet.delete(socket);
                 socket.disconnect(true); // Do we need to do this within a disconnect handler?

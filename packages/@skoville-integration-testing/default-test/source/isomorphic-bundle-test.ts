@@ -23,6 +23,11 @@ const BUNDLE_OUT_PATH = path.resolve(__dirname, "./bundles"); // This is relativ
 const configs: webpack.Configuration[] = [
     {
         mode: 'development',
+        externals: {
+            // These two strange lines are necessary because of this: https://github.com/websockets/ws/issues/1220
+            "utf-8-validate": "utf-8-validate",
+            "bufferutil": "bufferutil"
+        },
         entry: [
             path.resolve(BUNDLE_SOURCE_PATH, "./node/server.ts"),
             "@skoville/webpack-hmr-node-client-default/entry.js"
