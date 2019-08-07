@@ -1,7 +1,7 @@
 {
     "packageRoot": "packages",
     "ttypescript": true,
-    "cleanBeforeCompile": true,
+    "cleanBeforeCompile": false,
     "baseConfigs": {
         "tsconfig.json": {
             "compilerOptions": {
@@ -339,7 +339,8 @@
                         "@skoville/webpack-hmr-node-client-cli"
                     ],
                     "scripts": {
-                        "start": "node --preserve-symlinks -r source-map-support/register ./distribution/main.js"
+                        "start": "node --preserve-symlinks -r source-map-support/register ./distribution/main.js",
+                        "test": "skoville-webpack-node-run -u http://localhost:8080/server.js"
                     },
                     "resolutions": {
                         "@types/node": "^12.6.8"
