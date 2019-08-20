@@ -101,6 +101,77 @@
                 "tsconfig.json": {}
             }
         },
+        // NEW APPROACH
+        "@skoville/webpack-hmr-shared-universal-utilities": {
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json":{
+                    "files": ["distribution"],
+                    "main": "./distribution/package.js",
+                    "dependencies": [
+                        "ansicolor"
+                    ]
+                },
+                "tsconfig.json":{
+
+                }
+            }
+        },
+        "@skoville/webpack-hmr-server-node-customizable": {
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json": {
+                    "files": ["distribution"],
+                    "main": "./distribution/package.js",
+                    "dependencies":[
+                        "memory-fs",
+                        "uuid",
+                        "ansicolor",
+                        "@types/webpack",
+                        "@skoville/webpack-hmr-shared-universal-utilities"
+                    ],
+                    "devDependencies": [
+                        "@types/node",
+                        "@types/uuid",
+                        "@types/webpack-env",
+                        "@types/memory-fs"
+                    ],
+                    "peerDependencies": [
+                        "webpack"
+                    ]
+                },
+                "tsconfig.json": {
+                    "compilerOptions": {
+                        "types":["node", "webpack-env"]
+                    }
+                }
+            }
+        },
+        "@skoville/webpack-hmr-server-node-default": {
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json": {
+                    "files": ["distribution"],
+                    "main": "./distribution/package.js",
+                    "dependencies": [
+                        "@skoville/webpack-hmr-server-node-customizable",
+                        "@types/webpack"
+                    ],
+                    "devDependencies": [
+                        "@types/node"
+                    ],
+                    "peerDependencies": [
+                        "webpack"
+                    ]
+                },
+                "tsconfig.json": {
+                    "compilerOptions": {
+                        "types": ["node"]
+                    }
+                }
+            }
+        },
+        // OLD APPROACH
         "@skoville/webpack-hmr-core": {
             "publishDistributionFolder": true,
             "configs": {
