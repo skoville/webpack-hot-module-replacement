@@ -1,29 +1,18 @@
-/**
- * webpack-hmr-client-web-customizable
- * webpack-hmr-client-web-default
- * webpack-hmr-client-web-default-logging-handler
- * wepback-hmr-server-node-customizable
- * webpack-hmr-server-node-default
- * webpack-hmr-server-node-default-event-observer
- * webpack-hmr-shared-node-default-logging-handler
- * webpack-hmr-shared-universal-utilities
- */
 import * as webpack from 'webpack';
-import { Log } from '@skoville/webpack-hmr-shared-universal-utilities';
+import { Log, UpdateRequest, UpdateResponse } from '@skoville/webpack-hmr-shared-universal-utilities';
 import { v4 as generateUUID } from 'uuid';
 import { CompilerManager } from './compiler-manager';
 import * as fs from 'fs';
 
-export type SkovilleWebpackEvent = "event-1" | "event-2";
+export type SkovilleWebpackEvent = "ClientPinged";
 export class CustomizableSkovilleWebpackServer {
-    private readonly registeredClientIdToWebpackConfigurationNameMap: Map<string, string>;
-    private readonly webpackConfigurationNameToRegisteredClientIdsMapAndCompilerManager: Map<string, {clients: Set<string>, compilerManager: CompilerManager}>;
+    private readonly webpackConfigurationNameToCompilerManagerMap: Map<string, CompilerManager>;
     private readonly log: Log.Logger;
 
     public constructor(
         webpackConfigurations: webpack.Configuration[],
-        private readonly sendMessageToClientHandler: (messageForClient: string, clientId: string) => Promise<boolean>,
-        eventObserver: (skovilleWebpackEvent: SkovilleWebpackEvent, logger: Log.Logger) => Promise<boolean>,
+        compilerUpdatedHandler: (webpackConfigurationName: string) => Promise<void>,
+        eventObserver: (skovilleWebpackEvent: SkovilleWebpackEvent, logger: Log.Logger) => Promise<void>,
         loggingHandler: (logMessage: string, logLevel: Log.Level) => Promise<boolean>) {
 
         // Initialize logger
@@ -35,11 +24,10 @@ export class CustomizableSkovilleWebpackServer {
         });
 
         // TODO: start actually using event observer.
-        eventObserver("event-1", this.log);
+        eventObserver("ClientPinged", this.log);
 
         // Initialize mappings
-        this.registeredClientIdToWebpackConfigurationNameMap = new Map();
-        this.webpackConfigurationNameToRegisteredClientIdsMapAndCompilerManager = new Map();
+        this.webpackConfigurationNameToCompilerManagerMap = new Map();
 
         // Populate mappings & validate configurations
         const seenWebpackConfigurationNames = new Set<string>();
@@ -55,66 +43,54 @@ export class CustomizableSkovilleWebpackServer {
                 return {name, webpackConfiguration};
             })
             .forEach(({name, webpackConfiguration}) => {
-                const clients = new Set<string>();
-                const compilerManager = new CompilerManager(webpack(webpackConfiguration), compilerNotification => {
-                    clients.forEach(clientId => {
-                        sendMessageToClientHandler(JSON.stringify(compilerNotification), clientId);
-                    });
-                }, true, this.log); // TODO: take in memory fs option.
-                this.webpackConfigurationNameToRegisteredClientIdsMapAndCompilerManager.set(name, {clients, compilerManager});
+                const compilerManager = new CompilerManager(
+                    webpack(webpackConfiguration),
+                    () => { compilerUpdatedHandler(name); },
+                    true /* TODO: actually obtain the memoryFS option */,
+                    this.log,
+                    name
+                );
+                this.webpackConfigurationNameToCompilerManagerMap.set(name, compilerManager);
             });
     }
 
-    public registerClient(webpackConfigurationName: string) {
-        const {clients, compilerManager} = this.getClientsAndCompilerManagerFromConfigurationName(webpackConfigurationName, `Unable to ${nameof(this.registerClient)}. `);
-        
-        var clientId: string;
-        do {
-            clientId = generateUUID();
-        } while(!clients.has(clientId));
-        clients.add(clientId);
-
-        setTimeout(() => {
-            this.sendMessageToClientHandler(JSON.stringify(compilerManager.getLatestUpdateNotification()), clientId);
-        }, 0);
-        this.registeredClientIdToWebpackConfigurationNameMap.set(clientId, webpackConfigurationName);
-        return clientId;
+    public handleClientMessage(updateRequest: UpdateRequest): UpdateResponse {
+        const compilerManager = this.webpackConfigurationNameToCompilerManagerMap.get(updateRequest.webpackConfigurationName);
+        if (compilerManager === undefined) {
+            return { webpackConfigurationNameRegistered: false };
+        }
+        const clientId = updateRequest.clientId || generateUUID();
+        const updates = compilerManager.getUpdates();
+        for (const index in updates) {
+            const update = updates[index];
+            if (update.hash === updateRequest.currentHash) {
+                return {
+                    webpackConfigurationNameRegistered: true,
+                    compatible: true,
+                    clientId,
+                    updatesToApply: updates.slice(parseInt(index) + 1)
+                };
+            }
+        }
+        return {
+            webpackConfigurationNameRegistered: true,
+            compatible: false,
+            clientId
+        };
     }
 
-    public isClientRegistered(clientId: string) {
-        return this.registeredClientIdToWebpackConfigurationNameMap.has(clientId);
-    }
-
-    public unregisterClient(clientId: string) {
-        const { clients } = this.getClientsAndCompilerManagerFromClientId(clientId, nameof(this.unregisterClient));
-        this.registeredClientIdToWebpackConfigurationNameMap.delete(clientId);
-        clients.delete(clientId);
-    }
-
-    public async processClientMessage(messageFromClient: string, clientId: string): Promise<void> {
-        // TODO: implement.
-        const thing: any = JSON.parse(messageFromClient);
-        thing;
-        clientId;
-    }
-
-    public getFileStream(filePath: string, clientId: string): Promise<fs.ReadStream|false> {
-        const { compilerManager } = this.getClientsAndCompilerManagerFromClientId(clientId, `${nameof(this.getFileStream)} at ${nameof(filePath)} '${filePath}'`);
+    public getFileStream(filePath: string, webpackConfigurationName: string): Promise<fs.ReadStream|false> {
+        const compilerManager = this.getCompilerManagerFromConfigurationName(webpackConfigurationName, `Unable to ${
+            nameof(this.getFileStream)} at ${nameof(filePath)} '${filePath}' for ${webpackConfigurationName} '${webpackConfigurationName}'`);
         return compilerManager.getReadStream(filePath);
     }
 
-    private getClientsAndCompilerManagerFromClientId(clientId: string, attemptedMethod: string) {
-        const errorPrefix = `Unable to ${attemptedMethod} for ${nameof(clientId)} '${clientId}'.\n`;
-        const webpackConfigurationName = this.registeredClientIdToWebpackConfigurationNameMap.get(clientId);
-        if (webpackConfigurationName === undefined) {
-            throw new Error(`${errorPrefix}The ${nameof(clientId)} is not registered.\n`);
-        }
-        return this.getClientsAndCompilerManagerFromConfigurationName(webpackConfigurationName, `${errorPrefix}${
-            nameof(clientId)} '${clientId}' maps to ${nameof(webpackConfigurationName)} '${webpackConfigurationName}\n`);
+    public getLogger() {
+        return this.log;
     }
 
-    private getClientsAndCompilerManagerFromConfigurationName(webpackConfigurationName: string, errorPrefix: string) {
-        const clientsAndCompilerManager = this.webpackConfigurationNameToRegisteredClientIdsMapAndCompilerManager.get(webpackConfigurationName);
+    private getCompilerManagerFromConfigurationName(webpackConfigurationName: string, errorPrefix: string) {
+        const clientsAndCompilerManager = this.webpackConfigurationNameToCompilerManagerMap.get(webpackConfigurationName);
         if (clientsAndCompilerManager === undefined) {
             throw new Error(`${errorPrefix}The ${nameof(webpackConfigurationName)} '${webpackConfigurationName}' is not registered.\n`);
         }

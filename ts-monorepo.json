@@ -102,6 +102,68 @@
             }
         },
         // NEW APPROACH
+        // TODO: should we have a package "webpack-hmr-server-node-default-event-observer" or should we have the dashboard use the public API?
+        //       Probably the latter I think. In that case it could be "webpack-hmr-dashboard-client". It can take in the socket-io accessor or any other accessor and JUST WORK
+        "@skoville/webpack-hmr-client-universal-hot-runtime": { // TODO: implement
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json": {
+                    "files": ["distribution"],
+                    "main": "./distribution/package.js"
+                },
+                "tsconfig.json": {}
+            }
+        },
+        "@skoville/webpack-hmr-client-default-socket-io-accessor": { // TODO: implement
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json": {
+                    "files": ["distribution"],
+                    "main": "./distribution/package.js"
+                },
+                "tsconfig.json": {}
+            }
+        },
+        "@skoville/webpack-hmr-client-web-customizable": { // TODO: implement
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json": {
+                    "files": ["distribution"],
+                    "main": "./distribution/package.js"
+                },
+                "tsconfig.json": {}
+            }
+        },
+        "@skoville/webpack-hmr-client-web-default": { // TODO: implement
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json": {
+                    "files": ["distribution"],
+                    "main": "./distribution/package.js"
+                },
+                "tsconfig.json": {}
+            }
+        },
+        "@skoville/webpack-hmr-client-node-customizable": { // TODO: implement
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json": {
+                    "files": ["distribution"],
+                    "main": "./distribution/package.js"
+                },
+                "tsconfig.json": {}
+            }
+        },
+        "@skoville/webpack-hmr-client-node-default": { // TODO: implement
+            "publishDistributionFolder": false,
+            "configs": {
+                "package.json": {
+                    "files": ["distribution"],
+                    "main": "./distribution/package.js"
+                },
+                "tsconfig.json": {}
+            }
+        },
         "@skoville/webpack-hmr-shared-universal-utilities": {
             "publishDistributionFolder": false,
             "configs": {
@@ -112,9 +174,7 @@
                         "ansicolor"
                     ]
                 },
-                "tsconfig.json":{
-
-                }
+                "tsconfig.json": {}
             }
         },
         "@skoville/webpack-hmr-server-node-customizable": {
@@ -155,10 +215,16 @@
                     "main": "./distribution/package.js",
                     "dependencies": [
                         "@skoville/webpack-hmr-server-node-customizable",
-                        "@types/webpack"
+                        "@types/webpack",
+                        "express",
+                        "mime",
+                        "socket.io"
                     ],
                     "devDependencies": [
-                        "@types/node"
+                        "@types/node",
+                        "@types/mime",
+                        "@types/express",
+                        "@types/socket.io"
                     ],
                     "peerDependencies": [
                         "webpack"
@@ -270,69 +336,6 @@
                 }
             }
         },
-        "@skoville/webpack-hmr-node-server-abstract": {
-            "publishDistributionFolder": false,
-            "configs": {
-                "package.json": {
-                    "files": ["distribution"],
-                    "main": "./distribution/package.js",
-                    "dependencies":[
-                        "@skoville/webpack-hmr-core",
-                        "@isomorphic-typescript/modularly-architected-library-foundation",
-                        "memory-fs",
-                        "uuid",
-                        "ansicolor",
-                        "@types/webpack"
-                    ],
-                    "devDependencies": [
-                        "@types/node",
-                        "@types/uuid",
-                        "@types/webpack-env",
-                        "@types/memory-fs"
-                    ],
-                    "peerDependencies": [
-                        "webpack"
-                    ]
-                },
-                "tsconfig.json": {
-                    "compilerOptions": {
-                        "types":["node", "webpack-env"]
-                    }
-                }
-            }
-        },
-        "@skoville/webpack-hmr-node-server-default": {
-            "publishDistributionFolder": false,
-            "configs": {
-                "package.json": {
-                    "files":["distribution"],
-                    "main":"./distribution/package.js",
-                    "dependencies":[
-                        "ansicolor",
-                        "@skoville/webpack-hmr-core",
-                        "@skoville/webpack-hmr-node-server-abstract",
-                        "express",
-                        "mime",
-                        "socket.io",
-                        "@types/webpack"
-                    ],
-                    "devDependencies": [
-                        "@types/node",
-                        "@types/mime",
-                        "@types/express",
-                        "@types/socket.io"
-                    ],
-                    "peerDependencies":[
-                        "webpack"
-                    ]
-                },
-                "tsconfig.json": {
-                    "compilerOptions": {
-                        "types":["node"]
-                    }
-                }
-            }
-        },
         "@skoville/webpack-hmr-web-client-abstract": {
             "publishDistributionFolder": false,
             "configs": {
@@ -388,7 +391,8 @@
                 "package.json":{},
                 "tsconfig.json":{}
             }
-        },
+        }
+        /*
         "@skoville-integration-testing/default-test": {
             "publishDistributionFolder": false,
             "configs":{
@@ -424,6 +428,7 @@
                 }
             }
         }
+        */
     },
     "version": "0.0.0"
 }
