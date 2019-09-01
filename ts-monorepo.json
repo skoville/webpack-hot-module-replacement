@@ -109,9 +109,19 @@
             "configs": {
                 "package.json": {
                     "files": ["distribution"],
-                    "main": "./distribution/package.js"
+                    "main": "./distribution/package.js",
+                    "devDependencies": [
+                        "@types/webpack-env"
+                    ],
+                    "dependencies": [
+                        "@skoville/webpack-hmr-shared-universal-utilities"
+                    ]
                 },
-                "tsconfig.json": {}
+                "tsconfig.json": {
+                    "compilerOptions": {
+                        "types": ["webpack-env"]
+                    }
+                }
             }
         },
         "@skoville/webpack-hmr-client-default-socket-io-accessor": { // TODO: implement

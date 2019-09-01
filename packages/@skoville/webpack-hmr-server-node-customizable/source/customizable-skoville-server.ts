@@ -68,7 +68,7 @@ export class CustomizableSkovilleWebpackServer {
                     webpackConfigurationNameRegistered: true,
                     compatible: true,
                     clientId,
-                    updatesToApply: updates.slice(parseInt(index) + 1)
+                    updatesToApply: updates.slice(parseInt(index))
                 };
             }
         }
