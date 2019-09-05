@@ -32,7 +32,7 @@ export class CustomizableSkovilleWebpackServer {
         // Populate mappings & validate configurations
         const seenWebpackConfigurationNames = new Set<string>();
         webpackConfigurations
-            .map(webpackConfiguration => {
+            .forEach(webpackConfiguration => {
                 const name = webpackConfiguration.name;
                 if (name === undefined) {
                     throw new Error(`All ${nameof(webpackConfiguration)}s supplied to ${nameof(CustomizableSkovilleWebpackServer)} must have a '${nameof(name)}' configuration argument set.`);
@@ -40,11 +40,29 @@ export class CustomizableSkovilleWebpackServer {
                 if (seenWebpackConfigurationNames.has(name)) {
                     throw new Error(`No two ${nameof(webpackConfiguration)}s may have the same '${nameof(name)}' argument.`);
                 }
-                return {name, webpackConfiguration};
-            })
-            .forEach(({name, webpackConfiguration}) => {
+                seenWebpackConfigurationNames.add(name);
+                const mandatoryPublicPathPrefix = `/${name}/`;
+                if (webpackConfiguration.output === undefined) {
+                    webpackConfiguration.output = { publicPath: mandatoryPublicPathPrefix };
+                } else {
+                    if (webpackConfiguration.output.publicPath === undefined) {
+                        webpackConfiguration.output.publicPath = mandatoryPublicPathPrefix;
+                    } else {
+                        if (!webpackConfiguration.output.publicPath.startsWith(mandatoryPublicPathPrefix)) {
+                            throw new Error(`The ${nameof.full(webpackConfiguration.output.publicPath)} for a ${nameof(webpackConfiguration)} with a ${nameof(name)} of '${name}' must have a ${nameof.full(webpackConfiguration.output.publicPath)} which begins with '${mandatoryPublicPathPrefix}'.`);
+                        }
+                    }
+                }
+            });
+        const multiCompiler = webpack(webpackConfigurations);
+        multiCompiler.compilers
+            .forEach(webpackCompiler => {
+                const name = webpackCompiler.options.name;
+                if (name === undefined) {
+                    throw Error(`Logical error internal to implementation of ${nameof(CustomizableSkovilleWebpackServer)} detected. Name of webpack compiler is undefined after initialization of ${nameof(multiCompiler)}`);
+                }
                 const compilerManager = new CompilerManager(
-                    webpack(webpackConfiguration),
+                    webpackCompiler,
                     () => { compilerUpdatedHandler(name); },
                     true /* TODO: actually obtain the memoryFS option */,
                     this.log,
@@ -52,6 +70,7 @@ export class CustomizableSkovilleWebpackServer {
                 );
                 this.webpackConfigurationNameToCompilerManagerMap.set(name, compilerManager);
             });
+        multiCompiler.watch({}, () => {}); // TODO: do we want any options input here?
     }
 
     public handleClientMessage(updateRequest: UpdateRequest): UpdateResponse {

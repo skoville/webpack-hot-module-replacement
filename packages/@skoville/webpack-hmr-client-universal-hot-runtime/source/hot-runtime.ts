@@ -168,7 +168,7 @@ export class SkovilleHotClientRuntime {
                 return;
             }
             if (this.currentHashHistoryIndex === this.hashHistory.length - 1) {
-                this.log.info("App is up to date.");
+                this.log.info(`Client is up to date. ${nameof.full(this.hotSwap)} finished.`);
                 this.hotSwappingInProgress = false;
             } else {
                 this.hotSwap();

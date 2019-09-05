@@ -1,18 +1,9 @@
 import * as path from 'path';
-import { DefaultNodeServer, SkovilleWebpackPlugin } from '@skoville/webpack-hmr-node-server-default';
+import { SkovilleWebpackPlugin, DefaultSkovilleWebpackSever } from '@skoville/webpack-hmr-server-node-default';
 import * as webpack from 'webpack';
 import { fsAsync } from '@isomorphic-typescript/fs-async-nodejs';
 
 //const projectPackageJSON = require('../package.json');
-
-const skovillePlugin = new SkovilleWebpackPlugin({
-    client: {
-        url: "http://localhost:8080",
-        enableApplicationRestarting: true,
-        enableHotModuleReloading: true
-    },
-    server: new DefaultNodeServer(true, 8080)
-});
 
 const PROJECT_PATH = path.resolve(__dirname, "../");
 const BUNDLE_SOURCE_PATH = path.resolve(PROJECT_PATH, "source-bundle");
@@ -20,7 +11,10 @@ const BUNDLE_OUT_PATH = path.resolve(__dirname, "./bundles"); // This is relativ
 
 //const dependencies = new Set([...Object.keys(projectPackageJSON.dependencies), ...Object.keys(projectPackageJSON.devDependencies)]);
 
+const skovilleServerPort = 8080;
+
 const configs: webpack.Configuration[] = [
+    /*
     {
         mode: 'development',
         externals: {
@@ -59,8 +53,48 @@ const configs: webpack.Configuration[] = [
             extensions: ['.ts', '.js']
         }
     },
+    */
     // TODO: add entry for web bundle.
+    {
+        name: 'WEB-CONFIG',
+        mode: 'development',
+        entry: [
+            path.resolve(BUNDLE_SOURCE_PATH, "./web/web.ts"),
+            "@skoville/webpack-hmr-client-web-default/entry.js"
+        ],
+        plugins: [
+            new SkovilleWebpackPlugin({
+                url: `http://localhost:${skovilleServerPort}`,
+                enableApplicationRestarting: true,
+                enableHotModuleReloading: true
+            })
+        ],
+        target: 'web',
+        output: {
+            path: BUNDLE_OUT_PATH,
+            filename: 'web.js'
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.tsx?$/,
+                    use: {
+                        loader: 'ts-loader',
+                        options: {
+                            configFile: path.resolve(BUNDLE_SOURCE_PATH, './tsconfig.json'),
+                            onlyCompileBundledFiles: true
+                        }
+                    }
+                }
+            ]
+        },
+        resolve: {
+            extensions: ['.ts', '.tsx', '.js']
+        }
+    }
 ];
+
+new DefaultSkovilleWebpackSever(configs, skovilleServerPort);
 
 fsAsync.comprehensiveDeleteAsync(BUNDLE_OUT_PATH)
     .then(() => {

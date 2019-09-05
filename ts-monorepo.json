@@ -104,7 +104,7 @@
         // NEW APPROACH
         // TODO: should we have a package "webpack-hmr-server-node-default-event-observer" or should we have the dashboard use the public API?
         //       Probably the latter I think. In that case it could be "webpack-hmr-dashboard-client". It can take in the socket-io accessor or any other accessor and JUST WORK
-        "@skoville/webpack-hmr-client-universal-hot-runtime": { // TODO: implement
+        "@skoville/webpack-hmr-client-universal-hot-runtime": {
             "publishDistributionFolder": false,
             "configs": {
                 "package.json": {
@@ -124,32 +124,51 @@
                 }
             }
         },
-        "@skoville/webpack-hmr-client-default-socket-io-accessor": { // TODO: implement
+        "@skoville/webpack-hmr-client-universal-default-socket-io-accessor": {
             "publishDistributionFolder": false,
             "configs": {
                 "package.json": {
                     "files": ["distribution"],
-                    "main": "./distribution/package.js"
+                    "main": "./distribution/package.js",
+                    "dependencies": [
+                        "socket.io-client",
+                        "@skoville/webpack-hmr-shared-universal-utilities"
+                    ],
+                    "devDependencies": [
+                        "@types/socket.io-client"
+                    ]
                 },
                 "tsconfig.json": {}
             }
         },
-        "@skoville/webpack-hmr-client-web-customizable": { // TODO: implement
+        "@skoville/webpack-hmr-client-web-customizable": {
             "publishDistributionFolder": false,
             "configs": {
                 "package.json": {
                     "files": ["distribution"],
-                    "main": "./distribution/package.js"
+                    "main": "./distribution/package.js",
+                    "dependencies": [
+                        "@skoville/webpack-hmr-client-universal-hot-runtime",
+                        "@skoville/webpack-hmr-shared-universal-utilities"
+                    ]
                 },
-                "tsconfig.json": {}
+                "tsconfig.json": {
+                    "compilerOptions": {
+                        "lib": ["dom"]
+                    }
+                }
             }
         },
-        "@skoville/webpack-hmr-client-web-default": { // TODO: implement
-            "publishDistributionFolder": false,
+        "@skoville/webpack-hmr-client-web-default": {
+            "publishDistributionFolder": true,
             "configs": {
                 "package.json": {
                     "files": ["distribution"],
-                    "main": "./distribution/package.js"
+                    "main": "./distribution/package.js",
+                    "dependencies": [
+                        "@skoville/webpack-hmr-client-web-customizable",
+                        "@skoville/webpack-hmr-client-universal-default-socket-io-accessor"
+                    ]
                 },
                 "tsconfig.json": {}
             }
@@ -172,6 +191,40 @@
                     "main": "./distribution/package.js"
                 },
                 "tsconfig.json": {}
+            }
+        },
+        "@skoville-integration-testing/default-test": { // TODO: implement
+            "publishDistributionFolder": false,
+            "configs":{
+                "package.json":{
+                    "dependencies":[
+                        "@skoville/webpack-hmr-server-node-default",
+                        "@skoville/webpack-hmr-client-web-default",
+                        "chokidar",
+                        "ansicolor",
+                        "webpack",
+                        "@isomorphic-typescript/fs-async-nodejs",
+                        "source-map-support",
+                        "ts-loader"
+                    ],
+                    "devDependencies": [
+                        "@types/node",
+                        "@types/webpack",
+                        "@types/webpack-env"
+                    ],
+                    "scripts": {
+                        "start": "node --preserve-symlinks -r source-map-support/register ./distribution/main.js"
+                        //"test": "skoville-webpack-node-run -u http://localhost:8080/server.js"
+                    },
+                    "resolutions": {
+                        "@types/node": "^12.6.8"
+                    }
+                },
+                "tsconfig.json":{
+                    "compilerOptions": {
+                        "types":["node", "webpack-env"]
+                    }
+                }
             }
         },
         "@skoville/webpack-hmr-shared-universal-utilities": {
@@ -402,43 +455,6 @@
                 "tsconfig.json":{}
             }
         }
-        /*
-        "@skoville-integration-testing/default-test": {
-            "publishDistributionFolder": false,
-            "configs":{
-                "package.json":{
-                    "dependencies":[
-                        "@skoville/webpack-hmr-node-server-default",
-                        "@skoville/webpack-hmr-node-client-default",
-                        "chokidar",
-                        "ansicolor",
-                        "webpack",
-                        "@isomorphic-typescript/fs-async-nodejs",
-                        "source-map-support",
-                        "ts-loader"
-                    ],
-                    "devDependencies": [
-                        "@types/node",
-                        "@types/webpack",
-                        "@types/webpack-env",
-                        "@skoville/webpack-hmr-node-client-cli"
-                    ],
-                    "scripts": {
-                        "start": "node --preserve-symlinks -r source-map-support/register ./distribution/main.js",
-                        "test": "skoville-webpack-node-run -u http://localhost:8080/server.js"
-                    },
-                    "resolutions": {
-                        "@types/node": "^12.6.8"
-                    }
-                },
-                "tsconfig.json":{
-                    "compilerOptions": {
-                        "types":["node", "webpack-env"]
-                    }
-                }
-            }
-        }
-        */
     },
     "version": "0.0.0"
 }

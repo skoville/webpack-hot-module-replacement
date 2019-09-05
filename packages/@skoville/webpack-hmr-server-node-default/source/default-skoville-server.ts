@@ -18,9 +18,10 @@ export class DefaultSkovilleWebpackSever {
             async (webpackConfigurationName: string) => {
                 const sockets = this.webpackConfigurationNameToSocketsMap.get(webpackConfigurationName);
                 if (sockets === undefined) {
-                    throw new Error(`No such mapping exists in ${nameof(DefaultSkovilleWebpackSever)} for ${nameof(webpackConfigurationName)} '${webpackConfigurationName}'`);
+                    this.webpackConfigurationNameToSocketsMap.set(webpackConfigurationName, new Set());
+                } else {
+                    sockets.forEach(socket => socket.emit("update"));
                 }
-                sockets.forEach(socket => socket.emit("update"));
             },
             async () => {},
             async () => true,

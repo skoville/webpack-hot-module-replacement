@@ -96,6 +96,7 @@ export class CompilerManager {
         this.compiler.hooks.done.tap(WEBPACK_PLUGIN_TAP_NAME, stats => {
             const {compilation} = stats;
             if (!compilation.hash) throw new Error("no hash");
+            this.log.trace("HASH ON DONE HOOK IS = " + ansicolor.bgWhite(ansicolor.black(compilation.hash)));
             this.updates.push({
                 hash: compilation.hash,
                 errors: compilation.errors,
