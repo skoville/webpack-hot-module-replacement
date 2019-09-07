@@ -170,7 +170,11 @@
                         "@skoville/webpack-hmr-client-universal-default-socket-io-accessor"
                     ]
                 },
-                "tsconfig.json": {}
+                "tsconfig.json": {
+                    "compilerOptions": {
+                        "lib": ["dom"]
+                    }
+                }
             }
         },
         "@skoville/webpack-hmr-client-node-customizable": { // TODO: implement

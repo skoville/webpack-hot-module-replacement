@@ -7,13 +7,19 @@ class DefaultWebClient {
         const skovilleServerAccessor = new SocketIOSkovilleServerAccessor(
             CustomizableWebClient.getServerURL(),
             async () => {
+                console.log("inside on update notification");
                 this.customizableWebClient.triggerClientUpdateRequest();
             }
         );
+        console.log("hello world");
         this.customizableWebClient = new CustomizableWebClient(
             async () => true,
-            updateRequest => skovilleServerAccessor.submitUpdateRequest(updateRequest)
+            updateRequest => {
+                console.log("inside update request method")
+                return skovilleServerAccessor.submitUpdateRequest(updateRequest)
+            }
         );
+        console.log("after")
     }
 }
 

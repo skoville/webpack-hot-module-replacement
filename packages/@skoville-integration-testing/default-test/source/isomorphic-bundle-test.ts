@@ -42,7 +42,7 @@ const configs: webpack.Configuration[] = [
                     use: {
                         loader: 'ts-loader',
                         options: {
-                            configFile: path.resolve(BUNDLE_SOURCE_PATH, "./tsconfig.json"),
+                            configFile: path.resolve(BUNDLE_SOURCE_PATH, "./node/tsconfig.json"),
                             onlyCompileBundledFiles: true
                         }
                     }
@@ -81,7 +81,7 @@ const configs: webpack.Configuration[] = [
                     use: {
                         loader: 'ts-loader',
                         options: {
-                            configFile: path.resolve(BUNDLE_SOURCE_PATH, './tsconfig.json'),
+                            configFile: path.resolve(BUNDLE_SOURCE_PATH, './web/tsconfig.json'),
                             onlyCompileBundledFiles: true
                         }
                     }
