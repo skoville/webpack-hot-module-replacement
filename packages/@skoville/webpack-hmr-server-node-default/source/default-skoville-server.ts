@@ -78,6 +78,9 @@ export class DefaultSkovilleWebpackSever {
     private setUpWebSocketHandling(io: socketio.Server) {
         io.on('connection', async socket => {
             socket.on("message", (updateRequest: UpdateRequest, acknowledge: (response: UpdateResponse) => void) => {
+                console.log("GOT A MESSAGE");
+                console.log(typeof updateRequest);
+                console.log(updateRequest);
                 const response = this.customizableSkovilleWebpackServer.handleClientMessage(updateRequest);
                 if (response.webpackConfigurationNameRegistered === true) {
                     const sockets = this.webpackConfigurationNameToSocketsMap.get(updateRequest.webpackConfigurationName) || new Set();

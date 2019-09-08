@@ -4,3 +4,4 @@ document.body.append(containerElement);
 if (module.hot) {
     console.log("module is hot"); 
 }
+console.log("hello world");

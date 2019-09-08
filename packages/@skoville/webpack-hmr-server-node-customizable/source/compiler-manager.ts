@@ -52,19 +52,19 @@ export class CompilerManager {
         // Don't stream the file until compilation is done.
         return await new Promise<fs.ReadStream | false>(resolve => {
             const attemptToRead = () => {
-                this.fs.exists(fsPath, exists => {
-                    if(exists) {
-                        this.fs.stat(fsPath, (_err, stats) => {
-                            if(stats.isFile()) {
-                                this.log.info("File located. Returning ReadStream.");
-                                resolve(this.fs.createReadStream(fsPath));
-                            } else {
-                                this.log.error("Path exists, but is not a file.");
-                                resolve(false);
-                            }
-                        })
+                (this.fs as typeof fs).stat(fsPath, (error, stats) => {
+                    if (error) {
+                        if (error.code === 'ENOENT') {
+                            this.log.error("File does not exist");
+                        } else {
+                            this.log.error("Error when reading file: " + error.code);
+                        }
+                        resolve(false);
+                    } else if (stats.isFile()) {
+                        this.log.info("File located. Returning ReadStream.");
+                        resolve((this.fs as typeof fs).createReadStream(fsPath));
                     } else {
-                        this.log.error("File does not exist.");
+                        this.log.error("Path exists, but is not a file.");
                         resolve(false);
                     }
                 });
@@ -101,7 +101,7 @@ export class CompilerManager {
                 hash: compilation.hash,
                 errors: compilation.errors,
                 warnings: compilation.warnings,
-                assets: compilation.assets
+                assets: Object.keys(compilation.assets)
             });
             this.compilerUpdateHandler();
 

@@ -23,7 +23,7 @@ export class SkovilleHotClientRuntime {
         this.restartingEnabled = enableApplicationRestarting;
         const moduleHotIsDefined = module.hot !== undefined;
         if (this.hotEnabled !== moduleHotIsDefined) { // module.hot being defined should also mean that this.hotEnabled is true. Otherwise there was a logical error.
-            throw new Error(`hot swapping is ${this.hotEnabled ? 'enabled' : 'disabled'}, but webpack's ${nameof.full(module.hot)} is${moduleHotIsDefined ? '' : ' not'} defined.`);
+            throw new Error(`hot swapping is ${this.hotEnabled ? 'enabled' : 'disabled'}, but webpack's ${nameof.full(module.hot)} is ${moduleHotIsDefined ? '' : 'un'}defined.`);
         }
         this.triggerUpdateRequest();
     }
@@ -38,6 +38,7 @@ export class SkovilleHotClientRuntime {
     }
 
     public async triggerUpdateRequest() {
+        this.log.info("inside the hot-runtime's trigger update  request");
         const updateResponse = await this.requestUpdatesFromServer({
             webpackConfigurationName,
             currentHash: __webpack_hash__,
@@ -47,6 +48,7 @@ export class SkovilleHotClientRuntime {
     }
 
     private async handleUpdateResponseFromServer(updateResponse: UpdateResponse) {
+        this.log.info("update response is \n" + JSON.stringify(updateResponse));
         if(updateResponse.webpackConfigurationNameRegistered) {
             this.cliendId = updateResponse.clientId;
             if(updateResponse.compatible) {
@@ -56,14 +58,17 @@ export class SkovilleHotClientRuntime {
                     this.log.error(`Failed to ${nameof(this.handleUpdateResponseFromServer)}`);
                     return;
                 }
-                this.log.info(`Newly queued updates from server: ${newlyQueuedUpdates}`);
-                if(this.hotEnabled) {
-                    if (!this.hotSwappingInProgress) {
-                        this.hotSwap();
+                const actualUpdateOcurred = newlyQueuedUpdates.length > 0;
+                if (actualUpdateOcurred) {
+                    this.log.info(`Newly queued updates from server: ` + newlyQueuedUpdates);
+                    if(this.hotEnabled) {
+                        if (!this.hotSwappingInProgress) {
+                            this.hotSwap();
+                        }
+                    } else {
+                        this.log.info(`Restarting since hot swapping is disabled`);
+                        this.startOrPromptAppRestart();
                     }
-                } else {
-                    this.log.info(`Restarting since hot swapping is disabled`);
-                    this.startOrPromptAppRestart();
                 }
             } else {
                 this.log.error(`Current ${nameof(__webpack_hash__)} is ${__webpack_hash__}, which is incompatible with hash history stored on server. Likely the server restarted, resulting in a new hash history.`);
@@ -80,6 +85,7 @@ export class SkovilleHotClientRuntime {
      * @returns the compiler updates which were not registered in the update queue before this run.
      */
     private mergeUpdates(compilerUpdates: CompilerUpdate[]): CompilerUpdate[] | null {
+        this.log.info("webpack hash is = " + __webpack_hash__);
         var indexOfHashHistoryWhichMatchesIndexOfFirstUpdate = -1;
         for (var hashHistoryIndex = 0; hashHistoryIndex < this.hashHistory.length; ++hashHistoryIndex) {
             const currentHashFromHistory = this.hashHistory[hashHistoryIndex];
@@ -89,10 +95,16 @@ export class SkovilleHotClientRuntime {
             }
         }
         if (indexOfHashHistoryWhichMatchesIndexOfFirstUpdate === -1) {
-            this.log.error(`Recieved compilerUpdates which are not in sync with the hash here. This should have been caught by the server, and resulted in an a response with incompatible set to true. This means there is a bug present.`);
-            this.log.error(`${nameof(compilerUpdates)} = ${ansicolor.white(JSON.stringify(compilerUpdates))}. Own ${nameof(this.hashHistory)} is ${ansicolor.white(JSON.stringify(this.hashHistory))}`);
+            this.log.error(`Recieved ${nameof(compilerUpdates)} which are not in sync with the hash here. This should have been caught by the server, and resulted in an a response with incompatible set to true. This means there is a bug present.`);
+            this.log.error(`${nameof(compilerUpdates)} = ${ansicolor.default(JSON.stringify(compilerUpdates))}. Own ${nameof(this.hashHistory)} is ${ansicolor.default(JSON.stringify(this.hashHistory))}`);
             return null;
         } else {
+            if (this.hashHistory.length === 1) {
+                // In this case, it means the hot client has only just started, meaning
+                // It has the initial hash in the history but is not yet aware of the update
+                // which corresponds to that original hash yet. So we can set it explicitly.
+                this.hashToCompilerUpdateMap.set(this.hashHistory[0], compilerUpdates[0]);
+            }
             const newlyQueuedUpdates: CompilerUpdate[] = [];
             for (var indexOfUpdates = 0; indexOfUpdates < compilerUpdates.length; ++indexOfUpdates) {
                 const currentUpdate = compilerUpdates[indexOfUpdates];
@@ -104,18 +116,18 @@ export class SkovilleHotClientRuntime {
                     newlyQueuedUpdates.push(currentUpdate);
                 } else {
                     if (newlyQueuedUpdates.length > 0) {
-                        this.log.error(`Detected error where there is a hash which exists within the ${nameof.full(this.hashHistory)} when the ${nameof(newlyQueuedUpdates)} has been added to already. ${nameof.full(this.hashHistory)} = ${ansicolor.white(JSON.stringify(this.hashHistory))}`);
+                        this.log.error(`Detected error where there is a hash which exists within the ${nameof.full(this.hashHistory)} when the ${nameof(newlyQueuedUpdates)} has been added to already. ${nameof.full(this.hashHistory)} = ${ansicolor.default(JSON.stringify(this.hashHistory))}`);
                         return null;
                     }
                     const previouslySavedUpdate = this.hashToCompilerUpdateMap.get(currentHash);
                     if (previouslySavedUpdate === undefined) {
-                        this.log.error(`The ${nameof(currentHash)} is defined as '${currentHash}', however a mapping does not appear to exist in ${nameof.full(this.hashToCompilerUpdateMap)} which is currently equal to the entry set ${ansicolor.white(JSON.stringify(Array.from(this.hashToCompilerUpdateMap.entries())))}.`);
+                        this.log.error(`The ${nameof(currentHash)} is defined as '${currentHash}', however a mapping does not appear to exist in ${nameof.full(this.hashToCompilerUpdateMap)} which is currently equal to the entry set ${ansicolor.default(JSON.stringify(Array.from(this.hashToCompilerUpdateMap.entries())))}.`);
                         return null;
                     } else {
                         const previouslySavedUpdateJSON = JSON.stringify(previouslySavedUpdate);
                         const receivedUpdateJSON = JSON.stringify(currentUpdate);
                         if (previouslySavedUpdateJSON !== receivedUpdateJSON) {
-                            this.log.error(`Detected error where the ${nameof(receivedUpdateJSON)} of '${ansicolor.white(receivedUpdateJSON)}' is not equal to the ${nameof(previouslySavedUpdateJSON)} of '${previouslySavedUpdateJSON}'.`);
+                            this.log.error(`Detected error where the ${nameof(receivedUpdateJSON)} of '${ansicolor.default(receivedUpdateJSON)}' is not equal to the ${nameof(previouslySavedUpdateJSON)} of '${previouslySavedUpdateJSON}'.`);
                             return null;
                         }
                     }
@@ -126,7 +138,7 @@ export class SkovilleHotClientRuntime {
     }
 
     private async hotSwap() {
-        this.log.info(`About to hot swap the following update: ${this.hashToCompilerUpdateMap.get(this.hashHistory[this.currentHashHistoryIndex])}`);
+        this.log.info(`About to hot swap the following update: ` + this.hashToCompilerUpdateMap.get(this.hashHistory[this.currentHashHistoryIndex]));
         if (this.currentHashHistoryIndex >= this.hashHistory.length - 1) {
             this.log.error(`Hot swapping should not be occuring right now since ${nameof.full(this.currentHashHistoryIndex)} is ${this.currentHashHistoryIndex} while ${nameof.full(this.hashHistory.length)} is ${this.hashHistory.length}`);
             return;
@@ -137,7 +149,7 @@ export class SkovilleHotClientRuntime {
         }
         const currentHMRStatus = module.hot.status();
         if (currentHMRStatus !== "idle") {
-            this.log.error(`There was an invalid attempt to run ${nameof(this.hotSwap)} when the ${nameof.full(module.hot.status)} is currently '${ansicolor.white(currentHMRStatus)}'`);
+            this.log.error(`There was an invalid attempt to run ${nameof(this.hotSwap)} when the ${nameof.full(module.hot.status)} is currently '${ansicolor.default(currentHMRStatus)}'`);
             return;
         }
         const currentHashFromHistoryQueue = this.hashHistory[this.currentHashHistoryIndex];
