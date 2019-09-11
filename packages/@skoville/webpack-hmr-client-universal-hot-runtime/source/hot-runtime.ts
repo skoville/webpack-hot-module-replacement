@@ -1,6 +1,8 @@
-import { Log, UpdateResponse, UpdateRequest, CompilerUpdate } from '@skoville/webpack-hmr-shared-universal-utilities';
+import { Log, UpdateResponse, UpdateRequest, CompilerUpdate, webpackFunctionToInjectName } from '@skoville/webpack-hmr-shared-universal-utilities';
 import { clientOptions, webpackConfigurationName } from '@skoville/webpack-hmr-shared-universal-utilities/distribution/injected-client-constants/values';
 import * as ansicolor from 'ansicolor';
+
+declare const console: {log: (message: any) => void};
 
 export class SkovilleHotClientRuntime {
     private readonly log: Log.Logger
@@ -138,7 +140,17 @@ export class SkovilleHotClientRuntime {
     }
 
     private async hotSwap() {
-        this.log.info(`About to hot swap the following update: ` + this.hashToCompilerUpdateMap.get(this.hashHistory[this.currentHashHistoryIndex]));
+        const currentHashFromHistoryQueue = this.hashHistory[this.currentHashHistoryIndex];
+        if (__webpack_hash__ !== currentHashFromHistoryQueue) {
+            this.log.error(`When trying to run ${nameof(this.hotSwap)}, the value of ${nameof(__webpack_hash__)} is ${__webpack_hash__} whereas the value at ${nameof.full(this.currentHashHistoryIndex)} is ${currentHashFromHistoryQueue}, likely indicating a prior hotswap failed.`);
+            return;
+        }
+        const currentUpdate = this.hashToCompilerUpdateMap.get(currentHashFromHistoryQueue);
+        if (currentUpdate === undefined) {
+            this.log.error(`There was an invalid attempt to run ${nameof(this.hotSwap)}, because the ${nameof(currentUpdate)} is undefined in ${nameof.full(this.hashToCompilerUpdateMap)} at hash ${currentHashFromHistoryQueue}`);
+            return;
+        }
+        this.log.info(`About to hot swap the following update: ` + currentUpdate);
         if (this.currentHashHistoryIndex >= this.hashHistory.length - 1) {
             this.log.error(`Hot swapping should not be occuring right now since ${nameof.full(this.currentHashHistoryIndex)} is ${this.currentHashHistoryIndex} while ${nameof.full(this.hashHistory.length)} is ${this.hashHistory.length}`);
             return;
@@ -152,17 +164,12 @@ export class SkovilleHotClientRuntime {
             this.log.error(`There was an invalid attempt to run ${nameof(this.hotSwap)} when the ${nameof.full(module.hot.status)} is currently '${ansicolor.default(currentHMRStatus)}'`);
             return;
         }
-        const currentHashFromHistoryQueue = this.hashHistory[this.currentHashHistoryIndex];
-        if (__webpack_hash__ !== currentHashFromHistoryQueue) {
-            this.log.error(`When trying to run ${nameof(this.hotSwap)}, the value of ${nameof(__webpack_hash__)} is ${__webpack_hash__} whereas the value at ${nameof.full(this.currentHashHistoryIndex)} is ${currentHashFromHistoryQueue}, likely indicating a prior hotswap failed.`);
-            return;
-        }
         this.hotSwappingInProgress = true;
         try {
+            /*
             // TODO: PR to hmr @types repo to include definition of module.hot.check that returns a promise so we don't have to use new Promise
-            const hot = module.hot;
             const updatedModules = await new Promise<__WebpackModuleApi.ModuleId[]>((resolve, reject) => {
-                hot.check(true, (err, updatedModules) => {
+                module.hot.check(true, (err, updatedModules) => {
                     if (err) reject(err);
                     else resolve(updatedModules);
                 });
@@ -172,7 +179,22 @@ export class SkovilleHotClientRuntime {
                 this.startOrPromptAppRestart();
                 return;
             }
-            this.logHMRApplyResult(updatedModules);
+            */
+
+            // TODO: PR to hmr @types repo to include new method added to module.hot
+            console.log("updatedModuleSources");
+            const updatedModuleSources = currentUpdate.updatedModuleSources;
+            console.log(updatedModuleSources);
+            for (const moduleId in updatedModuleSources) {
+                console.log(moduleId);
+                console.log(updatedModuleSources[moduleId]);
+                updatedModuleSources[moduleId] = eval(`(function(){\nreturn(\n${updatedModuleSources[moduleId]}\n);})`);
+            }
+            console.log(updatedModuleSources);
+            const updatedModules = await (module.hot as any)[webpackFunctionToInjectName](updatedModuleSources);
+            console.log(updatedModules);
+
+            //this.logHMRApplyResult(updatedModules);
             this.currentHashHistoryIndex++;
             const currentHash = this.hashHistory[this.currentHashHistoryIndex];
             if (currentHash !== __webpack_hash__) {
@@ -189,10 +211,11 @@ export class SkovilleHotClientRuntime {
             this.log.error(`${nameof.full(module.hot.check)} has failed. The current ${nameof.full(module.hot.status)} is ${module.hot.status()}`);
             if (err.message) this.log.error(err.message);
             if (err.stack) this.log.error(err.stack);
-            this.startOrPromptAppRestart();
+            //this.startOrPromptAppRestart();
         }
     }
 
+    /*
     private logHMRApplyResult(updatedModules: __WebpackModuleApi.ModuleId[]) {
         if(updatedModules.length === 0) {
             this.log.info("Nothing hot updated.");
@@ -210,4 +233,5 @@ export class SkovilleHotClientRuntime {
             }
         }
     }
+    */
 }

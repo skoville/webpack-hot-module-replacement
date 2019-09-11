@@ -9,6 +9,7 @@ export type CompilerUpdate = {
     errors: string[];
     warnings: string[];
     assets: string[];
+    updatedModuleSources: Record<string, string>;
 }
 
 export type UpdateResponse =

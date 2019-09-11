@@ -254,6 +254,7 @@
                         "memory-fs",
                         "uuid",
                         "ansicolor",
+                        "webpack-sources",
                         "@types/webpack",
                         "@skoville/webpack-hmr-shared-universal-utilities"
                     ],

@@ -1,0 +1,2 @@
+declare const applyWithOwnUpdateRetrievalStrategy: unknown;
+export const webpackFunctionToInjectName = nameof(applyWithOwnUpdateRetrievalStrategy);

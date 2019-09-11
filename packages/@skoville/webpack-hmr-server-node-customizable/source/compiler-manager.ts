@@ -2,9 +2,11 @@ import * as webpack from 'webpack';
 import MemoryFileSystem = require('memory-fs');
 import * as path from 'path';
 import * as fs from 'fs';
+import * as vm from 'vm';
 import { Log, CompilerUpdate } from '@skoville/webpack-hmr-shared-universal-utilities';
 import { SkovilleWebpackPlugin } from './webpack-plugin';
 import * as ansicolor from 'ansicolor';
+import { injectWebpackHotBootstrapModifications } from './webpack-bootstrap-source-injection';
 
 type FileSystem = typeof fs | MemoryFileSystem;
 
@@ -22,14 +24,16 @@ export class CompilerManager {
     public constructor(
         private readonly compiler: webpack.Compiler,
         private readonly compilerUpdateHandler: () => void,
-        memoryFS: boolean, log: Log.Logger, name: string) {
+        memoryFS: boolean, log: Log.Logger, private readonly webpackConfigurationName: string) {
+        // TODO: write a custom compiler.outputFileSystem implementation which can intercept hot updates and add them to updates, while lettins all other
+        //       operations pass through to a .skoville folder by default or a custom folder if set.
         if(memoryFS) {
             this.fs = new MemoryFileSystem();
             compiler.outputFileSystem = this.fs;
         } else {
             this.fs = fs;
         }
-        this.log = log.clone(ansicolor.green(`[config ${ansicolor.magenta(name)}] `));
+        this.log = log.clone(ansicolor.green(`[config ${ansicolor.magenta(webpackConfigurationName)}] `));
         this.valid = false;
         this.pendingReadStreamHandlers = [];
         this.publicPath = (() => {
@@ -88,24 +92,62 @@ export class CompilerManager {
         }
     }
 
-    private addHooks() {
-        // this.compiler.hooks.compile.tap(WEBPACK_PLUGIN_TAP_NAME, () => {console.log("inner compile hook");this.sendCompilerNotification({type:SkovilleServerNotification.Type.Recompiling});});
-        this.compiler.hooks.invalid.tap(WEBPACK_PLUGIN_TAP_NAME, () => {console.log("inner invalid hook");this.invalidate();});//this.sendCompilerNotification({type:SkovilleServerNotification.Type.Recompiling});});
-        this.compiler.hooks.run.tap(WEBPACK_PLUGIN_TAP_NAME, () => {console.log("inner run hook");this.invalidate()});
-        this.compiler.hooks.watchRun.tap(WEBPACK_PLUGIN_TAP_NAME, () => {console.log("inner watchRun hook");this.invalidate()});
-        this.compiler.hooks.done.tap(WEBPACK_PLUGIN_TAP_NAME, stats => {
-            const {compilation} = stats;
-            if (!compilation.hash) throw new Error("no hash");
-            this.log.trace("HASH ON DONE HOOK IS = " + ansicolor.bgWhite(ansicolor.black(compilation.hash)));
-            this.updates.push({
-                hash: compilation.hash,
-                errors: compilation.errors,
-                warnings: compilation.warnings,
-                assets: Object.keys(compilation.assets)
+    private injectWebpackHotBootstrapModifications() {
+        this.compiler.hooks.compilation.tap(WEBPACK_PLUGIN_TAP_NAME, compilation => {
+            // Here I am injecting raw code into the webpack bootstrap source, which comes before any module source code.
+            // Reference: webpack HMR injects code into the bootstrap source: https://github.com/webpack/webpack/blob/master/lib/HotModuleReplacementPlugin.js#L337-L356
+            if (!compilation.hotUpdateChunkTemplate) {
+                throw new Error(`Detected error. The ${nameof.full(compilation.hotUpdateChunkTemplate)} does not exist for config ${nameof(this.webpackConfigurationName)} ${this.webpackConfigurationName}`);
+            }
+            const mainTemplate = compilation.mainTemplate;
+            const bootstrapHook = (mainTemplate.hooks as any).bootstrap;
+            if (!bootstrapHook) {
+                throw new Error(`Detected error. The hook ${nameof.full(compilation.mainTemplate)}.bootstrap does not exist for config ${nameof(this.webpackConfigurationName)} ${this.webpackConfigurationName}`);
+            }
+            bootstrapHook.tap(WEBPACK_PLUGIN_TAP_NAME, (source: string, _chunk: object, _hash: string) => {
+                //console.log("inside bootstrap hook tap handler");
+                //console.log(`${typeof(source)} ${nameof(source)} = ${source}`);
+                //console.log(`${typeof(chunk)} ${nameof(chunk)} = ${chunk}`);
+                //console.log(`${typeof(hash)} ${nameof(hash)} = ${hash}`);
+                return injectWebpackHotBootstrapModifications(source);
             });
-            this.compilerUpdateHandler();
+        });
+    }
 
-            // Now that compilation is complete, we may let all pending read file commands go through.
+    private addHooks() {
+        this.injectWebpackHotBootstrapModifications();
+        this.compiler.hooks.invalid.tap(WEBPACK_PLUGIN_TAP_NAME, () => {
+            if (!this.valid) this.log.error(`Found case where ${nameof.full(this.valid)} is ${this.valid} when ${nameof.full(this.compiler.hooks.invalid)} is tap handled`);
+            this.log.info("Recompiling...");
+            this.valid = false;
+        });
+        this.compiler.hooks.done.tap(WEBPACK_PLUGIN_TAP_NAME, async stats => {
+            const {compilation} = stats;
+            const hash = compilation.hash;
+            if (!hash) throw new Error("no hash");
+            this.log.trace("HASH ON DONE HOOK IS = " + ansicolor.bgWhite(ansicolor.black(hash)));
+            const priorUpdate = this.updates[this.updates.length - 1];
+            const noPriorUpdate = priorUpdate === undefined;
+            if (noPriorUpdate || priorUpdate.hash !== hash) {
+                const newUpdate = {
+                    hash,
+                    errors: compilation.errors,
+                    warnings: compilation.warnings,
+                    assets: Object.keys(compilation.assets),
+                    updatedModuleSources: noPriorUpdate ? {} : await this.assembleModuleUpdates(compilation, priorUpdate.hash)
+                };
+                this.updates.push(newUpdate);
+                this.log.info("Assets");
+                this.log.info(`[\n    ${newUpdate.assets.join(",\n    ")}\n]`);
+                const updatedModuleIds = Object.keys(newUpdate.updatedModuleSources);
+                if (updatedModuleIds.length > 0) {
+                    this.log.info("Updated modules");
+                    this.log.info(`[\n    ${updatedModuleIds.join(",\n    ")}\n]`);
+                }
+                this.compilerUpdateHandler();
+            }
+
+            // Now that compilation is complete, we may handle all pending read file requests.
             this.valid = true;
             if(this.pendingReadStreamHandlers.length) {
                 this.pendingReadStreamHandlers.forEach(callback => callback());
@@ -114,6 +156,48 @@ export class CompilerManager {
 
             // Consider doing the following after the nextTick, which is done in Webpack-Dev-Middleware
             this.logCompilationResult(stats);
+        });
+    }
+
+    /**
+     * @see https://github.com/webpack/webpack/blob/master/lib/HotModuleReplacementPlugin.js#L235-L300
+     * @param compilation the webpack compilation.
+     */
+    private assembleModuleUpdates(compilation: webpack.compilation.Compilation, priorHash: string) {
+        const outputOptions = this.compiler.options.output;
+        if (!outputOptions) throw new Error(`Error running ${nameof(this.assembleModuleUpdates)}. ${nameof.full(this.compiler.options.output)} is undefined`);
+        const hotUpdateMainFilename = outputOptions.hotUpdateMainFilename;
+        if (!hotUpdateMainFilename) throw new Error(`Error running ${nameof(this.assembleModuleUpdates)}. ${nameof(hotUpdateMainFilename)} is undefined`);
+        const hotUpdateChunkFilename = outputOptions.hotUpdateChunkFilename;
+        if (!hotUpdateChunkFilename) throw new Error(`Error running ${nameof(this.assembleModuleUpdates)}. ${nameof(hotUpdateChunkFilename)} is undefined`);
+        return new Promise<Record<string, string>>((resolve, _reject) => {
+            const updateManifestPath = compilation.getPath(hotUpdateMainFilename, {hash: priorHash});
+            const updateManifestAsset = compilation.assets[updateManifestPath];
+            const updateManifestSource: string = updateManifestAsset.source();
+            const updateManifestContent: {h: string, c: {[chunk: string]: true}} = JSON.parse(updateManifestSource.toString());
+            const updatedModuleSources = {};
+            for (const chunkId in updateManifestContent.c) {
+                const chunk = compilation.chunks.find(chunk => chunk.id === chunkId);
+                const updateChunkPath = compilation.getPath(hotUpdateChunkFilename, {hash: priorHash, chunk});
+                const updateChunkAsset = compilation.assets[updateChunkPath];
+                const updateChunkSource = updateChunkAsset.source();
+                this.executeChunkUpdateSource(updateChunkSource, updatedModuleSources);
+            }
+            resolve(updatedModuleSources);
+        });
+    }
+
+    private executeChunkUpdateSource(source: string, updatedModuleSources: Record<string, string>) {
+        const webSource = `(function(webpackHotUpdate){\n${source}\n})`;
+        vm.runInThisContext(webSource, {})((_chunkId: string, updatedModules: Record<string, string>) => {
+            for(const moduleId in updatedModules) {
+                if (Object.prototype.hasOwnProperty.call(updatedModules, moduleId)) {
+                    if (updatedModuleSources[moduleId] !== undefined) {
+                        this.log.error(`The ${nameof(updatedModuleSources)} object already has a source registered for ${nameof(moduleId)} ${moduleId}`);
+                    }
+                    updatedModuleSources[moduleId] = updatedModules[moduleId].toString();
+                }
+            }
         });
     }
 
@@ -130,10 +214,4 @@ export class CompilerManager {
         else if (stats.hasWarnings()) this.log.warn(stats.toString(toStringOptions));
         else this.log.info(stats.toString(toStringOptions));
     }
-
-    private invalidate() {
-        if(this.valid) this.log.info("Recompiling...");
-        this.valid = false;
-    }
-
 }
