@@ -78,8 +78,7 @@ export class DefaultSkovilleWebpackSever {
     private setUpWebSocketHandling(io: socketio.Server) {
         io.on('connection', async socket => {
             socket.on("message", (updateRequest: UpdateRequest, acknowledge: (response: UpdateResponse) => void) => {
-                console.log("GOT A MESSAGE");
-                console.log(typeof updateRequest);
+                console.log("request:");
                 console.log(updateRequest);
                 const response = this.customizableSkovilleWebpackServer.handleClientMessage(updateRequest);
                 if (response.webpackConfigurationNameRegistered === true) {
@@ -88,6 +87,12 @@ export class DefaultSkovilleWebpackSever {
                         sockets.add(socket);
                     }
                     this.webpackConfigurationNameToSocketsMap.set(updateRequest.webpackConfigurationName, sockets);
+                }
+                console.log("response:");
+                console.log(response);
+                if (response.webpackConfigurationNameRegistered && response.compatible && response.updatesToApply.length > 1) {
+                    console.log("sent updates:");
+                    console.log(response.updatesToApply[1].updatedModuleSources);
                 }
                 acknowledge(response);
             });

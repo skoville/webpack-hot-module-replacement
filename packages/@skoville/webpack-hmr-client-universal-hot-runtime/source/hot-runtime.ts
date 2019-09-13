@@ -12,7 +12,7 @@ export class SkovilleHotClientRuntime {
     private readonly hashHistory: string[] = [__webpack_hash__];
     private currentHashHistoryIndex = 0;
     private readonly hashToCompilerUpdateMap: Map<string, CompilerUpdate> = new Map();
-    private hotSwappingInProgress = false;
+    private runningHotSwaps = 0;
 
     public constructor(
         log: Log.Logger,
@@ -64,8 +64,10 @@ export class SkovilleHotClientRuntime {
                 if (actualUpdateOcurred) {
                     this.log.info(`Newly queued updates from server: ` + newlyQueuedUpdates);
                     if(this.hotEnabled) {
-                        if (!this.hotSwappingInProgress) {
+                        if (this.runningHotSwaps === 0) {
                             this.hotSwap();
+                        } else if (this.runningHotSwaps > 1) {
+                            throw Error(`Fatal error detected. ${nameof.full(this.runningHotSwaps)} > 1`);
                         }
                     } else {
                         this.log.info(`Restarting since hot swapping is disabled`);
@@ -140,21 +142,33 @@ export class SkovilleHotClientRuntime {
     }
 
     private async hotSwap() {
-        const currentHashFromHistoryQueue = this.hashHistory[this.currentHashHistoryIndex];
-        if (__webpack_hash__ !== currentHashFromHistoryQueue) {
-            this.log.error(`When trying to run ${nameof(this.hotSwap)}, the value of ${nameof(__webpack_hash__)} is ${__webpack_hash__} whereas the value at ${nameof.full(this.currentHashHistoryIndex)} is ${currentHashFromHistoryQueue}, likely indicating a prior hotswap failed.`);
+        this.runningHotSwaps++;
+        if (this.runningHotSwaps !== 1) {
+            this.log.error(`Detected unexpected number of running ${nameof.full(this.hotSwap)}s. Current count is ${this.runningHotSwaps}`);
             return;
         }
-        const currentUpdate = this.hashToCompilerUpdateMap.get(currentHashFromHistoryQueue);
-        if (currentUpdate === undefined) {
-            this.log.error(`There was an invalid attempt to run ${nameof(this.hotSwap)}, because the ${nameof(currentUpdate)} is undefined in ${nameof.full(this.hashToCompilerUpdateMap)} at hash ${currentHashFromHistoryQueue}`);
-            return;
-        }
-        this.log.info(`About to hot swap the following update: ` + currentUpdate);
         if (this.currentHashHistoryIndex >= this.hashHistory.length - 1) {
             this.log.error(`Hot swapping should not be occuring right now since ${nameof.full(this.currentHashHistoryIndex)} is ${this.currentHashHistoryIndex} while ${nameof.full(this.hashHistory.length)} is ${this.hashHistory.length}`);
             return;
         }
+        const currentHash = this.hashHistory[this.currentHashHistoryIndex];
+        if (__webpack_hash__ !== currentHash) {
+            this.log.error(`When trying to run ${nameof(this.hotSwap)}, the value of ${nameof(__webpack_hash__)} is ${__webpack_hash__} whereas the value at ${nameof.full(this.currentHashHistoryIndex)} is ${currentHash}, likely indicating a prior hotswap failed.`);
+            return;
+        }
+        const nextHashFromUpdateQueue = this.hashHistory[this.currentHashHistoryIndex + 1];
+        const updateToApply = this.hashToCompilerUpdateMap.get(nextHashFromUpdateQueue);
+        await this.log.info(`${nameof.full(this.hashToCompilerUpdateMap)} =`);
+        if (updateToApply === undefined) {
+            this.log.error(`There was an invalid attempt to run ${nameof(this.hotSwap)}, because the ${nameof(updateToApply)} is undefined in ${nameof.full(this.hashToCompilerUpdateMap)} at hash ${nextHashFromUpdateQueue}`);
+            return;
+        }
+        if (updateToApply.hash !== nextHashFromUpdateQueue) {
+            this.log.error(`Detected error where the hash ${nextHashFromUpdateQueue} when used as an index into ${nameof.full(this.hashToCompilerUpdateMap)} returns an update which has a non-matching hash ${updateToApply.hash}`);
+            return;
+        }
+        await this.log.info(`About to hot swap the following update: `);
+        console.log(updateToApply);
         if (!module.hot) {
             this.log.error(`${nameof.full(module.hot)} is undefined when there is an attempt to run ${nameof(this.hotSwap)}`);
             return;
@@ -164,7 +178,6 @@ export class SkovilleHotClientRuntime {
             this.log.error(`There was an invalid attempt to run ${nameof(this.hotSwap)} when the ${nameof.full(module.hot.status)} is currently '${ansicolor.default(currentHMRStatus)}'`);
             return;
         }
-        this.hotSwappingInProgress = true;
         try {
             /*
             // TODO: PR to hmr @types repo to include definition of module.hot.check that returns a promise so we don't have to use new Promise
@@ -182,17 +195,17 @@ export class SkovilleHotClientRuntime {
             */
 
             // TODO: PR to hmr @types repo to include new method added to module.hot
-            console.log("updatedModuleSources");
-            const updatedModuleSources = currentUpdate.updatedModuleSources;
-            console.log(updatedModuleSources);
+            const updatedModuleSources = updateToApply.updatedModuleSources;
+            const updatedModules: any = {};
             for (const moduleId in updatedModuleSources) {
                 console.log(moduleId);
                 console.log(updatedModuleSources[moduleId]);
-                updatedModuleSources[moduleId] = eval(`(function(){\nreturn(\n${updatedModuleSources[moduleId]}\n);})`);
+                updatedModules[moduleId] = eval(`(\n${updatedModuleSources[moduleId]}\n)`);
             }
-            console.log(updatedModuleSources);
-            const updatedModules = await (module.hot as any)[webpackFunctionToInjectName](updatedModuleSources);
+            console.log("updatedModules");
             console.log(updatedModules);
+            const updatedModulesConfirmed = await (module.hot as any)[webpackFunctionToInjectName](updateToApply.hash, updatedModules);
+            console.log(updatedModulesConfirmed);
 
             //this.logHMRApplyResult(updatedModules);
             this.currentHashHistoryIndex++;
@@ -201,9 +214,10 @@ export class SkovilleHotClientRuntime {
                 this.log.error(`After hot swap occured, we now have a current ${nameof(__webpack_hash__)} of ${__webpack_hash__}, however the value at ${nameof.full(this.currentHashHistoryIndex)} is ${currentHash}`);
                 return;
             }
+
+            this.runningHotSwaps--;
             if (this.currentHashHistoryIndex === this.hashHistory.length - 1) {
                 this.log.info(`Client is up to date. ${nameof.full(this.hotSwap)} finished.`);
-                this.hotSwappingInProgress = false;
             } else {
                 this.hotSwap();
             }

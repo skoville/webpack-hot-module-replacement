@@ -11,12 +11,13 @@ const webpackFunctionToInjectNameBootstrapInternal = `hot${webpackFunctionToInje
 const webpackFunctionToInjectSource = `${
   ""}/* Applies hot update downloaded in way other than typical "check" "apply" methods. */
 ${""}/* @param updatedModuleNameToNewModuleSourceMapping POJSO mapping from update module id to the new source of the module. */
-function ${webpackFunctionToInjectNameBootstrapInternal}(updatedModuleNameToNewModuleSourceMapping) {
+function ${webpackFunctionToInjectNameBootstrapInternal}(newHash, updatedModuleNameToNewModuleSourceMapping) {
     if (hotStatus !== "idle") {
         throw new Error("${webpackFunctionToInjectName}() is only allowed in idle status");
     }
     hotSetStatus("prepare"); // Technically not necessary but kept for consistency.
     hotUpdate = updatedModuleNameToNewModuleSourceMapping;
+    hotUpdateNewHash = newHash;
     hotApplyOnUpdate = true;
     hotDeferred = {};
     var outdatedModulesPromise = new Promise(function(resolve, reject) {
