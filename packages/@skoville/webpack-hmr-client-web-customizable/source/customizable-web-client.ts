@@ -1,6 +1,6 @@
 import { SkovilleHotClientRuntime } from '@skoville/webpack-hmr-client-universal-hot-runtime';
 import { Log, UpdateResponse, UpdateRequest } from '@skoville/webpack-hmr-shared-universal-utilities';
-import { webpackConfigurationName, clientOptions } from '@skoville/webpack-hmr-shared-universal-utilities/distribution/injected-client-constants/values'
+import { webpackConfigurationName, clientOptions } from '@skoville/webpack-hmr-shared-universal-utilities/distribution/injected-client-constants/values';
 import * as ansicolor from 'ansicolor';
 
 export class CustomizableWebClient {
@@ -15,7 +15,7 @@ export class CustomizableWebClient {
             if (logResult) {
                 console.log(...ansicolor.parse(logRequest.contents).asChromeConsoleLogArguments);
             }
-        })
+        }, `Skoville${nameof(CustomizableWebClient)}`);
         this.hotClientRuntime = new SkovilleHotClientRuntime(
             this.log,
             sendRequestToServer,
@@ -23,9 +23,9 @@ export class CustomizableWebClient {
         );
     }
 
-    public triggerClientUpdateRequest() {
-        this.log.info("about to trigger update request from customizable to hot runtime");
-        this.hotClientRuntime.triggerUpdateRequest();
+    public async triggerClientUpdateRequest() {
+        await this.log.info("about to trigger update request from customizable to hot runtime");
+        await this.hotClientRuntime.triggerUpdateRequest();
     }
 
     public getLogger() {

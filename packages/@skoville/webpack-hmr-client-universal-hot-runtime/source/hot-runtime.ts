@@ -30,6 +30,10 @@ export class SkovilleHotClientRuntime {
         this.triggerUpdateRequest();
     }
 
+    public getClientId() {
+        return this.cliendId;
+    }
+
     private async startOrPromptAppRestart() {
         if(this.restartingEnabled) {
             this.log.info("Restarting...");

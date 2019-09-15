@@ -3,18 +3,13 @@ import { SkovilleWebpackPlugin, DefaultSkovilleWebpackSever } from '@skoville/we
 import * as webpack from 'webpack';
 import { fsAsync } from '@isomorphic-typescript/fs-async-nodejs';
 
-//const projectPackageJSON = require('../package.json');
-
 const PROJECT_PATH = path.resolve(__dirname, "../");
 const BUNDLE_SOURCE_PATH = path.resolve(PROJECT_PATH, "source-bundle");
 const BUNDLE_OUT_PATH = path.resolve(__dirname, "./bundles"); // This is relative to the dist folder after compilation.
 
-//const dependencies = new Set([...Object.keys(projectPackageJSON.dependencies), ...Object.keys(projectPackageJSON.devDependencies)]);
-
 const skovilleServerPort = 8080;
 
 const configs: webpack.Configuration[] = [
-    /*
     {
         mode: 'development',
         externals: {
@@ -24,11 +19,14 @@ const configs: webpack.Configuration[] = [
         },
         entry: [
             path.resolve(BUNDLE_SOURCE_PATH, "./node/server.ts"),
-            "@skoville/webpack-hmr-node-client-default/entry.js"
+            "@skoville/webpack-hmr-client-node-default/entry.js"
         ],
         plugins: [
-            new webpack.HotModuleReplacementPlugin(),
-            skovillePlugin
+            new SkovilleWebpackPlugin({
+                url: `http://localhost:${skovilleServerPort}`,
+                enableApplicationRestarting: true,
+                enableHotModuleReloading: true
+            })
         ],
         target: 'node',
         output: {
@@ -53,8 +51,6 @@ const configs: webpack.Configuration[] = [
             extensions: ['.ts', '.js']
         }
     },
-    */
-    // TODO: add entry for web bundle.
     {
         name: 'WEB-CONFIG',
         mode: 'development',
@@ -94,13 +90,8 @@ const configs: webpack.Configuration[] = [
     }
 ];
 
-new DefaultSkovilleWebpackSever(configs, skovilleServerPort);
-
-fsAsync.comprehensiveDeleteAsync(BUNDLE_OUT_PATH)
+fsAsync
+    .comprehensiveDeleteAsync(BUNDLE_OUT_PATH)
     .then(() => {
-        webpack(configs).watch({}, async (error: Error, stats: webpack.Stats) => {
-            error;
-            stats;
-            console.log("run output");
-        });
+        new DefaultSkovilleWebpackSever(configs, skovilleServerPort);
     });

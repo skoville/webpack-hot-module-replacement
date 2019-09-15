@@ -9,7 +9,7 @@ export class DefaultSkovilleWebpackSever {
     private readonly customizableSkovilleWebpackServer: CustomizableSkovilleWebpackServer;
     private readonly log: Log.Logger;
     private readonly httpServer: http.Server;
-    private readonly ioServer: socketio.Server;
+    private readonly socketioServer: socketio.Server;
     private readonly webpackConfigurationNameToSocketsMap: Map<string, Set<socketio.Socket>>;
 
     public constructor(webpackConfigurations: webpack.Configuration[], port: number) {
@@ -33,8 +33,8 @@ export class DefaultSkovilleWebpackSever {
         const expressApp = express();
         this.setUpGETRequestHandling(expressApp);
         this.httpServer = new http.Server(expressApp);
-        this.ioServer = socketio(this.httpServer);
-        this.setUpWebSocketHandling(this.ioServer);
+        this.socketioServer = socketio(this.httpServer);
+        this.setUpWebSocketHandling(this.socketioServer);
         this.httpServer.listen(port, () => {
             this.log.info(`Listening on port ${port}.`);
         });
@@ -114,7 +114,7 @@ export class DefaultSkovilleWebpackSever {
                 sockets.forEach(socket => socket.disconnect(true));
             });
         this.webpackConfigurationNameToSocketsMap.clear();
-        this.ioServer.close(() => {
+        this.socketioServer.close(() => {
             this.httpServer.close(() => {
                 cb();
             });

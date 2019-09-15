@@ -38,7 +38,10 @@ export class CompilerManager {
         this.pendingReadStreamHandlers = [];
         this.publicPath = (() => {
             const {compiler} = this;
-            const publicPath = (compiler.options.output && compiler.options.output.publicPath) || "/";
+            const publicPath = (compiler.options.output && compiler.options.output.publicPath);
+            if (publicPath === undefined) {
+                throw new Error(`Logical error detected: ${nameof(publicPath)} is undefined in constructor of ${nameof(CompilerManager)}`);
+            }
             return publicPath.endsWith("/") ? publicPath : publicPath + "/";
         })();
         this.updates = [];
