@@ -1,0 +1,10 @@
+{
+    "extends": "../../tsconfig.json",
+    "references": [],
+    "include": ["./*"],
+    "compilerOptions": {
+        "rootDir": "./",
+        "lib": ["esnext"],
+        "types": ["ts-nameof", "webpack-env", "node", "express"]
+    }
+}

@@ -7,10 +7,28 @@ import { Log, CompilerUpdate } from '@skoville/webpack-hmr-shared-universal-util
 import { SkovilleWebpackPlugin } from './webpack-plugin';
 import * as ansicolor from 'ansicolor';
 import { injectWebpackHotBootstrapModifications } from './webpack-bootstrap-source-injection';
+import { generateHash } from './hash';
 
 type FileSystem = typeof fs | MemoryFileSystem;
 
 const WEBPACK_PLUGIN_TAP_NAME = nameof(SkovilleWebpackPlugin);
+
+const supportedBundleTypes = {
+    'node': true,
+    'web': true,
+};
+type SupportedBundleType = keyof typeof supportedBundleTypes;
+
+function isSupportedBundleTarget(bundleType: string): bundleType is SupportedBundleType {
+    return supportedBundleTypes.hasOwnProperty(bundleType);
+}
+
+type ModuleMonitor = {
+    hash: string;
+    source: string;
+    hotUpdate: any;
+    skovilleHash: string;
+}
 
 export class CompilerManager {
     private readonly fs: FileSystem;
@@ -20,6 +38,8 @@ export class CompilerManager {
     private valid: boolean;
     private pendingReadStreamHandlers: Function[];
     private updates: CompilerUpdate[];
+    private bundleTarget: string;
+    private moduleIdToModuleMonitorMap: Map<string, ModuleMonitor>;
 
     public constructor(
         private readonly compiler: webpack.Compiler,
@@ -45,6 +65,14 @@ export class CompilerManager {
             return publicPath.endsWith("/") ? publicPath : publicPath + "/";
         })();
         this.updates = [];
+        if (compiler.options.target === undefined) {
+            throw new Error(`${nameof.full(compiler.options.target)} may not be undefined. It is currently undefined for config name ${webpackConfigurationName}`);
+        }
+        if (typeof(compiler.options.target) === 'function') {
+            throw new Error(`${nameof.full(compiler.options.target)} may not be a function. It is currently a function for the config name ${webpackConfigurationName}`);
+        }
+        this.bundleTarget = compiler.options.target;
+        this.moduleIdToModuleMonitorMap = new Map();
         this.addHooks();
     }
 
@@ -131,6 +159,31 @@ export class CompilerManager {
             this.log.trace("HASH ON DONE HOOK IS = " + ansicolor.bgWhite(ansicolor.black(hash)));
             const priorUpdate = this.updates[this.updates.length - 1];
             const noPriorUpdate = priorUpdate === undefined;
+
+            // The following code mitigates a webpack bug where sometimes the hash of the module changes even though the source did not.
+            const incorrectModuleUpdates: string[] = [];
+            compilation.modules.forEach(mod => {
+                const moduleId: string = mod.id;
+                const moduleSource: string = mod._source === null ? "" : mod._source._value;
+                const moduleHash: string = mod.hash;
+                const moduleHotUpdate: any = mod.hotUpdate;
+                const skovilleHash: string = generateHash(moduleSource);
+                const currentModuleMonitor = this.moduleIdToModuleMonitorMap.get(mod.id);
+                if (currentModuleMonitor === undefined || moduleHash !== currentModuleMonitor.hash) {
+                    if (currentModuleMonitor !== undefined && currentModuleMonitor.skovilleHash === skovilleHash) {
+                        this.log.warn(`Webpack incorrectly reported change in the module ${moduleId}`);
+                        incorrectModuleUpdates.push(moduleId);
+                    }
+                    this.moduleIdToModuleMonitorMap.set(moduleId, {
+                        source: moduleSource,
+                        hash: moduleHash,
+                        hotUpdate: moduleHotUpdate,
+                        skovilleHash
+                    });
+                }
+            });
+
+            // Now we check the actually output from Webpack's HMR plugin.
             if (noPriorUpdate || priorUpdate.hash !== hash) {
                 const newUpdate = {
                     hash,
@@ -139,13 +192,19 @@ export class CompilerManager {
                     assets: Object.keys(compilation.assets),
                     updatedModuleSources: noPriorUpdate ? {} : await this.assembleModuleUpdates(compilation, priorUpdate.hash)
                 };
+                Object.keys(newUpdate.updatedModuleSources)
+                    .filter(updatedModuleId => incorrectModuleUpdates.includes(updatedModuleId))
+                    .forEach(incorrectModuleId => {
+                        this.log.warn(`Removing module id ${incorrectModuleId} from HMR update notification`);
+                        delete newUpdate.updatedModuleSources[incorrectModuleId];
+                    })
                 this.updates.push(newUpdate);
                 this.log.info("Assets");
                 this.log.info(`[\n    ${newUpdate.assets.join(",\n    ")}\n]`);
                 const updatedModuleIds = Object.keys(newUpdate.updatedModuleSources);
                 if (updatedModuleIds.length > 0) {
-                    this.log.info("Updated modules");
-                    this.log.info(`[\n    ${updatedModuleIds.join(",\n    ")}\n]`);
+                    this.log.info(`${updatedModuleIds.length} updated modules:`);
+                    this.log.info(`${updatedModuleIds.map((updatedModuleId, index) => ansicolor.green(`${index + 1}) `) + updatedModuleId).join("\n")}`);
                 }
                 this.compilerUpdateHandler();
             }
@@ -191,17 +250,31 @@ export class CompilerManager {
     }
 
     private executeChunkUpdateSource(source: string, updatedModuleSources: Record<string, string>) {
-        const webSource = `(function(webpackHotUpdate){\n${source}\n})`;
-        vm.runInThisContext(webSource, {})((_chunkId: string, updatedModules: Record<string, string>) => {
-            for(const moduleId in updatedModules) {
-                if (Object.prototype.hasOwnProperty.call(updatedModules, moduleId)) {
-                    if (updatedModuleSources[moduleId] !== undefined) {
-                        this.log.error(`The ${nameof(updatedModuleSources)} object already has a source registered for ${nameof(moduleId)} ${moduleId}`);
-                    }
-                    updatedModuleSources[moduleId] = updatedModules[moduleId].toString();
+        if(isSupportedBundleTarget(this.bundleTarget)) {
+            const executableSource: string = (() => {
+                switch(this.bundleTarget) {
+                    case 'node':
+                        return `(function(hotAddUpdateChunk){\nvar exports = {};\n${source}\nhotAddUpdateChunk(exports.id, exports.modules)\n})`;
+                    case 'web':
+                        return `(function(webpackHotUpdate){\n${source}\n})`;
                 }
-            }
-        });
+            })();
+            vm.runInThisContext(executableSource, {})((_chunkId: string, updatedModules: Record<string, string>) => {
+                for(const moduleId in updatedModules) {
+                    if (Object.prototype.hasOwnProperty.call(updatedModules, moduleId)) {
+                        if (updatedModuleSources[moduleId] !== undefined) {
+                            this.log.error(`The ${nameof(updatedModuleSources)} object already has a source registered for ${nameof(moduleId)} ${moduleId}`);
+                        }
+                        updatedModuleSources[moduleId] = updatedModules[moduleId].toString();
+                    }
+                }
+            });
+        } else {
+            this.log.info(`Unsupported ${nameof(this.bundleTarget)} ${this.bundleTarget}. Source for update file below`).then(() => {
+                console.log(source);
+                throw new Error(`Error running ${nameof(this.assembleModuleUpdates)}. Detected unsupported ${nameof(this.bundleTarget)} ${this.bundleTarget}. Open an issue or comment on a duplicate to get this target supported. Paste source for implementation reference`);
+            });
+        }
     }
 
     private logCompilationResult(stats: webpack.Stats) {

@@ -11,7 +11,7 @@ export class CustomizableNodeClient {
     public constructor(
         loggingHandler: (logMessage: string, logLevel: Log.Level) => Promise<boolean>,
         sendRequestToServer: (updateRequest: UpdateRequest) => Promise<UpdateResponse>,
-        _getLatestSource: () => Promise<string>) {
+        getLatestSource: () => Promise<string>) {
         this.log = new Log.Logger(async logRequest => {
             const logResult = await loggingHandler(logRequest.contents, logRequest.level);
             if (logResult) {
@@ -25,10 +25,23 @@ export class CustomizableNodeClient {
             // TODO: should we instead allow users to pass in their own implementation of download?
             // Perhaps they don't want to use a direct GET.
             async () => {
+                console.log("module tree walk");
+                const moduleInfoDivider = "===============================================================";
+                var curModule: NodeModule | null = module;
+                do {
+                    console.log(moduleInfoDivider);
+                    console.log(curModule.filename);
+                    console.log(curModule.id);
+                    console.log(curModule.loaded);
+                    console.log("[" + curModule.paths.join(", ") + "]");
+                    console.log(moduleInfoDivider);
+                    curModule = curModule.parent;
+                } while(curModule !== null);
+
+                console.log("public path = " + __webpack_public_path__);
+
                 // Step 1. Download latest source
-                // const source = await getLatestSource();
-                console.log("module below");
-                console.log(module);
+                await getLatestSource();
                 // Step 2. replace the current source with the downloaded source
 
                 // Step 4. Set a temporary file which will act as a way to see if there was a client id.

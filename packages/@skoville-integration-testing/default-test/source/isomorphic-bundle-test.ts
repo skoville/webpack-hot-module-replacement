@@ -11,6 +11,7 @@ const skovilleServerPort = 8080;
 
 const configs: webpack.Configuration[] = [
     {
+        name: 'NODE-CONFIG',
         mode: 'development',
         externals: {
             // These two strange lines are necessary because of this: https://github.com/websockets/ws/issues/1220
