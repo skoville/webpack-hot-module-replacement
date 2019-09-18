@@ -7,7 +7,7 @@ import { Log, CompilerUpdate } from '@skoville/webpack-hmr-shared-universal-util
 import { SkovilleWebpackPlugin } from './webpack-plugin';
 import * as ansicolor from 'ansicolor';
 import { injectWebpackHotBootstrapModifications } from './webpack-bootstrap-source-injection';
-import { generateHash } from './hash';
+import { generateHash } from './generate-hash';
 
 type FileSystem = typeof fs | MemoryFileSystem;
 
@@ -185,10 +185,18 @@ export class CompilerManager {
 
             // Now we check the actually output from Webpack's HMR plugin.
             if (noPriorUpdate || priorUpdate.hash !== hash) {
-                const newUpdate = {
+                const newUpdate: CompilerUpdate = {
                     hash,
-                    errors: compilation.errors,
-                    warnings: compilation.warnings,
+                    errors: compilation.errors.map(webpackError => ({
+                        message: webpackError.error.message,
+                        fileName: webpackError.error.fileName,
+                        sourceLocation: webpackError.loc
+                    })),
+                    warnings: compilation.warnings.map(webpackWarning => ({
+                        message: webpackWarning.error.message,
+                        fileName: webpackWarning.error.fileName,
+                        sourceLocation: webpackWarning.loc
+                    })),
                     assets: Object.keys(compilation.assets),
                     updatedModuleSources: noPriorUpdate ? {} : await this.assembleModuleUpdates(compilation, priorUpdate.hash)
                 };

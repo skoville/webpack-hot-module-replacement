@@ -1,2 +1,2 @@
-const message = "Jamba Moosed";
+const message = "Hello World!";
 export const renderedPage = `<html><body>${message}</body></html>`;

@@ -3,11 +3,24 @@ export type UpdateRequest = {
     currentHash: string;
     clientId?: string;
 }
+export type SourcePosition = {
+    line: number;
+    column: number;
+}
+
+export type Exception = {
+    message: string;
+    fileName: string;
+    sourceLocation: {
+        start: SourcePosition;
+        end: SourcePosition;
+    }
+}
 
 export type CompilerUpdate = {
     hash: string;
-    errors: string[];
-    warnings: string[];
+    errors: Exception[];
+    warnings: Exception[];
     assets: string[];
     updatedModuleSources: Record<string, string>;
 }
