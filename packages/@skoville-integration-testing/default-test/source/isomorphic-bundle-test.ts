@@ -30,6 +30,10 @@ const configs: webpack.Configuration[] = [
             })
         ],
         target: 'node',
+        node: {
+            __dirname: false,
+            __filename: false
+        },
         output: {
             path: BUNDLE_OUT_PATH,
             filename: 'server.js'

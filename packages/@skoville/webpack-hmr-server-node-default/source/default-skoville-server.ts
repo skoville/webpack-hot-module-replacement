@@ -77,9 +77,9 @@ export class DefaultSkovilleWebpackSever {
 
     private setUpWebSocketHandling(io: socketio.Server) {
         io.on('connection', async socket => {
+            this.log.info("New connection");
             socket.on("message", (updateRequest: UpdateRequest, acknowledge: (response: UpdateResponse) => void) => {
-                console.log("request:");
-                console.log(updateRequest);
+                this.log.info(`Request for config ${updateRequest.webpackConfigurationName}: ${updateRequest.currentHash}`);
                 const response = this.customizableSkovilleWebpackServer.handleClientMessage(updateRequest);
                 if (response.webpackConfigurationNameRegistered === true) {
                     const sockets = this.webpackConfigurationNameToSocketsMap.get(updateRequest.webpackConfigurationName) || new Set();
@@ -92,7 +92,7 @@ export class DefaultSkovilleWebpackSever {
                 console.log(response);
                 if (response.webpackConfigurationNameRegistered && response.compatible && response.updatesToApply.length > 1) {
                     console.log("sent updates:");
-                    console.log(response.updatesToApply[1].updatedModuleSources);
+                    console.log(Object.keys(response.updatesToApply[1].updatedModuleSources));
                 }
                 acknowledge(response);
             });
@@ -108,16 +108,18 @@ export class DefaultSkovilleWebpackSever {
         });
     }
 
-    public close(cb: Function) {
+    public async close() {
         Array.from(this.webpackConfigurationNameToSocketsMap.values())
             .forEach(sockets => {
                 sockets.forEach(socket => socket.disconnect(true));
             });
         this.webpackConfigurationNameToSocketsMap.clear();
-        this.socketioServer.close(() => {
-            this.httpServer.close(() => {
-                cb();
-            });
-        })
+        return new Promise<void>(resolve => {
+            this.socketioServer.close(() => {
+                this.httpServer.close(() => {
+                    resolve();
+                });
+            })
+        });
     }
 }

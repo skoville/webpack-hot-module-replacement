@@ -3,16 +3,16 @@ import { SocketIOSkovilleServerAccessor } from '@skoville/webpack-hmr-client-uni
 
 class DefaultWebClient {
     private readonly customizableWebClient: CustomizableWebClient;
+    private readonly skovilleServerAccessor: SocketIOSkovilleServerAccessor;
     public constructor() {
-        const skovilleServerAccessor = new SocketIOSkovilleServerAccessor(
-            CustomizableWebClient.getServerURL(),
-            async () => {
-                this.customizableWebClient.triggerClientUpdateRequest();
-            }
-        );
         this.customizableWebClient = new CustomizableWebClient(
             async () => true,
-            updateRequest => skovilleServerAccessor.submitUpdateRequest(updateRequest)
+            updateRequest => this.skovilleServerAccessor.submitUpdateRequest(updateRequest)
+        );
+        this.skovilleServerAccessor = new SocketIOSkovilleServerAccessor(
+            CustomizableWebClient.getServerURL(),
+            () => this.customizableWebClient.triggerClientUpdateRequest(),
+            this.customizableWebClient.getLogger()
         );
     }
 }

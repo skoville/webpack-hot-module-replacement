@@ -2,8 +2,6 @@ import { Log, UpdateResponse, UpdateRequest, CompilerUpdate, webpackFunctionToIn
 import { clientOptions, webpackConfigurationName } from '@skoville/webpack-hmr-shared-universal-utilities/distribution/injected-client-constants/values';
 import * as ansicolor from 'ansicolor';
 
-declare const console: {log: (message: any) => void};
-
 export class SkovilleHotClientRuntime {
     private readonly log: Log.Logger
     private readonly hotEnabled: boolean;
@@ -27,7 +25,6 @@ export class SkovilleHotClientRuntime {
         if (this.hotEnabled !== moduleHotIsDefined) { // module.hot being defined should also mean that this.hotEnabled is true. Otherwise there was a logical error.
             throw new Error(`hot swapping is ${this.hotEnabled ? 'enabled' : 'disabled'}, but webpack's ${nameof.full(module.hot)} is ${moduleHotIsDefined ? '' : 'un'}defined.`);
         }
-        this.triggerUpdateRequest();
     }
 
     public getClientId() {
@@ -44,7 +41,6 @@ export class SkovilleHotClientRuntime {
     }
 
     public async triggerUpdateRequest() {
-        this.log.info("inside the hot-runtime's trigger update  request");
         const updateResponse = await this.requestUpdatesFromServer({
             webpackConfigurationName,
             currentHash: __webpack_hash__,
@@ -54,7 +50,18 @@ export class SkovilleHotClientRuntime {
     }
 
     private async handleUpdateResponseFromServer(updateResponse: UpdateResponse) {
-        this.log.info("update response is \n" + JSON.stringify(updateResponse));
+        this.log.info("update response is \n" + JSON.stringify(Object.assign({}, updateResponse,
+            (
+                updateResponse.webpackConfigurationNameRegistered &&
+                updateResponse.compatible
+            ) ?
+            {
+                [nameof(updateResponse.updatesToApply)]: updateResponse.updatesToApply.map(update => 
+                    Object.assign({}, update, {[nameof(update.updatedModuleSources)]: Object.keys(update.updatedModuleSources)}))
+            }
+            :
+            {}
+        )));
         if(updateResponse.webpackConfigurationNameRegistered) {
             this.cliendId = updateResponse.clientId;
             if(updateResponse.compatible) {
@@ -66,7 +73,7 @@ export class SkovilleHotClientRuntime {
                 }
                 const actualUpdateOcurred = newlyQueuedUpdates.length > 0;
                 if (actualUpdateOcurred) {
-                    this.log.info(`Newly queued updates from server: ` + newlyQueuedUpdates);
+                    this.log.info(`${newlyQueuedUpdates.length} newly queued updates from server.`);
                     if(this.hotEnabled) {
                         if (this.runningHotSwaps === 0) {
                             this.hotSwap();
@@ -93,7 +100,7 @@ export class SkovilleHotClientRuntime {
      * @returns the compiler updates which were not registered in the update queue before this run.
      */
     private mergeUpdates(compilerUpdates: CompilerUpdate[]): CompilerUpdate[] | null {
-        this.log.info("webpack hash is = " + __webpack_hash__);
+        this.log.info("webpack hash is = " + ansicolor.green(__webpack_hash__));
         var indexOfHashHistoryWhichMatchesIndexOfFirstUpdate = -1;
         for (var hashHistoryIndex = 0; hashHistoryIndex < this.hashHistory.length; ++hashHistoryIndex) {
             const currentHashFromHistory = this.hashHistory[hashHistoryIndex];
@@ -162,7 +169,6 @@ export class SkovilleHotClientRuntime {
         }
         const nextHashFromUpdateQueue = this.hashHistory[this.currentHashHistoryIndex + 1];
         const updateToApply = this.hashToCompilerUpdateMap.get(nextHashFromUpdateQueue);
-        await this.log.info(`${nameof.full(this.hashToCompilerUpdateMap)} =`);
         if (updateToApply === undefined) {
             this.log.error(`There was an invalid attempt to run ${nameof(this.hotSwap)}, because the ${nameof(updateToApply)} is undefined in ${nameof.full(this.hashToCompilerUpdateMap)} at hash ${nextHashFromUpdateQueue}`);
             return;
@@ -171,8 +177,6 @@ export class SkovilleHotClientRuntime {
             this.log.error(`Detected error where the hash ${nextHashFromUpdateQueue} when used as an index into ${nameof.full(this.hashToCompilerUpdateMap)} returns an update which has a non-matching hash ${updateToApply.hash}`);
             return;
         }
-        await this.log.info(`About to hot swap the following update: `);
-        console.log(updateToApply);
         if (!module.hot) {
             this.log.error(`${nameof.full(module.hot)} is undefined when there is an attempt to run ${nameof(this.hotSwap)}`);
             return;
@@ -183,35 +187,16 @@ export class SkovilleHotClientRuntime {
             return;
         }
         try {
-            /*
-            // TODO: PR to hmr @types repo to include definition of module.hot.check that returns a promise so we don't have to use new Promise
-            const updatedModules = await new Promise<__WebpackModuleApi.ModuleId[]>((resolve, reject) => {
-                module.hot.check(true, (err, updatedModules) => {
-                    if (err) reject(err);
-                    else resolve(updatedModules);
-                });
-            });
-            if(!updatedModules) {
-                this.log.error(`No update found during hot swap, thus a full restart is required. This is likely due to a server restart occuring during the hot swap.`);
-                this.startOrPromptAppRestart();
-                return;
-            }
-            */
-
-            // TODO: PR to hmr @types repo to include new method added to module.hot
             const updatedModuleSources = updateToApply.updatedModuleSources;
             const updatedModules: any = {};
             for (const moduleId in updatedModuleSources) {
-                console.log(moduleId);
-                console.log(updatedModuleSources[moduleId]);
                 updatedModules[moduleId] = eval(`(\n${updatedModuleSources[moduleId]}\n)`);
             }
-            console.log("updatedModules");
-            console.log(updatedModules);
+            this.log.info(`The following will be hotswapped: ['${Object.keys(updatedModules).map(updatedModule => ansicolor.magenta(updatedModule)).join("', '")}']`);
+            // TODO: PR to hmr @types repo to include new method added to module.hot
             const updatedModulesConfirmed = await (module.hot as any)[webpackFunctionToInjectName](updateToApply.hash, updatedModules);
-            console.log(updatedModulesConfirmed);
+            this.logHMRApplyResult(updatedModulesConfirmed);
 
-            //this.logHMRApplyResult(updatedModules);
             this.currentHashHistoryIndex++;
             const currentHash = this.hashHistory[this.currentHashHistoryIndex];
             if (currentHash !== __webpack_hash__) {
@@ -226,14 +211,15 @@ export class SkovilleHotClientRuntime {
                 this.hotSwap();
             }
         } catch(err) {
-            this.log.error(`${nameof.full(module.hot.check)} has failed. The current ${nameof.full(module.hot.status)} is ${module.hot.status()}`);
-            if (err.message) this.log.error(err.message);
+            this.log.error(`${nameof.full(module.hot.apply)} has failed. The current ${nameof.full(module.hot.status)} is ${module.hot.status()}`);
             if (err.stack) this.log.error(err.stack);
-            //this.startOrPromptAppRestart();
+            else if (err.message) this.log.error(err.message);
+            if (module.hot.status() === 'abort') {
+                this.startOrPromptAppRestart();
+            }
         }
     }
 
-    /*
     private logHMRApplyResult(updatedModules: __WebpackModuleApi.ModuleId[]) {
         if(updatedModules.length === 0) {
             this.log.info("Nothing hot updated.");
@@ -242,14 +228,13 @@ export class SkovilleHotClientRuntime {
             updatedModules.forEach(moduleId => {
                 if(typeof moduleId === "string" && moduleId.indexOf("!") !== -1) {
                     const parts = moduleId.split("!");
-                    this.log.info(" - " + parts.pop());
+                    this.log.info(" - " + ansicolor.magenta("" + parts.pop()));
                 }
-                this.log.info(" - " + moduleId);
+                this.log.info(" - " + ansicolor.magenta("" + moduleId));
             });
             if(updatedModules.every(moduleId => typeof moduleId === "number")) {
                 this.log.info("Consider using the NamedModulesPlugin for module names.");
             }
         }
     }
-    */
 }

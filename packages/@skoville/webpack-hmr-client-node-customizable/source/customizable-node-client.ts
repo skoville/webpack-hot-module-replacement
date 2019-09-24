@@ -1,6 +1,9 @@
 import { SkovilleHotClientRuntime } from '@skoville/webpack-hmr-client-universal-hot-runtime';
 import { Log, UpdateRequest, UpdateResponse } from '@skoville/webpack-hmr-shared-universal-utilities';
 import { webpackConfigurationName, clientOptions } from '@skoville/webpack-hmr-shared-universal-utilities/distribution/injected-client-constants/values';
+import { Readable } from 'stream';
+import { defaultGetLatestSource } from './default-get-latest-source';
+import * as fs from 'fs';
 
 var restartingProgram = false;
 
@@ -9,15 +12,15 @@ export class CustomizableNodeClient {
     private readonly hotClientRuntime: SkovilleHotClientRuntime;
 
     public constructor(
-        loggingHandler: (logMessage: string, logLevel: Log.Level) => Promise<boolean>,
+        loggingHandler: (logMessage: string, logLevel: Log.Level) => boolean,
         sendRequestToServer: (updateRequest: UpdateRequest) => Promise<UpdateResponse>,
-        getLatestSource: () => Promise<string>) {
-        this.log = new Log.Logger(async logRequest => {
-            const logResult = await loggingHandler(logRequest.contents, logRequest.level);
+        getLatestSource?: () => Promise<Readable>) {
+        this.log = new Log.Logger(logRequest => {
+            const logResult = loggingHandler(logRequest.contents, logRequest.level);
             if (logResult) {
                 console.log(logRequest.contents);
             }
-        }, `Skoville${nameof(CustomizableNodeClient)}`);
+        }, `[Skoville${nameof(CustomizableNodeClient)}] `);
         this.log.info(`PID = ${process.pid}`);
         this.hotClientRuntime = new SkovilleHotClientRuntime(
             this.log,
@@ -25,29 +28,21 @@ export class CustomizableNodeClient {
             // TODO: should we instead allow users to pass in their own implementation of download?
             // Perhaps they don't want to use a direct GET.
             async () => {
-                console.log("module tree walk");
-                const moduleInfoDivider = "===============================================================";
-                var curModule: NodeModule | null = module;
-                do {
-                    console.log(moduleInfoDivider);
-                    console.log(curModule.filename);
-                    console.log(curModule.id);
-                    console.log(curModule.loaded);
-                    console.log("[" + curModule.paths.join(", ") + "]");
-                    console.log(moduleInfoDivider);
-                    curModule = curModule.parent;
-                } while(curModule !== null);
-
-                console.log("public path = " + __webpack_public_path__);
-
                 // Step 1. Download latest source
-                await getLatestSource();
+                const latestSourceStream = getLatestSource === undefined ?
+                    await defaultGetLatestSource(this.log) :
+                    await getLatestSource();
                 // Step 2. replace the current source with the downloaded source
-
+                // TODO: replace __filename with more certain file in case of multi-chunk scenarios.
+                const fileStream = fs.createWriteStream(__filename);
+                latestSourceStream.pipe(fileStream);
+                await new Promise(resolve => {
+                    fileStream.on('finish', () => resolve());
+                });
                 // Step 4. Set a temporary file which will act as a way to see if there was a client id.
 
                 // Step 3. Restart the current process.
-                await this.log.info("Restarting in detached process...");
+                this.log.info("Restarting in detached process...");
                 if (restartingProgram) return;
                 restartingProgram = true;
                 setTimeout(() => {

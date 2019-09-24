@@ -8,12 +8,15 @@ app.get("/hello-world", (_req, res) => {
     res.type("html");
     res.send(thePage);
 });
-app.listen(8000, () => {
-    console.log("listening");
+
+const port = 8000;
+
+app.listen(port, () => {
+    console.log(`listening on port ${port}`);
 });
 
 if(module.hot) {
-    console.log("module is hot");
+    console.log("hot module replacement enabled");
     module.hot.accept("./wording", () => {
         thePage = require('./wording').renderedPage;
     });

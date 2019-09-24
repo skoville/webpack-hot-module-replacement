@@ -278,10 +278,9 @@ export class CompilerManager {
                 }
             });
         } else {
-            this.log.info(`Unsupported ${nameof(this.bundleTarget)} ${this.bundleTarget}. Source for update file below`).then(() => {
-                console.log(source);
-                throw new Error(`Error running ${nameof(this.assembleModuleUpdates)}. Detected unsupported ${nameof(this.bundleTarget)} ${this.bundleTarget}. Open an issue or comment on a duplicate to get this target supported. Paste source for implementation reference`);
-            });
+            this.log.info(`Unsupported ${nameof(this.bundleTarget)} ${this.bundleTarget}. Source for update file below`);
+            console.log(source);
+            throw new Error(`Error running ${nameof(this.assembleModuleUpdates)}. Detected unsupported ${nameof(this.bundleTarget)} ${this.bundleTarget}. Open an issue or comment on a duplicate to get this target supported. Paste source for implementation reference`);
         }
     }
 
