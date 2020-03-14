@@ -10,7 +10,7 @@ const BUNDLE_OUT_PATH = path.resolve(__dirname, "./bundles"); // This is relativ
 const skovilleServerPort = 8080;
 
 const configs: webpack.Configuration[] = [
-    {
+    /*{
         name: 'NODE-CONFIG',
         mode: 'development',
         externals: {
@@ -55,7 +55,7 @@ const configs: webpack.Configuration[] = [
         resolve: {
             extensions: ['.ts', '.js']
         }
-    },
+    },*/
     {
         name: 'WEB-CONFIG',
         mode: 'development',

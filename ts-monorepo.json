@@ -225,7 +225,10 @@
                         "ansicolor",
                         "webpack-sources",
                         "@types/webpack",
-                        "@skoville/webpack-hmr-shared-universal-utilities"
+                        "@skoville/webpack-hmr-shared-universal-utilities",
+                        "type-graphql",
+                        "reflect-metadata",
+                        "graphql"
                     ],
                     "devDependencies": [
                         "@types/node",
@@ -239,6 +242,8 @@
                 },
                 "tsconfig.json": {
                     "compilerOptions": {
+                        "emitDecoratorMetadata": true,
+                        "experimentalDecorators": true,
                         "types":["node", "webpack-env"]
                     }
                 }
@@ -255,7 +260,8 @@
                         "@types/webpack",
                         "express",
                         "mime",
-                        "socket.io"
+                        "socket.io",
+                        "express-graphql"
                     ],
                     "devDependencies": [
                         "@types/node",

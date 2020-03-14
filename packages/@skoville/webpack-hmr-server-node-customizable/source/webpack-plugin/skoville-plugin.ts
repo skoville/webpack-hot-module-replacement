@@ -23,5 +23,19 @@ export class SkovilleWebpackPlugin implements webpack.Plugin {
             [nameof(CLIENT_OPTIONS)]: JSON.stringify(this.options),
             [nameof(WEBPACK_CONFIGURATION_NAME)]: `'${compiler.options.name}'`
         }).apply(compiler);
+
+        // See https://github.com/MichalLytek/type-graphql/blob/20c81f4f7ee82779595002d25784fce3a8ff8b9b/src/browser-shim.ts#L7-L12
+        // TODO: better typing. Cummon webpack!
+        new webpack.NormalModuleReplacementPlugin(/type-graphql$/, (resource: any) => {
+            resource.request = resource.request.replace(/type-graphql/, "type-graphql/dist/browser-shim");
+        }).apply(compiler);
+    }
+
+    public getCompilerManager() {
+
+    }
+
+    public getClientManager() {
+        
     }
 }

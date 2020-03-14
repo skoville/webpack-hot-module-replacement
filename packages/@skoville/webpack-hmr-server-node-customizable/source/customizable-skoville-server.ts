@@ -1,27 +1,33 @@
 import * as webpack from 'webpack';
 import { Log, UpdateRequest, UpdateResponse } from '@skoville/webpack-hmr-shared-universal-utilities';
 import { v4 as generateUUID } from 'uuid';
-import { CompilerManager } from './compiler-manager';
+import { CompilerManager } from './webpack-plugin/compiler-manager';
 import * as fs from 'fs';
+console.log("require('type-graphql')");
+import { buildSchemaSync } from 'type-graphql';
+console.log("required type-graphql");
+console.log("require('graphql')");
+import { GraphQLSchema, assertSchema } from 'graphql';
+console.log("required graphql");
+import { ServerResolver } from './graphql-resolvers';
+import ansicolor = require('ansicolor');
 
 export type SkovilleWebpackEvent = "ClientPinged";
 export class CustomizableSkovilleWebpackServer {
     private readonly webpackConfigurationNameToCompilerManagerMap: Map<string, CompilerManager>;
     private readonly log: Log.Logger;
 
+    private readonly graphqlSchema: GraphQLSchema;
+
     public constructor(
         webpackConfigurations: webpack.Configuration[],
         compilerUpdatedHandler: (webpackConfigurationName: string) => Promise<void>,
-        eventObserver: (skovilleWebpackEvent: SkovilleWebpackEvent, logger: Log.Logger) => Promise<void>,
-        loggingHandler: (logMessage: string, logLevel: Log.Level) => Promise<boolean>) {
+        eventObserver: (skovilleWebpackEvent: SkovilleWebpackEvent, logger: Log.Logger) => Promise<void>) {
 
         // Initialize logger
         this.log = new Log.Logger(async logRequest => {
-            const logResult = await loggingHandler(logRequest.contents, logRequest.level);
-            if (logResult) {
-                console.log(logRequest.contents);
-            }
-        });
+            console.log(logRequest.contents);
+        }, `[${ansicolor.cyan(nameof(CustomizableSkovilleWebpackServer))}]`, `[${process.pid}]`);
 
         // TODO: start actually using event observer.
         eventObserver("ClientPinged", this.log);
@@ -71,6 +77,16 @@ export class CustomizableSkovilleWebpackServer {
                 this.webpackConfigurationNameToCompilerManagerMap.set(name, compilerManager);
             });
         multiCompiler.watch({}, () => {}); // TODO: do we want any options input here?
+
+        this.graphqlSchema = buildSchemaSync({
+            resolvers: [ServerResolver]
+        });
+        this.log.info("asserting is a schema");
+        assertSchema(this.graphqlSchema);
+    }
+
+    public getGraphqlSchema() {
+        return this.graphqlSchema;
     }
 
     public handleClientMessage(updateRequest: UpdateRequest): UpdateResponse {
@@ -98,9 +114,15 @@ export class CustomizableSkovilleWebpackServer {
         };
     }
 
+    public getModuleSource(moduleId: string, webpackConfigurationName: string): Promise<string | undefined> {
+        const compilerManager = this.getCompilerManagerFromConfigurationName(webpackConfigurationName, `Unable to ${
+            nameof(this.getModuleSource)} of ${nameof(moduleId)} '${moduleId}' from ${nameof(webpackConfigurationName)} '${webpackConfigurationName}'`);
+        return compilerManager.getModuleSource(moduleId);
+    }
+
     public getFileStream(filePath: string, webpackConfigurationName: string): Promise<fs.ReadStream|false> {
         const compilerManager = this.getCompilerManagerFromConfigurationName(webpackConfigurationName, `Unable to ${
-            nameof(this.getFileStream)} at ${nameof(filePath)} '${filePath}' for ${webpackConfigurationName} '${webpackConfigurationName}'`);
+            nameof(this.getFileStream)} at ${nameof(filePath)} '${filePath}' for ${nameof(webpackConfigurationName)} '${webpackConfigurationName}'`);
         return compilerManager.getReadStream(filePath);
     }
 

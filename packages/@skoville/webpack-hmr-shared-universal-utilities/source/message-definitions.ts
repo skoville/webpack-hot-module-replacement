@@ -1,3 +1,8 @@
+/**
+ * This file is meant to define all message structure standards shared accross the Skoville project.
+ * The messages define a protocol used to communicate with any Skoville server implementation.
+ */
+
 export type UpdateRequest = {
     webpackConfigurationName: string;
     currentHash: string;

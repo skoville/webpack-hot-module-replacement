@@ -4,10 +4,10 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as vm from 'vm';
 import { Log, CompilerUpdate } from '@skoville/webpack-hmr-shared-universal-utilities';
-import { SkovilleWebpackPlugin } from './webpack-plugin';
+import { SkovilleWebpackPlugin } from './skoville-plugin';
 import * as ansicolor from 'ansicolor';
 import { injectWebpackHotBootstrapModifications } from './webpack-bootstrap-source-injection';
-import { generateHash } from './generate-hash';
+import { generateHash } from '../generate-hash';
 
 type FileSystem = typeof fs | MemoryFileSystem;
 
@@ -24,22 +24,24 @@ function isSupportedBundleTarget(bundleType: string): bundleType is SupportedBun
 }
 
 type ModuleMonitor = {
-    hash: string;
+    webpackHash: string;
     source: string;
     hotUpdate: any;
     skovilleHash: string;
 }
 
+// TODO: PR to @types/webpack for definition of compilation.modules
 export class CompilerManager {
     private readonly fs: FileSystem;
     private log: Log.Logger;
     private readonly publicPath: string;
 
     private valid: boolean;
-    private pendingReadStreamHandlers: Function[];
+    private pendingCallbacksWhichRequireStableCompilation: Function[];
     private updates: CompilerUpdate[];
     private bundleTarget: string;
     private moduleIdToModuleMonitorMap: Map<string, ModuleMonitor>;
+    private currentCompilation: webpack.compilation.Compilation | undefined;
 
     public constructor(
         private readonly compiler: webpack.Compiler,
@@ -55,7 +57,7 @@ export class CompilerManager {
         }
         this.log = log.clone(ansicolor.green(`[config ${ansicolor.magenta(webpackConfigurationName)}] `));
         this.valid = false;
-        this.pendingReadStreamHandlers = [];
+        this.pendingCallbacksWhichRequireStableCompilation = [];
         this.publicPath = (() => {
             const {compiler} = this;
             const publicPath = (compiler.options.output && compiler.options.output.publicPath);
@@ -105,7 +107,28 @@ export class CompilerManager {
                 });
             };
             if(this.valid) attemptToRead();
-            else this.pendingReadStreamHandlers.push(attemptToRead);
+            else this.pendingCallbacksWhichRequireStableCompilation.push(attemptToRead);
+        });
+    }
+
+    public async getModuleSource(moduleId: string): Promise<string | undefined> {
+        return new Promise<string | undefined>(resolve => {
+            const getSource = () => {
+                if (this.currentCompilation === undefined) {
+                    throw new Error(`Implementation bug detected in ${nameof(CompilerManager)} ${nameof(this.getModuleSource)}. ${nameof.full(this.currentCompilation)} is undefined despite waiting until done hook`);
+                }
+                for (var index = 0; index < this.currentCompilation.modules.length; ++index) {
+                    const currentModule = this.currentCompilation.modules[index];
+                    if (currentModule.id === moduleId) {
+                        this.log.info(`Found module ${moduleId}. Keys are ${Object.keys(currentModule)}`);
+                        resolve(currentModule._source === null ? "" : currentModule._source._value);
+                        return;
+                    }
+                }
+                resolve(undefined);
+            };
+            if (this.valid) getSource();
+            else this.pendingCallbacksWhichRequireStableCompilation.push(getSource);
         });
     }
 
@@ -137,9 +160,7 @@ export class CompilerManager {
             }
             bootstrapHook.tap(WEBPACK_PLUGIN_TAP_NAME, (source: string, _chunk: object, _hash: string) => {
                 //console.log("inside bootstrap hook tap handler");
-                //console.log(`${typeof(source)} ${nameof(source)} = ${source}`);
                 //console.log(`${typeof(chunk)} ${nameof(chunk)} = ${chunk}`);
-                //console.log(`${typeof(hash)} ${nameof(hash)} = ${hash}`);
                 return injectWebpackHotBootstrapModifications(source);
             });
         });
@@ -154,34 +175,47 @@ export class CompilerManager {
         });
         this.compiler.hooks.done.tap(WEBPACK_PLUGIN_TAP_NAME, async stats => {
             const {compilation} = stats;
+            this.currentCompilation = compilation;
             const hash = compilation.hash;
             if (!hash) throw new Error("no hash");
-            this.log.trace("HASH ON DONE HOOK IS = " + ansicolor.bgWhite(ansicolor.black(hash)));
+            this.log.info("compiled");
+            this.log.trace(`Webpack hash: ${ansicolor.bgWhite(ansicolor.black(hash))}`);
             const priorUpdate = this.updates[this.updates.length - 1];
             const noPriorUpdate = priorUpdate === undefined;
 
             // The following code mitigates a webpack bug where sometimes the hash of the module changes even though the source did not.
             const incorrectModuleUpdates: string[] = [];
+            const currentSkovilleModuleMapping: Record<string, string> = {};
+            const currentWebpackModuleMapping: Record<string, string> = {};
             compilation.modules.forEach(mod => {
                 const moduleId: string = mod.id;
                 const moduleSource: string = mod._source === null ? "" : mod._source._value;
-                const moduleHash: string = mod.hash;
+                const webpackHash: string = mod.hash;
                 const moduleHotUpdate: any = mod.hotUpdate;
                 const skovilleHash: string = generateHash(moduleSource);
                 const currentModuleMonitor = this.moduleIdToModuleMonitorMap.get(mod.id);
-                if (currentModuleMonitor === undefined || moduleHash !== currentModuleMonitor.hash) {
-                    if (currentModuleMonitor !== undefined && currentModuleMonitor.skovilleHash === skovilleHash) {
+                if (currentModuleMonitor === undefined || webpackHash !== currentModuleMonitor.webpackHash) { // this means a module changed according to webpack
+                    if (currentModuleMonitor !== undefined && currentModuleMonitor.skovilleHash === skovilleHash) { // this means a module did not change according to Skoville
                         this.log.warn(`Webpack incorrectly reported change in the module ${moduleId}`);
                         incorrectModuleUpdates.push(moduleId);
                     }
                     this.moduleIdToModuleMonitorMap.set(moduleId, {
                         source: moduleSource,
-                        hash: moduleHash,
                         hotUpdate: moduleHotUpdate,
+                        webpackHash,
                         skovilleHash
                     });
                 }
+                currentWebpackModuleMapping[moduleId] = webpackHash;
+                currentSkovilleModuleMapping[moduleId] = skovilleHash;
             });
+            const skovilleModuleMappingJSON = JSON.stringify(currentSkovilleModuleMapping, null, 2);
+            const skovilleBundleHash = generateHash(skovilleModuleMappingJSON);
+            const webpackModuleMappingJSON = JSON.stringify(currentWebpackModuleMapping, null, 2);
+            this.log.info(`Skoville hash: ${ansicolor.green(skovilleBundleHash)}`);
+
+            (this.fs as any).writeFile(this.getFsPathFromRequestPath(path.join(this.publicPath, `${skovilleBundleHash}.json`)), skovilleModuleMappingJSON, () => {});
+            (this.fs as any).writeFile(this.getFsPathFromRequestPath(path.join(this.publicPath, `${hash}.json`)), webpackModuleMappingJSON, () => {});
 
             // Now we check the actually output from Webpack's HMR plugin.
             if (noPriorUpdate || priorUpdate.hash !== hash) {
@@ -219,9 +253,9 @@ export class CompilerManager {
 
             // Now that compilation is complete, we may handle all pending read file requests.
             this.valid = true;
-            if(this.pendingReadStreamHandlers.length) {
-                this.pendingReadStreamHandlers.forEach(callback => callback());
-                this.pendingReadStreamHandlers = [];
+            if(this.pendingCallbacksWhichRequireStableCompilation.length) {
+                this.pendingCallbacksWhichRequireStableCompilation.forEach(callback => callback());
+                this.pendingCallbacksWhichRequireStableCompilation = [];
             }
 
             // Consider doing the following after the nextTick, which is done in Webpack-Dev-Middleware
@@ -244,7 +278,7 @@ export class CompilerManager {
             const updateManifestPath = compilation.getPath(hotUpdateMainFilename, {hash: priorHash});
             const updateManifestAsset = compilation.assets[updateManifestPath];
             const updateManifestSource: string = updateManifestAsset.source();
-            const updateManifestContent: {h: string, c: {[chunk: string]: true}} = JSON.parse(updateManifestSource.toString());
+            const updateManifestContent: {h: string, c: {[chunkId: string]: true}} = JSON.parse(updateManifestSource.toString());
             const updatedModuleSources = {};
             for (const chunkId in updateManifestContent.c) {
                 const chunk = compilation.chunks.find(chunk => chunk.id === chunkId);

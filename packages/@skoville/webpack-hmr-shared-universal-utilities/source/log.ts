@@ -21,25 +21,27 @@ export namespace Log {
     type RequestHandler = (request: Request) => void;
 
     export class Logger {
-        private requestHandler: RequestHandler;
-        private prefix: string;
-        private level: Level;
+        private readonly requestHandler: RequestHandler;
+        private readonly permanentPrefix: string;
+        private readonly permanentPlusInstancePrefix: string;
+        private readonly level: Level;
         
-        public constructor(requestHandler: RequestHandler, prefix: string = "", level: number = Level.ALL) {
+        public constructor(requestHandler: RequestHandler, instancePrefix: string = "", permanentPrefix: string = "", level: number = Level.ALL) {
             this.requestHandler = requestHandler;
-            this.prefix = prefix;
+            this.permanentPrefix = permanentPrefix;
+            this.permanentPlusInstancePrefix = permanentPrefix + instancePrefix;
             this.level = level;
         }
 
         private handle(level: Level, message: string) {
             if (level >= this.level) {
-                const contents = this.prefix + this.prefixLinesOfMultilineMessage(message);
+                const contents = this.permanentPlusInstancePrefix + this.prefixLinesOfMultilineMessage(message);
                 this.requestHandler({level, contents});
             }
         }
 
         private prefixLinesOfMultilineMessage(message: string) {
-            const barePrefix = ansicolor.strip(this.prefix);
+            const barePrefix = ansicolor.strip(this.permanentPlusInstancePrefix);
             if (barePrefix.length > 0) {
                 const messageLines = message.split("\n");
                 if (messageLines.length > 1) {
@@ -54,8 +56,8 @@ export namespace Log {
             return message;
         }
 
-        public clone(newPrefix?: string, level?: number) {
-            return new Logger(this.requestHandler, newPrefix, level);
+        public clone(newInstancePrefix?: string, level?: number) {
+            return new Logger(this.requestHandler, newInstancePrefix, this.permanentPrefix, level);
         }
 
         // The logging methods.

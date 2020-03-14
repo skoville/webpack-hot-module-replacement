@@ -1,4 +1,4 @@
 export * from './log';
-export * from './notifications';
+export * from './message-definitions';
 export * from './plugin-options';
 export * from './webpack-hot-extension';

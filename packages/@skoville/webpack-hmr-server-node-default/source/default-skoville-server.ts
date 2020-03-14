@@ -1,9 +1,20 @@
-import { CustomizableSkovilleWebpackServer, Log, UpdateRequest, UpdateResponse } from '@skoville/webpack-hmr-server-node-customizable';
+import { CustomizableSkovilleWebpackServer, Log, UpdateRequest, UpdateResponse, generateHash } from '@skoville/webpack-hmr-server-node-customizable';
 import * as webpack from 'webpack';
 import * as http from 'http';
 import * as socketio from 'socket.io';
 import * as express from 'express';
 import * as mime from 'mime';
+import * as ansicolor from 'ansicolor';
+console.log("require('express-graphql')");
+import * as createGraphqlMiddleware from 'express-graphql';
+console.log("required express-graphql");
+console.log("require('graphql')");
+import { assertSchema } from 'graphql';
+console.log("required graphql");
+const configNameExpressPathParameter = "webpackConfigurationName";
+const moduleIdExpressPathParameter = "moduleId";
+const HTTP_OK_STATUS = 200;
+const HTTP_NOT_FOUND_STATUS = 404;
 
 export class DefaultSkovilleWebpackSever {
     private readonly customizableSkovilleWebpackServer: CustomizableSkovilleWebpackServer;
@@ -23,10 +34,9 @@ export class DefaultSkovilleWebpackSever {
                     sockets.forEach(socket => socket.emit("update"));
                 }
             },
-            async () => {},
-            async () => true,
+            async () => {}
         );
-        this.log = this.customizableSkovilleWebpackServer.getLogger();
+        this.log = this.customizableSkovilleWebpackServer.getLogger().clone(`[${ansicolor.cyan(nameof(DefaultSkovilleWebpackSever))}] `);
         
         this.webpackConfigurationNameToSocketsMap = new Map();
 
@@ -41,37 +51,65 @@ export class DefaultSkovilleWebpackSever {
     }
 
     private setUpGETRequestHandling(app: express.Express) {
-        const configNameExpressPathParameter = "webpackConfigurationName";
-        app.get(`/:${configNameExpressPathParameter}/*`, async (req, res, next) => {
-            this.log.info("get request incoming");
+        this.log.info("the schema is " + this.customizableSkovilleWebpackServer.getGraphqlSchema());
+        this.log.info("the type of the schema is " + typeof(this.customizableSkovilleWebpackServer.getGraphqlSchema()));
+        this.log.info("asserting is a schema");
+        assertSchema(this.customizableSkovilleWebpackServer.getGraphqlSchema());
+        app.use('/graphql', createGraphqlMiddleware({
+            schema: this.customizableSkovilleWebpackServer.getGraphqlSchema(),
+            graphiql: true
+        }));
+        app.get(`/:${configNameExpressPathParameter}/*`, async (req, res, _next) => {
             try {
+                this.log.info("get request incoming");
                 const path = req.path; // TODO: support for index.html
-                const mimeType = mime.getType(path);
-                if (mimeType == null) {
-                    throw new Error(`unable to resolve mime type for resource at '${req.path}'`);
-                }
+                const mimeType = mime.getType(path) || "text/plain";
                 res.setHeader("Content-Type", mimeType);
 
                 this.log.info("Headers below");
                 this.log.info(JSON.stringify(req.headers));
                 this.log.info("Body below");
-                this.log.info(req.body);
+                this.log.info(req.body || "undefined");
 
                 // For now we have to do it this way.
                 this.log.info("path is " + req.path);
                 const fileStream = await this.customizableSkovilleWebpackServer.getFileStream(path, req.params[configNameExpressPathParameter]);
                 if (fileStream !== false) {
-                    const HTTP_OK_STATUS = 200;
                     res.status(HTTP_OK_STATUS);
                     fileStream.pipe(res);
                 } else {
-                    const HTTP_NOT_FOUND_STATUS = 404;
-                    res.status(HTTP_NOT_FOUND_STATUS);
+                    res.sendStatus(HTTP_NOT_FOUND_STATUS);
+                }
+            } catch(e) {
+                this.log.error(e.message);
+                res.setHeader("Content-Type", "text/plain");
+                res.status(HTTP_NOT_FOUND_STATUS);
+                res.send(e.message);
+            }
+        });
+        app.get(`/:${configNameExpressPathParameter}`, async (req, res, _next) => {
+            try {
+                const webpackConfigurationName = req.params[configNameExpressPathParameter];
+                const moduleId = req.query[moduleIdExpressPathParameter];
+                console.log(`fetching source for module ${moduleId}`);
+                if (moduleId === "" || moduleId === null || moduleId === undefined) {
+                    res.status(400);
+                    throw new Error(`${nameof(moduleId)} parameter is ${moduleId}, which is invalid`);
+                } else {
+                    const moduleSource = await this.customizableSkovilleWebpackServer.getModuleSource(moduleId, webpackConfigurationName);
+                    if (moduleSource === undefined) {
+                        res.status(HTTP_NOT_FOUND_STATUS);
+                        res.send({error: `moduleId ${moduleId} does not exist in config ${webpackConfigurationName}`});
+                    } else {
+                        res.status(HTTP_OK_STATUS);
+                        this.log.info(generateHash(moduleSource));
+                        console.log(moduleSource);
+                        res.send(moduleSource);
+                    }
                 }
             } catch(e) {
                 this.log.error(e.message);
             }
-            return next();
         });
     }
 
