@@ -1,6 +1,44 @@
 {
   "license": "MIT",
   "devDependencies": {
-    "@isomorphic-typescript/ts-monorepo": "^0.3.2"
-  }
+    "@isomorphic-typescript": "portal:../ts-monorepo/packages/@isomorphic-typescript/ts-monorepo~",
+    "ttypescript": "^1.5.10",
+    "typescript": "^4.0.2"
+  },
+  "dependenciesMeta": {
+    "ajv": {
+      "unplugged": true
+    },
+    "ansicolor": {
+      "unplugged": true
+    },
+    "schema-utils": {
+      "unplugged": true
+    },
+    "webpack": {
+      "unplugged": true
+    },
+    "webpack-sources": {
+      "unplugged": true
+    }
+  },
+  "scripts": {
+    "build:rapid": "yarn install && ts-monorepo",
+    "test": "yarn workspace @skoville-integration-testing/skoville-test start"
+  },
+  "private": true,
+  "workspaces": [
+    "packages/@skoville-integration-testing/skoville-test~",
+    "packages/@skoville-integration-testing/node-sample~",
+    "packages/@skoville-integration-testing/web-sample~",
+    "packages/@skoville/webpack-hmr/server/node/default~",
+    "packages/@skoville/webpack-hmr/server/node/customizable~",
+    "packages/@skoville/webpack-hmr/shared/universal/utilities~",
+    "packages/@skoville/webpack-hmr/client/node/default~",
+    "packages/@skoville/webpack-hmr/client/node/customizable~",
+    "packages/@skoville/webpack-hmr/client/web/default~",
+    "packages/@skoville/webpack-hmr/client/web/customizable~",
+    "packages/@skoville/webpack-hmr/client/universal/default-socket-io-accessor~",
+    "packages/@skoville/webpack-hmr/client/universal/hot-runtime~"
+  ]
 }

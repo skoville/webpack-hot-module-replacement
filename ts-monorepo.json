@@ -1,325 +1,392 @@
 {
-    "packageRoot": "packages",
+    "version": "0.0.0",
     "ttypescript": true,
-    "cleanBeforeCompile": false,
-    "baseConfigs": {
-        "tsconfig.json": {
-            "compilerOptions": {
-                "module": "commonjs", /* need to use this if targetting es6. Not needed when targetting es5 */
-                "target": "es6",
-
-                /* Type Definitions */
-                "lib": ["esnext"],
-                "types": ["ts-nameof"],
-
-                /* Code Quality */
-                "forceConsistentCasingInFileNames": true,
-                "noImplicitReturns": true,
-                "noUnusedLocals": true,
-                "noUnusedParameters": true,
-                "strict": true, // noImplicitAny noImplicitThis alwaysStrict strictBindCallApply strictFunctionTypes strictPropertyInitialization strictNullChecks
-                "stripInternal": true,
-
-                /* Compiler input output locations */
-                "rootDir": "./source",
-                "outDir": "./distribution",
-
-                /* https://github.com/cevek/ttypescript */
-                "plugins": [
-                    {
-                        "transform": "ts-nameof",
-                        "type": "raw"
+    "port": 2000,
+    "templates": {
+        "base": {
+            "extends": [],
+            "files": {
+                "json": {
+                    "tsconfig.json": {
+                        "compilerOptions": {
+                            "module": "commonjs", /* need to use this if targetting es6. Not needed when targetting es5 */
+                            "target": "es6",
+            
+                            /* Type Definitions */
+                            "lib": ["esnext"],
+                            "types": ["ts-nameof"],
+            
+                            /* Code Quality */
+                            "forceConsistentCasingInFileNames": true,
+                            "noImplicitReturns": true,
+                            "noUnusedLocals": true,
+                            "noUnusedParameters": true,
+                            "strict": true, // noImplicitAny noImplicitThis alwaysStrict strictBindCallApply strictFunctionTypes strictPropertyInitialization strictNullChecks
+                            "stripInternal": true,
+            
+                            /* https://github.com/cevek/ttypescript */
+                            "plugins": [
+                                {
+                                    "transform": "ts-nameof",
+                                    "type": "raw"
+                                }
+                            ]
+                            /** Look into the following:
+                                allowSyntheticDefaultImports
+                                "diagnostics"
+                                downlevelIteration
+                                emitDecoratorMetadata
+                                esModuleInterop
+                                experimentalDecorators
+                                extendedDiagnostics <-- doesn't seem to be in the tsconfig.json schema
+                                importHelpers
+                                isolatedModules
+                                listEmittedFiles
+                                listFiles
+                                module: ESNext
+                                moduleResolution
+                                noEmitOnError
+                                noErrorTruncation
+                                pretty
+                                removeComments
+                                resolveJsonModule
+                                sourceMap
+                                sourceRoot
+                                stripInternal // Could be a good way to hide internal details.
+                                traceResolution
+                            */
+                        },
+                        "include": [
+                            "source/**/*"
+                        ]
+                    },
+                    "package.json": {
+                        "author": "Alexander Leung",
+                        "license": "MIT",
+                        "repository": {
+                            "type": "git",
+                            "url": "git+https://github.com/skoville/webpack-hot-module-replacement.git"
+                        },
+                        "devDependencies": [
+                            "ts-nameof",
+                            ["typescript", "3.9.5"]
+                        ]
                     }
-                ]
-                /** Look into the following:
-                    allowSyntheticDefaultImports
-                    "diagnostics"
-                    downlevelIteration
-                    emitDecoratorMetadata
-                    esModuleInterop
-                    experimentalDecorators
-                    extendedDiagnostics <-- doesn't seem to be in the tsconfig.json schema
-                    importHelpers
-                    isolatedModules
-                    listEmittedFiles
-                    listFiles
-                    module: ESNext
-                    moduleResolution
-                    noEmitOnError
-                    noErrorTruncation
-                    pretty
-                    removeComments
-                    resolveJsonModule
-                    sourceMap
-                    sourceRoot
-                    stripInternal // Could be a good way to hide internal details.
-                    traceResolution
-                */
-            },
-            "include": [
-                "source/**/*"
-            ]
+                }
+            }
         },
-        "package.json": {
-            "author": "Alexander Leung",
-            "license": "MIT",
-            "repository": {
-                "type": "git",
-                "url": "git+https://github.com/skoville/webpack-hot-module-replacement.git"
-            },
-            "devDependencies":[
-                "ts-nameof"
-            ]
+        "library": {
+            "extends": ["base"],
+            "files": {
+                "json": {
+                    "package.json": {
+                        "files": ["build"],
+                        "main": "./build/package.js"
+                    }
+                }
+            }
+        },
+        "private": {
+            "extends": [],
+            "files": {
+                "json": {
+                    "package.json": {
+                        "private": true
+                    }
+                }
+            }
+        },
+        "webpack": {
+            "extends": [],
+            "files": {
+                "json": {
+                    "package.json": {
+                        "dependencies": [
+                            ["webpack", "next"]
+                        ]
+                    }
+                }
+            }
         }
     },
     "packages": {
-        "@isomorphic-typescript/fs-async-nodejs": {
-            "publishDistributionFolder": false,
-            "configs": {
-                "package.json":{
-                    "files": ["distribution"],
-                    "main": "./distribution/package.js",
-                    "dependencies": [
-                        "@types/node"
-                    ]
-                },
-                "tsconfig.json":{
-                    "compilerOptions": {
-                        "types": ["node"]
-                    }
-                }
-            }
-        },
         // TODO: should we have a package "webpack-hmr-server-node-default-event-observer" or should we have the dashboard use the public API?
         //       Probably the latter I think. In that case it could be "webpack-hmr-dashboard-client". It can take in the socket-io accessor or any other accessor and JUST WORK
-        "@skoville/webpack-hmr-client-universal-hot-runtime": {
-            "publishDistributionFolder": false,
-            "configs": {
-                "package.json": {
-                    "files": ["distribution"],
-                    "main": "./distribution/package.js",
-                    "devDependencies": [
-                        "@types/webpack-env"
-                    ],
-                    "dependencies": [
-                        "@skoville/webpack-hmr-shared-universal-utilities"
-                    ]
-                },
-                "tsconfig.json": {
-                    "compilerOptions": {
-                        "types": ["webpack-env"]
-                    }
-                }
-            }
-        },
-        "@skoville/webpack-hmr-client-universal-default-socket-io-accessor": {
-            "publishDistributionFolder": false,
-            "configs": {
-                "package.json": {
-                    "files": ["distribution"],
-                    "main": "./distribution/package.js",
-                    "dependencies": [
-                        "socket.io-client",
-                        "@skoville/webpack-hmr-shared-universal-utilities"
-                    ],
-                    "devDependencies": [
-                        "@types/socket.io-client"
-                    ]
-                },
-                "tsconfig.json": {}
-            }
-        },
-        "@skoville/webpack-hmr-client-web-customizable": {
-            "publishDistributionFolder": false,
-            "configs": {
-                "package.json": {
-                    "files": ["distribution"],
-                    "main": "./distribution/package.js",
-                    "dependencies": [
-                        "@skoville/webpack-hmr-client-universal-hot-runtime",
-                        "@skoville/webpack-hmr-shared-universal-utilities"
-                    ]
-                },
-                "tsconfig.json": {
-                    "compilerOptions": {
-                        "lib": ["dom"]
-                    }
-                }
-            }
-        },
-        "@skoville/webpack-hmr-client-web-default": {
-            "publishDistributionFolder": true,
-            "configs": {
-                "package.json": {
-                    "files": ["distribution"],
-                    "dependencies": [
-                        "@skoville/webpack-hmr-client-web-customizable",
-                        "@skoville/webpack-hmr-client-universal-default-socket-io-accessor"
-                    ]
-                },
-                "tsconfig.json": {
-                    "compilerOptions": {
-                        "lib": ["dom"]
-                    }
-                }
-            }
-        },
-        "@skoville/webpack-hmr-client-node-customizable": {
-            "publishDistributionFolder": false,
-            "configs": {
-                "package.json": {
-                    "files": ["distribution"],
-                    "main": "./distribution/package.js",
-                    "dependencies": [
-                        "@skoville/webpack-hmr-client-universal-hot-runtime",
-                        "@skoville/webpack-hmr-shared-universal-utilities",
-                        "ansicolor"
-                    ],
-                    "devDependencies": [
-                        "@types/node",
-                        "@types/webpack-env"
-                    ]
-                },
-                "tsconfig.json": {
-                    "compilerOptions": {
-                        "types": ["node", "webpack-env"]
-                    }
-                }
-            }
-        },
-        "@skoville/webpack-hmr-client-node-default": {
-            "publishDistributionFolder": true,
-            "configs": {
-                "package.json": {
-                    "files": ["distribution"],
-                    "dependencies": [
-                        "@skoville/webpack-hmr-client-node-customizable",
-                        "@skoville/webpack-hmr-client-universal-default-socket-io-accessor"
-                    ]
-                },
-                "tsconfig.json": {}
-            }
-        },
-        "@skoville/webpack-hmr-shared-universal-utilities": {
-            "publishDistributionFolder": false,
-            "configs": {
-                "package.json":{
-                    "files": ["distribution"],
-                    "main": "./distribution/package.js",
-                    "dependencies": [
-                        "ansicolor"
-                    ]
-                },
-                "tsconfig.json": {}
-            }
-        },
-        "@skoville/webpack-hmr-server-node-customizable": {
-            "publishDistributionFolder": false,
-            "configs": {
-                "package.json": {
-                    "files": ["distribution"],
-                    "main": "./distribution/package.js",
-                    "dependencies":[
-                        "memory-fs",
-                        "uuid",
-                        "ansicolor",
-                        "webpack-sources",
-                        "@types/webpack",
-                        "@skoville/webpack-hmr-shared-universal-utilities",
-                        "type-graphql",
-                        "reflect-metadata",
-                        "graphql"
-                    ],
-                    "devDependencies": [
-                        "@types/node",
-                        "@types/uuid",
-                        "@types/webpack-env",
-                        "@types/memory-fs"
-                    ],
-                    "peerDependencies": [
-                        "webpack"
-                    ]
-                },
-                "tsconfig.json": {
-                    "compilerOptions": {
-                        "emitDecoratorMetadata": true,
-                        "experimentalDecorators": true,
-                        "types":["node", "webpack-env"]
-                    }
-                }
-            }
-        },
-        "@skoville/webpack-hmr-server-node-default": {
-            "publishDistributionFolder": false,
-            "configs": {
-                "package.json": {
-                    "files": ["distribution"],
-                    "main": "./distribution/package.js",
-                    "dependencies": [
-                        "@skoville/webpack-hmr-server-node-customizable",
-                        "@types/webpack",
-                        "express",
-                        "mime",
-                        "socket.io",
-                        "express-graphql"
-                    ],
-                    "devDependencies": [
-                        "@types/node",
-                        "@types/mime",
-                        "@types/express",
-                        "@types/socket.io"
-                    ],
-                    "peerDependencies": [
-                        "webpack"
-                    ]
-                },
-                "tsconfig.json": {
-                    "compilerOptions": {
-                        "types": ["node"]
-                    }
-                }
-            }
-        },
-
-        // Integration tests
-
-        "@skoville-integration-testing/default-test": {
-            "publishDistributionFolder": false,
-            "configs":{
-                "package.json":{
-                    "dependencies":[
-                        "@skoville/webpack-hmr-server-node-default",
-                        "@skoville/webpack-hmr-client-node-default",
-                        "@skoville/webpack-hmr-client-web-default",
-                        "chokidar",
-                        "ansicolor",
-                        "webpack",
-                        "@isomorphic-typescript/fs-async-nodejs",
-                        "source-map-support",
-                        "ts-loader",
-                        "express"
-                    ],
-                    "devDependencies": [
-                        "@types/node",
-                        "@types/webpack",
-                        "@types/webpack-env",
-                        "@types/express"
-                    ],
-                    "scripts": {
-                        "start": "node --preserve-symlinks -r source-map-support/register ./distribution/main.js"
-                        //"test": "skoville-webpack-node-run -u http://localhost:8080/server.js"
+        "@skoville": {
+            "webpack-hmr": {
+                "-client": {
+                    "-universal": {
+                        "-hot-runtime~": {
+                            "extends": ["library"],
+                            "files": {
+                                "json": {
+                                    "package.json": {
+                                        "devDependencies": [
+                                            "@types/webpack-env"
+                                        ],
+                                        "dependencies": [
+                                            "@skoville/webpack-hmr-shared-universal-utilities",
+                                            "ansicolor"
+                                        ]
+                                    },
+                                    "tsconfig.json": {
+                                        "compilerOptions": {
+                                            "types": ["webpack-env"]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "-default-socket-io-accessor~": {
+                            "extends": ["library"],
+                            "files": {
+                                "json": {
+                                    "package.json": {
+                                        "dependencies": [
+                                            "socket.io-client",
+                                            "@skoville/webpack-hmr-shared-universal-utilities"
+                                        ],
+                                        "devDependencies": [
+                                            "@types/socket.io-client"
+                                        ]
+                                    },
+                                    "tsconfig.json": {}
+                                }
+                            }
+                        }
                     },
-                    "resolutions": {
-                        "@types/node": "^12.6.8"
+                    "-web": {
+                        "-customizable~": {
+                            "extends": ["library"],
+                            "files": {
+                                "json": {
+                                    "package.json": {
+                                        "dependencies": [
+                                            "@skoville/webpack-hmr-client-universal-hot-runtime",
+                                            "@skoville/webpack-hmr-shared-universal-utilities",
+                                            "ansicolor"
+                                        ]
+                                    },
+                                    "tsconfig.json": {
+                                        "compilerOptions": {
+                                            "lib": ["dom"]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "-default~": {
+                            "extends": ["base"],
+                            "files": {
+                                "json": {
+                                    "package.json": {
+                                        "files": ["build"],
+                                        "dependencies": [
+                                            "@skoville/webpack-hmr-client-web-customizable",
+                                            "@skoville/webpack-hmr-client-universal-default-socket-io-accessor"
+                                        ]
+                                    },
+                                    "tsconfig.json": {
+                                        "compilerOptions": {
+                                            "lib": ["dom"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "-node": {
+                        "-customizable~": {
+                            "extends": ["library"],
+                            "files": {
+                                "json": {
+                                    "package.json": {
+                                        "dependencies": [
+                                            "@skoville/webpack-hmr-client-universal-hot-runtime",
+                                            "@skoville/webpack-hmr-shared-universal-utilities",
+                                            "ansicolor"
+                                        ],
+                                        "devDependencies": [
+                                            "@types/node",
+                                            "@types/webpack-env"
+                                        ]
+                                    },
+                                    "tsconfig.json": {
+                                        "compilerOptions": {
+                                            "types": ["node", "webpack-env"]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "-default~": {
+                            "extends": ["base"],
+                            "files": {
+                                "json": {
+                                    "package.json": {
+                                        "files": ["build"],
+                                        "dependencies": [
+                                            "@skoville/webpack-hmr-client-node-customizable",
+                                            "@skoville/webpack-hmr-client-universal-default-socket-io-accessor"
+                                        ]
+                                    },
+                                    "tsconfig.json": {}
+                                }
+                            }
+                        }
                     }
                 },
-                "tsconfig.json":{
-                    "compilerOptions": {
-                        "types":["node", "webpack-env"]
+                "-shared": {
+                    "-universal": {
+                        "-utilities~": {
+                            "extends": ["library"],
+                            "files": {
+                                "json": {
+                                    "package.json":{
+                                        "dependencies": [
+                                            "ansicolor"
+                                        ]
+                                    },
+                                    "tsconfig.json": {}
+                                }
+                            }
+                        }
+                    }
+                },
+                "-server": {
+                    "-node": {
+                        "-customizable~": {
+                            "extends": ["library", "webpack"],
+                            "files": {
+                                "json": {
+                                    "package.json": {
+                                        "dependencies":[
+                                            "memfs",
+                                            "uuid",
+                                            "ansicolor",
+                                            "webpack-sources",
+                                            "@skoville/webpack-hmr-shared-universal-utilities"
+                                        ],
+                                        "devDependencies": [
+                                            "@types/node",
+                                            "@types/uuid",
+                                            "@types/webpack-env",
+                                            "@types/webpack-sources"
+                                        ]
+                                    },
+                                    "tsconfig.json": {
+                                        "compilerOptions": {
+                                            "emitDecoratorMetadata": true,
+                                            "experimentalDecorators": true,
+                                            "types":["node", "webpack-env"]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "-default~": {
+                            "extends": ["library", "webpack"],
+                            "files": {
+                                "json": {
+                                    "package.json": {
+                                        "dependencies": [
+                                            "@skoville/webpack-hmr-server-node-customizable",
+                                            "fastify",
+                                            "mime",
+                                            "socket.io",
+                                            "express-graphql",
+                                            "ansicolor"
+                                        ],
+                                        "devDependencies": [
+                                            "@types/node",
+                                            "@types/mime",
+                                            "@types/socket.io"
+                                        ]
+                                    },
+                                    "tsconfig.json": {
+                                        "compilerOptions": {
+                                            "types": ["node"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        // Integration tests
+        "@skoville-integration-testing": {
+            "web-sample~": {
+                "extends": ["base", "private"],
+                "files": {
+                    "json": {
+                        "package.json": {
+                            "dependencies": [],
+                            "devDependencies": [
+                                "@types/webpack-env"
+                            ]
+                        },
+                        "tsconfig.json": {
+                            "compilerOptions": {
+                                "lib": ["dom"],
+                                "types": ["webpack-env"]
+                            }
+                        }
+                    }
+                }
+            },
+            "node-sample~": {
+                "extends": ["base", "private"],
+                "files": {
+                    "json": {
+                        "package.json": {
+                            "dependencies": [
+                                "fastify"
+                            ],
+                            "devDependencies": [
+                                "@types/webpack-env",
+                                "@types/node"
+                            ]
+                        },
+                        "tsconfig.json": {
+                            "compilerOptions": {
+                                "types": ["node", "webpack-env"]
+                            }
+                        }
+                    }
+                }
+            },
+            "skoville-test~": {
+                "extends": ["base", "private", "webpack"],
+                "files": {
+                    "json": {
+                        "package.json": {
+                            "scripts": {
+                                "start": "node --preserve-symlinks -r source-map-support/register ./build/main.js"
+                            },
+                            "dependencies": [
+                                "@skoville/webpack-hmr-server-node-default",
+                                "@skoville/webpack-hmr-client-node-default",
+                                "@skoville/webpack-hmr-client-web-default",
+                                "chokidar",
+                                "ansicolor",
+                                "source-map-support",
+                                "@skoville-integration-testing/web-sample",
+                                "@skoville-integration-testing/node-sample"
+                            ],
+                            "devDependencies": [
+                                "@types/node"
+                            ]
+                        },
+                        "tsconfig.json": {
+                            "compilerOptions": {
+                                "types": ["node"]
+                            }
+                        }
                     }
                 }
             }
         }
-    },
-    "version": "0.0.0"
+    }
 }
