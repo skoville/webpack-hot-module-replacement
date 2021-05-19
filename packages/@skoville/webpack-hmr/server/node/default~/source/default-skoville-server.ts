@@ -6,6 +6,8 @@ import fastify, { FastifyInstance } from 'fastify';
 import * as mime from 'mime';
 import * as ansicolor from 'ansicolor';
 import * as url from 'url';
+import * as fs from 'fs';
+import * as path from 'path';
 const configNameExpressPathParameter = "webpackConfigurationName";
 const moduleIdExpressPathParameter = "moduleId";
 const HTTP_OK_STATUS = 200;
@@ -47,7 +49,13 @@ export class DefaultSkovilleWebpackSever {
 
         this.setUpGETRequestHandling(fastifyApp);
         
-        this.socketioServer = socketio(this.httpServer);
+        this.socketioServer = new socketio.Server();
+        this.socketioServer.attach(this.httpServer, {
+            cors: {
+                origin: "*", // TODO: make this a list of urls which were passed? Maybe not because then it seems file:// would be blocked. Look into this more.
+                methods: ["GET", "POST"]
+            }
+        });
         this.setUpWebSocketHandling(this.socketioServer);
         /*
         this.httpServer.listen(port, () => {
@@ -60,6 +68,13 @@ export class DefaultSkovilleWebpackSever {
     }
 
     private setUpGETRequestHandling(app: FastifyInstance) {
+        app.get('/favicon.ico', async (_req, reply) => {
+            const readStream = fs.createReadStream(path.resolve(__dirname, '../assets/skoville.ico'));
+            const finishedFuture = new Promise(resolve => readStream.on('end', () => { resolve() }));
+            readStream.pipe(reply.raw);
+            await finishedFuture;
+            await reply.code(HTTP_OK_STATUS).send();
+        });
         app.get(`/:${configNameExpressPathParameter}/*`, async (req, reply) => {
             try {
                 this.log.info("get request incoming");
@@ -77,11 +92,13 @@ export class DefaultSkovilleWebpackSever {
                 const fileStream = await this.customizableSkovilleWebpackServer.getFileStream(path, (req.params as any)[configNameExpressPathParameter]);
                 if (fileStream !== false) {
                     reply.status(HTTP_OK_STATUS);
+                    const finishedFuture = new Promise(resolve => fileStream.on('end', () => { resolve() }));
                     fileStream.pipe(reply.raw);
+                    await finishedFuture;
                 } else {
                     reply.status(HTTP_NOT_FOUND_STATUS);
-                    reply.send();
                 }
+                await reply.send();
             } catch(e) {
                 this.log.error(e.message);
                 reply.header("Content-Type", "text/plain");
@@ -89,14 +106,49 @@ export class DefaultSkovilleWebpackSever {
                 reply.send(e.message);
             }
         });
+        app.get(`/`, async (_req, res) => {
+            this.log.info('homepage request');
+            const configs = this.customizableSkovilleWebpackServer.getAvailableConfigurationNames();
+            await res.type('text/html').send(`<!DOCTYPE html>
+            <html>
+                <head>
+                    <title>Skoville</title>
+                </head>
+                <body>
+                    <h1>Skoville Default Server</h1>
+                    <div>
+                        <b>available configurations are:</b>
+                        <br />
+                        <ul>
+                        ${ configs.map(config => `<li><a href="/${config}">${config}</li>`).join("") }
+                        </ul>
+                </body>
+            </html>`);
+        });
         app.get(`/:${configNameExpressPathParameter}`, async (req, res) => {
             try {
                 const webpackConfigurationName = (req.params as any)[configNameExpressPathParameter];
                 const moduleId: string = (req.query as any)[moduleIdExpressPathParameter] as string;
-                console.log(`fetching source for module ${moduleId}`);
+                this.log.info(`fetching source for module ${ansicolor.cyan(moduleId)} in config ${ansicolor.magenta(webpackConfigurationName)}`);
                 if (moduleId === "" || moduleId === null || moduleId === undefined) {
-                    res.status(400);
-                    throw new Error(`${nameof(moduleId)} parameter is ${moduleId}, which is invalid`);
+                    this.log.info(`config page request for config ${webpackConfigurationName}`);
+                    await res.type('text/html').send(`<!DOCTYPE html>
+                    <html>
+                        <head>
+                            <title>Skoville | ${ webpackConfigurationName }</title>
+                        </head>
+                        <body>
+                            <div>
+                                <b>Current hash</b>:
+                                <br/>
+                                hash here
+                                <br/>
+                                <b>Chunks</b>:
+                                <br/>
+                                Link to chunk bundle file at top then underneath table of assets.
+                            </div>
+                        </body>
+                    </html>`);
                 } else {
                     const moduleSource = await this.customizableSkovilleWebpackServer.getModuleSource(moduleId, webpackConfigurationName);
                     if (moduleSource === undefined) {
@@ -111,6 +163,13 @@ export class DefaultSkovilleWebpackSever {
                 }
             } catch(e) {
                 this.log.error(e.message);
+                await res.type('text/html').send(`<!DOCTYPE html>
+                <html>
+
+                    <body>
+
+                    </body>
+                </html>`);
             }
         });
     }

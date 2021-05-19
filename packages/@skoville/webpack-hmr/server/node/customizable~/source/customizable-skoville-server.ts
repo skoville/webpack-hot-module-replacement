@@ -73,6 +73,10 @@ export class CustomizableSkovilleWebpackServer {
         multiCompiler.watch({}, () => {}); // TODO: do we want any options input here?
     }
 
+    public getAvailableConfigurationNames(): string[] {
+        return Array.from(this.webpackConfigurationNameToCompilerManagerMap.keys());
+    }
+
     public handleClientMessage(updateRequest: UpdateRequest): UpdateResponse {
         const compilerManager = this.webpackConfigurationNameToCompilerManagerMap.get(updateRequest.webpackConfigurationName);
         if (compilerManager === undefined) {

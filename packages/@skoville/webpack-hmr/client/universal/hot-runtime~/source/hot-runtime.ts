@@ -56,8 +56,10 @@ export class SkovilleHotClientRuntime {
                 updateResponse.compatible
             ) ?
             {
-                [nameof(updateResponse.updatesToApply)]: updateResponse.updatesToApply.map(update => 
-                    Object.assign({}, update, {[nameof(update.updatedModuleSources)]: Object.keys(update.updatedModuleSources)}))
+                [nameof(updateResponse.updatesToApply)]: updateResponse.updatesToApply.map(update => {
+                    const {updatedSource, ...updateSummary} = update;
+                    return updateSummary;
+                })
             }
             :
             {}
@@ -187,14 +189,17 @@ export class SkovilleHotClientRuntime {
             return;
         }
         try {
-            const updatedModuleSources = updateToApply.updatedModuleSources;
-            const updatedModules: any = {};
-            for (const moduleId in updatedModuleSources) {
-                updatedModules[moduleId] = eval(`(\n${updatedModuleSources[moduleId]}\n)`);
+            this.log.info(`Removing the following chunks:`);
+            this.log.info(`['${updateToApply.manifest.removedChunkIds.join("', '")}']`);
+            this.log.info(`Removing the following modules:`);
+            this.log.info(`['${updateToApply.manifest.removedModuleIds.join("', '")}']`);
+            this.log.info(`Replacing the following modules:`);
+            for (const [chunkId, updatedModules] of Object.entries(updateToApply.updatedSource)) {
+                this.log.info(`Chunk ${chunkId}: ['${Object.keys(updatedModules).map(updatedModuleId => ansicolor.magenta(updatedModuleId)).join("', '")}']`);
             }
-            this.log.info(`The following will be hotswapped: ['${Object.keys(updatedModules).map(updatedModule => ansicolor.magenta(updatedModule)).join("', '")}']`);
+            
             // TODO: PR to hmr @types repo to include new method added to module.hot
-            const updatedModulesConfirmed = await (module.hot as any)[webpackFunctionToInjectName](updateToApply.hash, updatedModules);
+            const updatedModulesConfirmed = await (module.hot as any)[webpackFunctionToInjectName](updateToApply);
             this.logHMRApplyResult(updatedModulesConfirmed);
 
             this.currentHashHistoryIndex++;
@@ -212,8 +217,10 @@ export class SkovilleHotClientRuntime {
             }
         } catch(err) {
             this.log.error(`${nameof.full(module.hot.apply)} has failed. The current ${nameof.full(module.hot.status)} is ${module.hot.status()}`);
-            if (err.stack) this.log.error(err.stack);
-            else if (err.message) this.log.error(err.message);
+            this.log.error("message below");
+            this.log.error(err.message);
+            this.log.error("stack below");
+            this.log.error(err.stack);
             if (module.hot.status() === 'abort') {
                 this.startOrPromptAppRestart();
             }

@@ -29,4 +29,3 @@ if(module.hot) {
         containerElement.style.cssText = style;
     });
 }
-console.log("HELLO WORLD");

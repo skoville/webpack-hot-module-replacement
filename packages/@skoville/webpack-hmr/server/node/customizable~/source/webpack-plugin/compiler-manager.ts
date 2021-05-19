@@ -9,7 +9,8 @@ import * as ansicolor from 'ansicolor';
 import { injectWebpackHotBootstrapModifications } from './webpack-bootstrap-source-injection';
 import { generateHash } from '../generate-hash';
 import { Module } from 'webpack';
-import {  } from 'webpack-sources';
+const { ConcatSource } = require('webpack-sources');
+import * as trilogy from 'trilogy';
 
 type FileSystem = typeof fs;
 
@@ -32,6 +33,8 @@ type ModuleMonitor = {
     skovilleHash: string;
 }
 
+// Have some sort of LRU cache which stores update messages.
+
 // TODO: PR to @types/webpack for definition of compilation.modules
 export class CompilerManager {
     private readonly fs: FileSystem;
@@ -42,8 +45,8 @@ export class CompilerManager {
     private pendingCallbacksWhichRequireStableCompilation: Function[];
     private updates: CompilerUpdate[];
     private bundleTarget: string;
-    private moduleIdToModuleMonitorMap: Map<string, ModuleMonitor>;
     private currentCompilation: webpack.Compilation | undefined;
+    private readonly db: trilogy.Trilogy;
 
     public constructor(
         private readonly compiler: webpack.Compiler,
@@ -78,7 +81,6 @@ export class CompilerManager {
             throw new Error(`${nameof.full(compiler.options.target)} may not be a function. It is currently a function for the config name ${webpackConfigurationName}`);
         }
         this.bundleTarget = compiler.options.target;
-        this.moduleIdToModuleMonitorMap = new Map();
         this.addHooks();
     }
 
@@ -144,7 +146,7 @@ export class CompilerManager {
 
     private getFsPathFromRequestPath(requestPath: string) {
         if(requestPath.indexOf(this.publicPath) !== -1) {
-            const outputPath = (this.compiler as any).outputPath;
+            const outputPath = this.compiler.outputPath;
             const adjustedPath = path.resolve(outputPath + '/' + (requestPath.substring(this.publicPath.length)));
             const {compiler} = this;
             this.log.info(`${nameof(this.publicPath)}: '${this.publicPath}', ${nameof(requestPath)}: '${requestPath}', ${nameof.full(compiler.outputPath)}: '${outputPath}'`);
@@ -156,66 +158,44 @@ export class CompilerManager {
         }
     }
 
-    private injectWebpackHotBootstrapModifications() {
-        this.compiler.hooks.compilation.tap(WEBPACK_PLUGIN_TAP_NAME, compilation => {
-            // Here I am injecting raw code into the webpack bootstrap source, which comes before any module source code.
-            // Reference: webpack HMR injects code into the bootstrap source: https://github.com/webpack/webpack/blob/master/lib/HotModuleReplacementPlugin.js#L337-L356
-            
-            // TODO: better utilize webpack 5 way of templating.
-
-            //if (!compilation.hotUpdateChunkTemplate) {
-            //    throw new Error(`Detected error. The ${nameof.full(compilation.hotUpdateChunkTemplate)} does not exist for config ${nameof(this.webpackConfigurationName)} ${this.webpackConfigurationName}`);
-            //}
-            
-            /*
-            const mainTemplate = compilation.mainTemplate;
-            const bootstrapHook = mainTemplate.hooks.bootstrap;
-            if (!bootstrapHook) {
-                throw new Error(`Detected error. The hook ${nameof.full(compilation.mainTemplate)}.bootstrap does not exist for config ${nameof(this.webpackConfigurationName)} ${this.webpackConfigurationName}`);
+    // TODO: better utilize webpack 5 way of templating.
+    private injectWebpackHotBootstrapModifications(compilation: webpack.Compilation, asset: string) {
+        // Inspired by https://github.com/webpack/webpack/blob/c00fec3aa7c79476e5b61651558f5804a48b3bac/lib/BannerPlugin.js#L77-L109
+        // Here I am injecting raw code into the webpack bootstrap source to give a custom entry point for HMR than standard apply Fn which uses pre-built in module and chunk fetching logic
+        // which we don't want to use.
+        this.log.info(`Injecting custom source code into file ` + asset);
+        compilation.updateAsset(
+            asset,
+            old => {
+                const sourceString = old.source().toString();
+                const modifiedSource = injectWebpackHotBootstrapModifications(sourceString);
+                return new ConcatSource("", modifiedSource); // Somehow the "webpack-sources" types aren't in sync with webpack's.
             }
-            bootstrapHook.tap(WEBPACK_PLUGIN_TAP_NAME, (source, chunk, hash) => {
-                this.log.info(`Injecting source into chunk ${chunk.name} with hash ${hash}`);
-                return injectWebpackHotBootstrapModifications(source);
-            });
-            */
-
-            this.webpackConfigurationName;
-            injectWebpackHotBootstrapModifications;
-
-            /*
-            compilation.hooks.afterSeal.tap(WEBPACK_PLUGIN_TAP_NAME, () => {  
-                compilation.modules.forEach(module => {
-                    if (module.identifier() === "webpack/runtime/hot module replacement") {
-                        console.log("hmr below");
-                        console.log((module as any)._source);
-                    } else if (module.identifier() === "webpack/runtime/jsonp chunk loading") {
-                        console.log("found jsonp chunk loading")
-                    }
-                })
-            })
-            */
-
-            // https://github.com/webpack/webpack/blob/c00fec3aa7c79476e5b61651558f5804a48b3bac/lib/BannerPlugin.js#L77-L109
-            compilation.hooks.processAssets.tap({name: WEBPACK_PLUGIN_TAP_NAME, stage: webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONS}, (assets) => {
-                for (const asset in assets) {
-                    
-                    const currentSource = assets[asset].source();
-                    if (currentSource.includes("function hotCheck")) {
-                        compilation.updateAsset(asset, (currentSource) => {
-                            
-                        })
-                    }
-                }
-            })
-        });
+        );
     }
 
     private addHooks() {
-        this.injectWebpackHotBootstrapModifications();
         this.compiler.hooks.invalid.tap(WEBPACK_PLUGIN_TAP_NAME, () => {
             if (!this.valid) this.log.error(`Found case where ${nameof.full(this.valid)} is ${this.valid} when ${nameof.full(this.compiler.hooks.invalid)} is tap handled`);
             this.log.info("Recompiling...");
             this.valid = false;
+        });
+        this.compiler.hooks.compilation.tap(WEBPACK_PLUGIN_TAP_NAME, compilation => {
+            compilation.hooks.processAssets.tap({name: WEBPACK_PLUGIN_TAP_NAME, stage: webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONS}, (_assets) => {
+                for (const chunk of compilation.chunks) {
+                    this.log.info(`Scanning output files for chunk ${chunk.name}`);
+                    for (const file of chunk.files) {
+                        console.log(file); // TODO: only apply this code to the actual chunk assets, not to update assets and/or other non-chunk assets.
+
+                        // if it is a main chunk file, inject source
+                        if () {
+                            this.injectWebpackHotBootstrapModifications(compilation, file);
+                        } else {
+                            chunk.name
+                        }
+                    }
+                }
+            })
         });
         this.compiler.hooks.done.tap(WEBPACK_PLUGIN_TAP_NAME, async stats => {
             const {compilation} = stats;
@@ -228,9 +208,9 @@ export class CompilerManager {
             const noPriorUpdate = priorUpdate === undefined;
 
             // The following code mitigates a webpack bug where sometimes the hash of the module changes even though the source did not.
-            const incorrectModuleUpdates: string[] = [];
-            const currentSkovilleModuleMapping: Record<string, string> = {};
-            const currentWebpackModuleMapping: Record<string, string> = {};
+            const incorrectModuleUpdates: {[chunkId: string]: string[]} = {};
+            const currentSkovilleModuleMapping: {[chunkId: string]: Record<string, string>} = {};
+            const currentWebpackModuleMapping: {[chunkId: string]: Record<string, string>} = {};
             compilation.chunks.forEach(chunk => {
                 this.log.info(`Current ${nameof.full(chunk.id)}=${chunk.id}, ${nameof.full(chunk.name)}=${chunk.name}`);
                 compilation.chunkGraph.getChunkModules(chunk).forEach(mod => {
@@ -238,7 +218,7 @@ export class CompilerManager {
                     const nonUniqueModuleId = compilation.chunkGraph.getModuleId(mod); // TODO: find a place for this.
                     nonUniqueModuleId;
 
-                    // the original source method can return null for internal webpack modules.
+                    // the original source method can return null for internal webpack modules such as the HMR runtime modules. TODO: why?
                     const source = mod.originalSource()?.source().toString() ?? ""
 
                     const webpackHash = compilation.chunkGraph.getModuleHash(mod);
@@ -296,6 +276,11 @@ export class CompilerManager {
 
             // Now we check the actually output from Webpack's HMR plugin.
             if (noPriorUpdate || priorUpdate.hash !== hash) {
+                const {manifest, updatedSource}: Pick<CompilerUpdate, 'manifest' | 'updatedSource'> = noPriorUpdate ? 
+                    {
+                        manifest: {updatedChunkIds: [], removedChunkIds: [], removedModuleIds: []},
+                        updatedSource: {}
+                    } : await this.assembleModuleUpdates(compilation, priorUpdate.hash);
                 const newUpdate: CompilerUpdate = {
                     hash,
                     errors: compilation.errors.map(webpackError => ({
@@ -309,7 +294,8 @@ export class CompilerManager {
                         sourceLocation: webpackWarning.loc
                     })),
                     assets: Object.keys(compilation.assets),
-                    updatedModuleSources: noPriorUpdate ? {} : await this.assembleModuleUpdates(compilation, priorUpdate.hash)
+                    manifest,
+                    updatedSource
                 };
                 Object.keys(newUpdate.updatedModuleSources)
                     .filter(updatedModuleId => incorrectModuleUpdates.includes(updatedModuleId))
@@ -344,19 +330,16 @@ export class CompilerManager {
      * @see https://github.com/webpack/webpack/blob/master/lib/HotModuleReplacementPlugin.js#L235-L300
      * @param compilation the webpack compilation.
      */
-    private assembleModuleUpdates(compilation: webpack.Compilation, priorHash: string) {
-        compilation;
-        priorHash;
-        this.executeChunkUpdateSource;
-        return Promise.resolve({});
-        /*
+    private assembleModuleUpdates(compilation: webpack.Compilation, priorHash: string): Promise<Pick<CompilerUpdate, 'manifest' | 'updatedSource'>> {
         const outputOptions = this.compiler.options.output;
-        if (!outputOptions) throw new Error(`Error running ${nameof(this.assembleModuleUpdates)}. ${nameof.full(this.compiler.options.output)} is undefined`);
+
+        // TODO: does this need to be changed for multi-chunk?
         const hotUpdateMainFilename = outputOptions.hotUpdateMainFilename;
         if (!hotUpdateMainFilename) throw new Error(`Error running ${nameof(this.assembleModuleUpdates)}. ${nameof(hotUpdateMainFilename)} is undefined`);
         const hotUpdateChunkFilename = outputOptions.hotUpdateChunkFilename;
         if (!hotUpdateChunkFilename) throw new Error(`Error running ${nameof(this.assembleModuleUpdates)}. ${nameof(hotUpdateChunkFilename)} is undefined`);
-        return new Promise<Record<string, string>>((resolve, _reject) => {
+        
+        return new Promise<Pick<CompilerUpdate, 'manifest' | 'updatedSource'>>((resolve, _reject) => {
             const updateManifestPath = compilation.getPath(hotUpdateMainFilename, {hash: priorHash});
             const updateManifestAsset = compilation.assets[updateManifestPath];
             const updateManifestSource: string = updateManifestAsset.source().toString();
@@ -374,7 +357,6 @@ export class CompilerManager {
             }
             resolve(updatedModuleSources);
         });
-        */
     }
 
     private executeChunkUpdateSource(source: string, updatedModuleSources: Record<string, string>) {

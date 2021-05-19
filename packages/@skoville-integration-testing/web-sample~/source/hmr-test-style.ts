@@ -1,5 +1,5 @@
 console.log("hmr-test-style.ts is running");
-/*
+//*
 const color = "grey";
 /*/
 const color = "peachpuff";

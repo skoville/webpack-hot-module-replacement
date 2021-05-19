@@ -1,11 +1,11 @@
-import * as socketio from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import { UpdateRequest, UpdateResponse, Log } from '@skoville/webpack-hmr-shared-universal-utilities';
 
 export class SocketIOSkovilleServerAccessor {
-    private socket: typeof socketio.Socket;
+    private socket: Socket;
     private log: Log.Logger;
     public constructor(socketIOServerURL: string, onUpdateNotification: () => Promise<void>, log: Log.Logger) {
-        this.socket = socketio(socketIOServerURL, {reconnection: true});
+        this.socket = io(socketIOServerURL, {reconnection: true});
         this.log = log.clone(`[${nameof(SocketIOSkovilleServerAccessor)}] `);
         // Handling native socket io events
         this.socket.on("connect", () => {

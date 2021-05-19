@@ -30,7 +30,16 @@ export type CompilerUpdate = {
     errors: Exception[];
     warnings: Exception[];
     assets: string[];
-    updatedModuleSources: Record<string, string>;
+    manifest: {
+        updatedChunkIds: string[];  // field "c" in typical webpack manifest json
+        removedChunkIds: string[];  // field "r" in typical webpack manifest json
+        removedModuleIds: string[]; // field "m" in typical webpack manifest json
+    };
+    updatedSource: {
+        [chunkId: string]: {
+            [moduleId: string]: string;
+        };
+    };
 }
 
 export type UpdateResponse =
@@ -48,3 +57,16 @@ export type UpdateResponse =
         clientId: string;
         updatesToApply: CompilerUpdate[];
     };
+
+
+// New definitions (after DB and webpack 5 added)
+
+// Tag compilation (compilation name, compilation version, tag name)
+// Get compilation versions & hashes & tags (compilation name)
+// Get chunks for compilation (compilation name, compilation version)
+// Get modules for chunk (compilation name, compilation version, chunk id)
+// Get chunk source (compilation name, compilation version, chunk id) -> stream
+// Get module source (compilation name, compilation version, chunk id, module id) -> stream
+// Get update (compilation name, version start, version end, installed chunk ids) -> 
+// Register client (compilation name, version, entry chunk id) -> client id
+// Client Health Check (compilation name, version, client id) -> desired target compilation version

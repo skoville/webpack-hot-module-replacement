@@ -1,60 +1,21 @@
-import { webpackFunctionToInjectName } from '@skoville/webpack-hmr-shared-universal-utilities';
+import { CompilerUpdate, webpackFunctionToInjectName } from '@skoville/webpack-hmr-shared-universal-utilities';
 
-const hotModuleAttributeLinePrefix = "\t\t";
-const webpackBootstrapHotModuleAttributeLineToInsertBefore = `${hotModuleAttributeLinePrefix}check: hotCheck`;
-
-const webpackBootstrapFunctionToInsertBefore = `function hotUpdateDownloaded`;
 const webpackFunctionToInjectNameBootstrapInternal = `hot${webpackFunctionToInjectName[0].toUpperCase()}${webpackFunctionToInjectName.slice(1)}`;
 
-// Carefully study the following file for an explanation to understand the reasoning of the injected source below:
-// https://github.com/webpack/webpack/blob/master/lib/HotModuleReplacement.runtime.js
-const webpackFunctionToInjectSource = `${
-  ""}/* Applies hot update downloaded in way other than typical "check" "apply" methods. */
-${""}/* @param updatedModuleNameToNewModuleSourceMapping POJSO mapping from update module id to the new source of the module. */
-function ${webpackFunctionToInjectNameBootstrapInternal}(newHash, updatedModuleNameToNewModuleSourceMapping) {
-    if (hotStatus !== "idle") {
-        throw new Error("${webpackFunctionToInjectName}() is only allowed in idle status");
-    }
-    hotSetStatus("prepare"); // Technically not necessary but kept for consistency.
-    hotUpdate = updatedModuleNameToNewModuleSourceMapping;
-    hotUpdateNewHash = newHash;
-    hotApplyOnUpdate = true;
-    hotDeferred = {};
-    var outdatedModulesPromise = new Promise(function(resolve, reject) {
-        hotDeferred.resolve = resolve;
-        hotDeferred.reject = reject;
-    });
-    hotUpdateDownloaded();
-    return outdatedModulesPromise;
-}
-
-${webpackBootstrapFunctionToInsertBefore}`;
-
-webpackFunctionToInjectSource;
-
-/*
-export function injectWebpackHotBootstrapModifications(originalBootstrapSource: string) {
-    return originalBootstrapSource
-        .replace(new RegExp(webpackBootstrapHotModuleAttributeLineToInsertBefore, 'g'), 
-            `${hotModuleAttributeLinePrefix}${webpackFunctionToInjectName}: ${webpackFunctionToInjectNameBootstrapInternal},\n${webpackBootstrapHotModuleAttributeLineToInsertBefore}`)
-        .replace(new RegExp(webpackBootstrapFunctionToInsertBefore, 'g'), webpackFunctionToInjectSource)
-}
-*/
-
-// Webpack 5
-export function injectWebpackHotBootstrapModifications(originalBootstrapSource: string) {
-    console.log(originalBootstrapSource);
-    return originalBootstrapSource
-        .replace(new RegExp(webpackBootstrapHotModuleAttributeLineToInsertBefore, 'g'),
-            `${hotModuleAttributeLinePrefix}${webpackFunctionToInjectName}: ${webpackFunctionToInjectNameBootstrapInternal},\n${webpackBootstrapHotModuleAttributeLineToInsertBefore}`)
-}
+/******************************************
+               WEBPACK 5
+******************************************/
 
 // This section goes in the jsonp bootstrap.
-const gogo = `
-__webpack__require__.${webpackFunctionToInjectNameBootstrapInternal} = function(manifest, chunkIdToModuleIdToSourceMapping, newHash, applyOptions, applyHandlers) {
+const customModuleInjectionImpl = 
+`__webpack_require__.${webpackFunctionToInjectNameBootstrapInternal} = function(update,  applyHandlers) {
+    const manifest = update.${nameof<CompilerUpdate>(_ => _.manifest)};
+    const newHash = update.${nameof<CompilerUpdate>(_ => _.hash)};
+    const updatedSource = update.${nameof<CompilerUpdate>(_ => _.updatedSource)};
+
     currentUpdateChunks = {};
     currentUpdate = {};
-    currentUpdateRemovedChunks = manifest.r;
+    currentUpdateRemovedChunks = manifest.${nameof<CompilerUpdate>(_ => _.manifest.removedChunkIds)};
     currentUpdateRuntime = [
         function (webpackRequire) {
             webpackRequire.h = newHash;
@@ -63,48 +24,73 @@ __webpack__require__.${webpackFunctionToInjectNameBootstrapInternal} = function(
     applyHandlers.push(applyHandler);
     
 
-    const removedModules = manifest.m;
+    const removedModules = manifest.${nameof<CompilerUpdate>(_ => _.manifest.removedModuleIds)};
     removedModules.forEach(function (moduleId) {
         currentUpdate[moduleId] = false;
     });
 
-    const chunkIds = manifest.c;
+    const chunkIds = manifest.${nameof<CompilerUpdate>(_ => _.manifest.updatedChunkIds)};
     chunkIds
         .filter(function (chunkId) {
+            // __webpack_require__.o is just an alias for installedChunks.hasOwnProperty(chunkId)
+            // TODO in the future we could have installed chunks sent as part of request or just have a separate request for getting updated source so that server
+            // doesn't sent all of the updated modules down (incluing those which belong to chunks which aren't installed)
             return __webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId] !== undefined;
         })
         .forEach(function (chunkId) {
             currentUpdateChunks[chunkId] = true;
-            Object.entries(chunkIdToModuleIdSourceMapping[chunkId]).forEach(function (entry) {
+            const moduleIdToSourceMapping = updatedSource[chunkId];
+            Object.entries(moduleIdToSourceMapping).forEach(function (entry) {
                 var moduleId = entry[0];
-                var newModuleSourceFunction = entry[1];
-                currentUpdate[moduleId] = newModuleSourceFunction;
+                var newModuleSource = entry[1];
+                currentUpdate[moduleId] = eval("\n" + newModuleSource + "\n");
             });
         });
-
-    internalApply(applyOptions); // used to be true, now it appears it can take on options
 }
 `;
 
-// This section goes in the HRM runtime bootstrap.
-const core = `
-hot: {
-    ...
-    update: ${webpackFunctionToInjectNameBootstrapInternal}
-    ...
-}
-...
-function ${webpackFunctionToInjectNameBootstrapInternal}(manifest, chunkIdToModuleIdToSourceMapping, newHash, applyOptions) {
+const managementFnReference =`${webpackFunctionToInjectName}: ${webpackFunctionToInjectNameBootstrapInternal},`;
+
+const managementFnCaller = 
+`function ${webpackFunctionToInjectNameBootstrapInternal}(update, applyOptions) {
     if (currentStatus !== "idle") {
-        throw new Error("${webpackFunctionToInjectName}() is only allowed in idle status");
+        throw new Error("${webpackFunctionToInjectName}() is only allowed in idle status. Current status is instead " + currentStatus);
     }
     setStatus("prepare");
     currentUpdateApplyHandlers = [];
-    __webpack__require__.${webpackFunctionToInjectNameBootstrapInternal}(
-        manifest, chunkIdToModuleIdToSourceMapping, newHash, applyOptions, currentUpdateApplyHandlers
-    );
+    __webpack_require__.${webpackFunctionToInjectNameBootstrapInternal}(update, currentUpdateApplyHandlers);
+    internalApply(applyOptions);
 }
-`
+`;
 
-gogo;
-core;
+const SOURCE_PREFIX = "/******/ ";
+
+const SOURCE_REPLACEMENTS: {matcher: string[], toInsert: string, indentBy: number}[] = [
+    {
+        matcher: ["		function applyInvalidatedModules() {"],
+        indentBy: 2,
+        toInsert: managementFnCaller
+    },
+    {
+        matcher: ["				status: function (l) {"],
+        indentBy: 4,
+        toInsert: managementFnReference
+    },
+    {
+        matcher: ["		__webpack_require__.hmrM = () => {"],
+        indentBy: 2,
+        toInsert: customModuleInjectionImpl
+    }
+];
+
+export function injectWebpackHotBootstrapModifications(originalBootstrapSource: string) {
+    var source = originalBootstrapSource;
+    for (const replacement of SOURCE_REPLACEMENTS) {
+        const stringToMatch = replacement.matcher.map(matcherLine => `${SOURCE_PREFIX}${matcherLine}`).join("\n");
+        const toInsertPrefix = SOURCE_PREFIX + "\t".repeat(replacement.indentBy);
+        const stringToInsert = replacement.toInsert.split("\n").map(line => toInsertPrefix + line.split("    ").join("\t")).join("\n");
+        const index = source.indexOf(stringToMatch);
+        source = source.substring(0, index) + stringToInsert + '\n' + source.substring(index);
+    }
+    return source;
+}

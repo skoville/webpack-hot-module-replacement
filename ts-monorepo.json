@@ -145,9 +145,6 @@
                                         "dependencies": [
                                             "socket.io-client",
                                             "@skoville/webpack-hmr-shared-universal-utilities"
-                                        ],
-                                        "devDependencies": [
-                                            "@types/socket.io-client"
                                         ]
                                     },
                                     "tsconfig.json": {}
@@ -265,13 +262,13 @@
                                             "uuid",
                                             "ansicolor",
                                             "webpack-sources",
-                                            "@skoville/webpack-hmr-shared-universal-utilities"
+                                            "@skoville/webpack-hmr-shared-universal-utilities",
+                                            "trilogy"
                                         ],
                                         "devDependencies": [
                                             "@types/node",
                                             "@types/uuid",
-                                            "@types/webpack-env",
-                                            "@types/webpack-sources"
+                                            "@types/webpack-env"
                                         ]
                                     },
                                     "tsconfig.json": {
@@ -299,8 +296,7 @@
                                         ],
                                         "devDependencies": [
                                             "@types/node",
-                                            "@types/mime",
-                                            "@types/socket.io"
+                                            "@types/mime"
                                         ]
                                     },
                                     "tsconfig.json": {

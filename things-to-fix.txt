@@ -1,0 +1,2 @@
+in socket.io-parser, need to add this to dependencies:
+    "@types/component-emitter": ^1.2.10

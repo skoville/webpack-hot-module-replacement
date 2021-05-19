@@ -60,7 +60,8 @@ const configs: webpack.Configuration[] = [
         mode: 'development',
         entry: [
             "@skoville-integration-testing/web-sample/build/web.js",
-            //"@skoville/webpack-hmr-client-web-default/entry.js"
+            "@skoville/webpack-hmr-client-web-default/build/entry.js" // TODO: make inclusion of this entry automated, and change config so it's auto true and url auto-detected unless set otherwise. 
+                                                                      // Maybe inject code in all entries to init rather than modifying entry array on config itself
         ],
         plugins: [
             new SkovilleWebpackPlugin({
